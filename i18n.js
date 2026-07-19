@@ -55,6 +55,7 @@
     set: {
       langHead:'🌐 ことば / Language',
       fontHead:'文字の大きさ', fsNormal:'ふつう', fsLarge:'大きい', fsXL:'とくだい',
+      bgmHead:'おんがく(BGM)', bgmA:'曲1(あたたかい)', bgmB:'曲2(すんだ)', bgmOff:'ながさない', tapSound:'タップ音', themeHead:'がめんの色', themeGreen:'みどり', themeBlue:'あお',
       waterHead:'水分の目標量(1日)',
       waterHint:'はじめの1200mlは、厚生労働省の目安(1日に必要な水分2.5L=食事から約1.0L+体内で作られる約0.3L+飲み水約1.2L)のうち「飲み水」の量です。食事にふくまれる水分は入れずに、飲み物だけを数えてください。心臓や腎臓の病気などで水分の制限がある方は、お医者さん・看護師さんから言われた量に合わせて変えてください。',
       heightHead:'身長(体重のBMI計算に使います)',
@@ -207,6 +208,7 @@
     set: {
       langHead:'🌐 ことば / Language',
       fontHead:'Text size', fsNormal:'Normal', fsLarge:'Large', fsXL:'Extra large',
+      bgmHead:'Music (BGM)', bgmA:'Tune 1 (warm)', bgmB:'Tune 2 (clear)', bgmOff:'Off', tapSound:'Tap sound', themeHead:'Screen color', themeGreen:'Green', themeBlue:'Blue',
       waterHead:'Daily water goal',
       waterHint:'The initial 1200 ml is the "drinking water" portion of the guideline from Japan’s Ministry of Health, Labour and Welfare (about 2.5 L of water is needed per day = about 1.0 L from food + about 0.3 L made in the body + about 1.2 L of drinking water). Count only drinks, not the water contained in food. If water intake is restricted due to heart or kidney disease, change it to the amount your doctor or nurse told you.',
       heightHead:'Height (used to calculate BMI from weight)',
@@ -348,6 +350,7 @@
     set: {
       langHead:'🌐 Sprache / Language',
       fontHead:'Schriftgröße', fsNormal:'Normal', fsLarge:'Groß', fsXL:'Sehr groß',
+      bgmHead:'Musik (BGM)', bgmA:'Melodie 1 (warm)', bgmB:'Melodie 2 (klar)', bgmOff:'Aus', tapSound:'Tippton', themeHead:'Bildschirmfarbe', themeGreen:'Grün', themeBlue:'Blau',
       waterHead:'Tagesziel Trinkmenge',
       waterHint:'Die anfänglichen 1200 ml sind der „Trinkwasser“-Anteil der Richtwerte des japanischen Gesundheitsministeriums (ca. 2,5 L Wasser pro Tag = ca. 1,0 L aus dem Essen + ca. 0,3 L körpereigen gebildet + ca. 1,2 L Getränke). Zählen Sie nur Getränke, nicht das Wasser im Essen. Bei ärztlich begrenzter Trinkmenge (z. B. Herz- oder Nierenerkrankung) stellen Sie bitte die vom Arzt genannte Menge ein.',
       heightHead:'Größe (für die BMI-Berechnung aus dem Gewicht)',
@@ -470,6 +473,7 @@
     set: {
       langHead:'🌐 Langue / Language',
       fontHead:'Taille du texte', fsNormal:'Normale', fsLarge:'Grande', fsXL:'Très grande',
+      bgmHead:'Musique (fond)', bgmA:'Mélodie 1 (chaleureuse)', bgmB:'Mélodie 2 (claire)', bgmOff:'Sans musique', tapSound:'Son des touches', themeHead:'Couleur de l’écran', themeGreen:'Vert', themeBlue:'Bleu',
       waterHead:'Objectif d’hydratation (par jour)',
       waterHint:'Les 1200 ml initiaux correspondent à la part « boissons » du repère du ministère japonais de la Santé (environ 2,5 L d’eau par jour = env. 1,0 L venant des repas + env. 0,3 L produit par le corps + env. 1,2 L de boissons). Ne comptez que les boissons, pas l’eau contenue dans les repas. En cas de restriction hydrique (maladie cardiaque ou rénale), réglez la quantité indiquée par le médecin ou l’infirmière.',
       heightHead:'Taille (pour calculer l’IMC à partir du poids)',
@@ -592,6 +596,7 @@
     set: {
       langHead:'🌐 Idioma / Language',
       fontHead:'Tamaño del texto', fsNormal:'Normal', fsLarge:'Grande', fsXL:'Muy grande',
+      bgmHead:'Música (BGM)', bgmA:'Melodía 1 (cálida)', bgmB:'Melodía 2 (clara)', bgmOff:'Sin música', tapSound:'Sonido al tocar', themeHead:'Color de pantalla', themeGreen:'Verde', themeBlue:'Azul',
       waterHead:'Objetivo diario de líquidos',
       waterHint:'Los 1200 ml iniciales son la parte de «bebidas» de la referencia del Ministerio de Salud de Japón (unos 2,5 L de agua al día = aprox. 1,0 L de las comidas + aprox. 0,3 L que produce el cuerpo + aprox. 1,2 L de bebidas). Cuente solo las bebidas, no el agua de las comidas. Si hay restricción de líquidos (enfermedad cardíaca o renal), ajuste la cantidad indicada por el médico o la enfermera.',
       heightHead:'Estatura (para calcular el IMC con el peso)',
@@ -714,6 +719,7 @@
     set: {
       langHead:'🌐 Lingua / Language',
       fontHead:'Dimensione del testo', fsNormal:'Normale', fsLarge:'Grande', fsXL:'Molto grande',
+      bgmHead:'Musica (BGM)', bgmA:'Melodia 1 (calda)', bgmB:'Melodia 2 (limpida)', bgmOff:'Niente musica', tapSound:'Suono dei tocchi', themeHead:'Colore dello schermo', themeGreen:'Verde', themeBlue:'Blu',
       waterHead:'Obiettivo giornaliero di liquidi',
       waterHint:'I 1200 ml iniziali sono la parte di «bevande» del riferimento del Ministero della Salute giapponese (circa 2,5 L di acqua al giorno = ca. 1,0 L dai pasti + ca. 0,3 L prodotti dal corpo + ca. 1,2 L di bevande). Conta solo le bevande, non l’acqua contenuta nei pasti. In caso di restrizione dei liquidi (malattie cardiache o renali), imposta la quantità indicata dal medico o dall’infermiere.',
       heightHead:'Altezza (per calcolare il BMI dal peso)',
@@ -836,6 +842,7 @@
     set: {
       langHead:'🌐 Idioma / Language',
       fontHead:'Tamanho do texto', fsNormal:'Normal', fsLarge:'Grande', fsXL:'Muito grande',
+      bgmHead:'Música (BGM)', bgmA:'Melodia 1 (acolhedora)', bgmB:'Melodia 2 (clara)', bgmOff:'Sem música', tapSound:'Som ao tocar', themeHead:'Cor da tela', themeGreen:'Verde', themeBlue:'Azul',
       waterHead:'Meta diária de líquidos',
       waterHint:'Os 1200 ml iniciais são a parte de «bebidas» da referência do Ministério da Saúde do Japão (cerca de 2,5 L de água por dia = aprox. 1,0 L das refeições + aprox. 0,3 L produzidos pelo corpo + aprox. 1,2 L de bebidas). Conte apenas as bebidas, não a água das refeições. Se houver restrição de líquidos (doença cardíaca ou renal), ajuste para a quantidade indicada pelo médico ou enfermeira.',
       heightHead:'Altura (para calcular o IMC com o peso)',
@@ -958,6 +965,7 @@
     set: {
       langHead:'🌐 Taal / Language',
       fontHead:'Tekstgrootte', fsNormal:'Normaal', fsLarge:'Groot', fsXL:'Extra groot',
+      bgmHead:'Muziek (BGM)', bgmA:'Melodie 1 (warm)', bgmB:'Melodie 2 (helder)', bgmOff:'Uit', tapSound:'Tikgeluid', themeHead:'Schermkleur', themeGreen:'Groen', themeBlue:'Blauw',
       waterHead:'Dagelijks vochtdoel',
       waterHint:'De eerste 1200 ml is het "drinkvocht"-deel van de richtlijn van het Japanse ministerie van Volksgezondheid (ongeveer 2,5 L water per dag = ca. 1,0 L uit maaltijden + ca. 0,3 L door het lichaam aangemaakt + ca. 1,2 L drinken). Tel alleen drinken mee, niet het vocht in maaltijden. Bij vochtbeperking (hart- of nierziekte) stelt u de hoeveelheid in die de arts of verpleegkundige heeft genoemd.',
       heightHead:'Lengte (voor de BMI-berekening bij gewicht)',
@@ -1080,6 +1088,7 @@
     set: {
       langHead:'🌐 Språk / Language',
       fontHead:'Textstorlek', fsNormal:'Normal', fsLarge:'Stor', fsXL:'Extra stor',
+      bgmHead:'Musik (BGM)', bgmA:'Melodi 1 (varm)', bgmB:'Melodi 2 (klar)', bgmOff:'Av', tapSound:'Tryckljud', themeHead:'Skärmfärg', themeGreen:'Grön', themeBlue:'Blå',
       waterHead:'Dagligt vätskemål',
       waterHint:'De första 1200 ml är "dryckesdelen" av riktvärdet från Japans hälsoministerium (cirka 2,5 L vatten per dag = ca 1,0 L från maten + ca 0,3 L som kroppen bildar + ca 1,2 L dryck). Räkna bara dryck, inte vattnet i maten. Vid vätskerestriktion (hjärt- eller njursjukdom) ställer du in den mängd som läkaren eller sjuksköterskan angett.',
       heightHead:'Längd (används för BMI-beräkning vid vikt)',
@@ -1202,6 +1211,7 @@
     set: {
       langHead:'🌐 언어 / Language',
       fontHead:'글자 크기', fsNormal:'보통', fsLarge:'크게', fsXL:'아주 크게',
+      bgmHead:'음악(BGM)', bgmA:'곡 1 (따뜻한)', bgmB:'곡 2 (맑은)', bgmOff:'끄기', tapSound:'터치음', themeHead:'화면 색', themeGreen:'초록', themeBlue:'파랑',
       waterHead:'하루 수분 목표량',
       waterHint:'처음 설정된 1200ml는 일본 후생노동성 기준(하루에 필요한 수분 약 2.5L = 식사에서 약 1.0L + 몸에서 만들어지는 약 0.3L + 마시는 물 약 1.2L) 중 「마시는 물」의 양입니다. 식사에 포함된 수분은 빼고, 마신 것만 세어 주세요. 심장·신장 질환 등으로 수분 제한이 있는 분은 의사·간호사가 알려준 양으로 바꿔 주세요.',
       heightHead:'키 (체중의 BMI 계산에 사용)',
@@ -1324,6 +1334,7 @@
     set: {
       langHead:'🌐 语言 / Language',
       fontHead:'文字大小', fsNormal:'普通', fsLarge:'大', fsXL:'特大',
+      bgmHead:'音乐(BGM)', bgmA:'曲目1(温暖)', bgmB:'曲目2(清澈)', bgmOff:'关闭', tapSound:'按键音', themeHead:'界面颜色', themeGreen:'绿色', themeBlue:'蓝色',
       waterHead:'每日饮水目标量',
       waterHint:'初始的1200ml是日本厚生劳动省参考值(每天需要约2.5L水分 = 饮食约1.0L + 体内生成约0.3L + 饮水约1.2L)中「饮水」的部分。请只计算喝下的饮品,不包括饮食中的水分。因心脏、肾脏疾病等需要限制水分的,请改成医生或护士告知的量。',
       heightHead:'身高 (用于根据体重计算BMI)',
@@ -1446,6 +1457,7 @@
     set: {
       langHead:'🌐 اللغة / Language',
       fontHead:'حجم الخط', fsNormal:'عادي', fsLarge:'كبير', fsXL:'كبير جدًا',
+      bgmHead:'الموسيقى (خلفية)', bgmA:'اللحن 1 (دافئ)', bgmB:'اللحن 2 (صافٍ)', bgmOff:'إيقاف', tapSound:'صوت اللمس', themeHead:'لون الشاشة', themeGreen:'أخضر', themeBlue:'أزرق',
       waterHead:'هدف الشرب اليومي',
       waterHint:'قيمة 1200 مل الأولية هي حصة «الشرب» من المرجع الصادر عن وزارة الصحة اليابانية (نحو 2.5 لتر ماء يوميًا = نحو 1.0 لتر من الطعام + نحو 0.3 لتر يصنعه الجسم + نحو 1.2 لتر شرب). احسب المشروبات فقط، من دون الماء الموجود في الطعام. إذا كان هناك تقييد للسوائل (مرض قلبي أو كلوي) فاضبط الكمية التي حددها الطبيب أو الممرضة.',
       heightHead:'الطول (لحساب مؤشر كتلة الجسم من الوزن)',

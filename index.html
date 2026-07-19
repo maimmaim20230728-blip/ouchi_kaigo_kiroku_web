@@ -73,6 +73,22 @@
       <button class="fs-btn" data-fs="1" data-i18n="set.fsLarge">大きい</button>
       <button class="fs-btn" data-fs="2" data-i18n="set.fsXL">とくだい</button>
     </div>
+    <h2 class="sec-h" data-i18n="set.bgmHead">おんがく(BGM)</h2>
+    <div class="fs-row">
+      <button id="musicBtnA" class="fs-btn" data-i18n="set.bgmA">曲1(あたたかい)</button>
+      <button id="musicBtnB" class="fs-btn" data-i18n="set.bgmB">曲2(すんだ)</button>
+      <button id="musicBtnOff" class="fs-btn" data-i18n="set.bgmOff">ながさない</button>
+    </div>
+    <h2 class="sec-h" data-i18n="set.tapSound">タップ音</h2>
+    <div class="fs-row">
+      <button id="soundBtnOn" class="fs-btn" data-i18n="set.on">ON</button>
+      <button id="soundBtnOff" class="fs-btn" data-i18n="set.off">OFF</button>
+    </div>
+    <h2 class="sec-h" data-i18n="set.themeHead">がめんの色</h2>
+    <div class="fs-row">
+      <button id="themeBtnG" class="fs-btn" data-i18n="set.themeGreen">みどり</button>
+      <button id="themeBtnB" class="fs-btn" data-i18n="set.themeBlue">あお</button>
+    </div>
     <h2 class="sec-h" data-i18n="set.waterHead">水分の目標量(1日)</h2>
     <div id="water-goal-box" class="set-block"></div>
     <p class="hint" data-i18n="set.waterHint">はじめの1200mlは、厚生労働省の目安(1日に必要な水分2.5L=食事から約1.0L+体内で作られる約0.3L+飲み水約1.2L)のうち「飲み水」の量です。食事にふくまれる水分は入れずに、飲み物だけを数えてください。心臓や腎臓の病気などで水分の制限がある方は、お医者さん・看護師さんから言われた量に合わせて変えてください。</p>
@@ -127,6 +143,7 @@
 
 <div id="toast" class="toast hidden"></div>
 
+<script src="audio.js"></script>
 <script src="tap.js"></script>
 <script src="i18n.js"></script>
 <script src="app.js"></script>

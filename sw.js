@@ -4,11 +4,12 @@
    ・HTMLはnetwork-first(更新をすぐ反映・オフライン時はキャッシュ)
    ・その他(css/js/json/icon)はcache-first
    ・開発/検証用ファイル(_始まり)はキャッシュしない */
-const CACHE = 'okiroku-v1';
+const CACHE = 'okiroku-v2';
 const ASSETS = [
   './',
   './index.html',
   './style.css',
+  './audio.js',
   './app.js',
   './i18n.js',
   './tap.js',

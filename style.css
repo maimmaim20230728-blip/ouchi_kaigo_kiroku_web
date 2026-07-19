@@ -307,3 +307,23 @@ body.fs0{font-size:19px;} body.fs1{font-size:22px;} body.fs2{font-size:25px;}
 [dir="rtl"] .water-card{text-align:right;}
 [dir="rtl"] .ton-reason-btn{text-align:right;}
 [dir="rtl"] .num-label,[dir="rtl"] .step-label{text-align:right;}
+
+/* ============ v3.1 追加(画面の色・青テーマ) ============ */
+/* 変数上書き(本家 ouchi_kaigo_web と同じ青系統。ok/danger/accent/mizu は共通のまま) */
+body.theme-blue{
+  --brand:#5581bd; --brand-dark:#3f66a0;
+  --bg:#f0f4fa; --ink:#323a47; --muted:#7e8a9c; --line:#dae3f0;
+}
+/* 直書きの緑がかった背景を青系に置き換え(緑の取り残しを無くす) */
+body.theme-blue .show-table th,
+body.theme-blue .show-table th:first-child{background:#edf3f8;}
+body.theme-blue .tab.active{background:#edf3f8;}
+body.theme-blue .choice-btn{background:#edf3f8;}
+body.theme-blue .goto-set{background:#edf3f8;}
+body.theme-blue .step-btn{background:#edf3f8;}
+body.theme-blue .step-live{background:#edf3f8;}
+body.theme-blue .ton-reason-btn{background:#edf3f8;}
+body.theme-blue .water-bar{background:#dfe8f5;}
+body.theme-blue .seg-btn,
+body.theme-blue .ms-btn{background:#eef3fa;}
+body.theme-blue .mk{background:#eaeff7;}

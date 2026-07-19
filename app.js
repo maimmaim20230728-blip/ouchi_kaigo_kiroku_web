@@ -1,26 +1,8 @@
 /* おうち介護記録・そよぎ 試作v1
    ・記録は端末内(localStorage)のみ。追記型 entries=[{t,k,v,...}]
    ・項目はITEMSのデータ定義で完結。専用フロー(水分・トイレ・体温・血圧など)はk別に分岐
-   ・全ボタンはTap.bind(clickは使わない)。ユーザー入力のDOM反映はtextContentのみ(innerHTML禁止) */
-
-/* ---- 押下音(tap.jsが参照するSound。短いブリップのみ) ---- */
-const Sound = (() => {
-  let ctx = null;
-  function tap(){
-    try{
-      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
-      if(ctx.state === 'suspended') ctx.resume();
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.frequency.value = 830; g.gain.value = 0.05;
-      o.connect(g); g.connect(ctx.destination);
-      const t = ctx.currentTime;
-      g.gain.setValueAtTime(0.05, t);
-      g.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
-      o.start(t); o.stop(t + 0.07);
-    }catch(e){}
-  }
-  return { tap };
-})();
+   ・全ボタンはTap.bind(clickは使わない)。ユーザー入力のDOM反映はtextContentのみ(innerHTML禁止)
+   ・音(タップ音+BGM)は audio.js の Sound に一本化。script読込順: audio.js → tap.js → i18n.js → app.js */
 
 /* ---- しきい値(血圧・脈・BMI)。ヒロさん監修で数値差し替え前提のため1箇所に集約 ----
    血圧/脈: red = val>=rHi または val<yLoLo / yellow = yHi<=val<rHi または yLoLo<=val<=yLoHi */
@@ -74,11 +56,14 @@ const LS_EN = 'okiroku.entries', LS_PF = 'okiroku.prefs';
 function loadJSON(key, fb){ try{ const v = JSON.parse(localStorage.getItem(key)); return v == null ? fb : v; }catch(e){ return fb; } }
 function saveJSON(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
 let entries = loadJSON(LS_EN, []);
-let prefs = Object.assign({ fs:0, off:null, shownote:'', waterGoal:1200, height:null, showSpan:7 }, loadJSON(LS_PF, {}));
+let prefs = Object.assign({ fs:0, off:null, shownote:'', waterGoal:1200, height:null, showSpan:7, music:'a', sound:true, theme:'green' }, loadJSON(LS_PF, {}));
 if(!Array.isArray(prefs.off)) prefs.off = ITEMS.filter(i => !i.on).map(i => i.k);
 if(typeof prefs.waterGoal !== 'number') prefs.waterGoal = 1200;
 if(prefs.height === undefined) prefs.height = null;
 if([7,30,90].indexOf(prefs.showSpan) < 0) prefs.showSpan = 7;   // みせるの表示期間(7=1週間/30=1か月/90=3か月)
+if(['a','b','off'].indexOf(prefs.music) < 0) prefs.music = 'a';  // BGM(a=曲1あたたかい/b=曲2すんだ/off=ながさない)
+if(typeof prefs.sound !== 'boolean') prefs.sound = true;         // タップ音
+if(['green','blue'].indexOf(prefs.theme) < 0) prefs.theme = 'green';  // 画面の色
 function saveAll(){ saveJSON(LS_EN, entries); saveJSON(LS_PF, prefs); }
 
 /* ---- i18n(多言語) ----
@@ -1367,7 +1352,7 @@ function renderLangBox(){
 }
 function renderSet(){
   renderLangBox();
-  document.querySelectorAll('.fs-btn').forEach(b => b.classList.toggle('active', Number(b.dataset.fs) === prefs.fs));
+  document.querySelectorAll('.fs-btn[data-fs]').forEach(b => b.classList.toggle('active', Number(b.dataset.fs) === prefs.fs));
   renderWaterGoalBox();
   renderHeightBox();
   const box = document.getElementById('item-toggles');
@@ -1385,10 +1370,47 @@ function renderSet(){
     box.appendChild(row);
   });
 }
-document.querySelectorAll('.fs-btn').forEach(b => Tap.bind(b, () => {
+document.querySelectorAll('.fs-btn[data-fs]').forEach(b => Tap.bind(b, () => {
   prefs.fs = Number(b.dataset.fs); saveAll(); applyFs(); renderSet();
 }));
-function applyFs(){ document.body.className = 'fs' + prefs.fs; }
+/* fs のclassNameを丸ごと書くため、画面の色(theme-blue)も必ず一緒に付け直す */
+function applyFs(){ document.body.className = 'fs' + prefs.fs + (prefs.theme === 'blue' ? ' theme-blue' : ''); }
+
+/* ---- おんがく(BGM)/タップ音/がめんの色 ---- */
+function applyMusic(){
+  if(prefs.music === 'off'){
+    Sound.setBgmEnabled(false);
+  }else{
+    Sound.setBgmMode(prefs.music === 'b' ? 'disability' : 'elder');  // a=elder(あたたかい)/b=disability(すんだ)
+    Sound.setBgmEnabled(true);
+  }
+  const a = document.getElementById('musicBtnA'), b = document.getElementById('musicBtnB'), off = document.getElementById('musicBtnOff');
+  if(a) a.classList.toggle('active', prefs.music === 'a');
+  if(b) b.classList.toggle('active', prefs.music === 'b');
+  if(off) off.classList.toggle('active', prefs.music === 'off');
+}
+function applySound(){
+  Sound.setEnabled(prefs.sound);
+  const on = document.getElementById('soundBtnOn'), off = document.getElementById('soundBtnOff');
+  if(on) on.classList.toggle('active', prefs.sound);
+  if(off) off.classList.toggle('active', !prefs.sound);
+}
+function applyTheme(){
+  const blue = (prefs.theme === 'blue');
+  document.body.classList.toggle('theme-blue', blue);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if(meta && meta.setAttribute) meta.setAttribute('content', blue ? '#5581bd' : '#4a9d7f');
+  const g = document.getElementById('themeBtnG'), b = document.getElementById('themeBtnB');
+  if(g) g.classList.toggle('active', !blue);
+  if(b) b.classList.toggle('active', blue);
+}
+Tap.bind(document.getElementById('musicBtnA'),   () => { prefs.music = 'a';   saveAll(); applyMusic(); });
+Tap.bind(document.getElementById('musicBtnB'),   () => { prefs.music = 'b';   saveAll(); applyMusic(); });
+Tap.bind(document.getElementById('musicBtnOff'), () => { prefs.music = 'off'; saveAll(); applyMusic(); });
+Tap.bind(document.getElementById('soundBtnOn'),  () => { prefs.sound = true;  saveAll(); applySound(); });
+Tap.bind(document.getElementById('soundBtnOff'), () => { prefs.sound = false; saveAll(); applySound(); });
+Tap.bind(document.getElementById('themeBtnG'),   () => { prefs.theme = 'green'; saveAll(); applyTheme(); });
+Tap.bind(document.getElementById('themeBtnB'),   () => { prefs.theme = 'blue';  saveAll(); applyTheme(); });
 
 /* ---- バックアップ(ver2でエクスポート・ver1/2両対応でインポート) ---- */
 Tap.bind(document.getElementById('bk-export'), () => {
@@ -1411,15 +1433,18 @@ document.getElementById('bk-file').addEventListener('change', e => {
       const d = JSON.parse(r.result);
       if(d.app !== 'ouchi_kaigo_kiroku') throw new Error('different app');
       entries = Array.isArray(d.entries) ? d.entries : [];
-      prefs = Object.assign({ fs:0, off:[], shownote:'', waterGoal:1200, height:null, showSpan:7 }, d.prefs || {});
+      prefs = Object.assign({ fs:0, off:[], shownote:'', waterGoal:1200, height:null, showSpan:7, music:'a', sound:true, theme:'green' }, d.prefs || {});
       if(!Array.isArray(prefs.off)) prefs.off = ITEMS.filter(i => !i.on).map(i => i.k);
       if(typeof prefs.waterGoal !== 'number') prefs.waterGoal = 1200;
       if(prefs.height === undefined) prefs.height = null;
       if([7,30,90].indexOf(prefs.showSpan) < 0) prefs.showSpan = 7;
+      if(['a','b','off'].indexOf(prefs.music) < 0) prefs.music = 'a';
+      if(typeof prefs.sound !== 'boolean') prefs.sound = true;
+      if(['green','blue'].indexOf(prefs.theme) < 0) prefs.theme = 'green';
       migrateEntries(entries);   // ver1バックアップ(v文字列)ならコード化。v2は無変換で安全
       prefs.schema = 2;
       if(prefs.lang && SUPPORTED.indexOf(prefs.lang) >= 0) lang = prefs.lang;   // バックアップの言語設定を反映
-      saveAll(); applyFs(); applyLang();
+      saveAll(); applyFs(); applyTheme(); applySound(); applyMusic(); applyLang();
       toast(T('toast.imported'));
     }catch(err){ toast(T('toast.importFail')); }
   };
@@ -1457,6 +1482,9 @@ function setLang(code){
 
 /* ---- 起動 ---- */
 applyFs();
+applyTheme();     // 画面の色(meta theme-color連動・ボタン状態)
+applySound();     // タップ音ON/OFF
+applyMusic();     // BGM(実際の再生開始は最初のタップから=自動再生制限対応)
 applyLang();
 
 /* ---- Service Worker 登録(https / localhost のみ・オフライン対応。姉妹アプリouchi_kaigo_webと同方式) ---- */

@@ -136,7 +136,7 @@ sandbox.window = sandbox;
 sandbox.globalThis = sandbox;
 
 /* ---- 起動 ---- */
-const src = ['./tap.js', './i18n.js', './app.js'].map(f => fs.readFileSync(f, 'utf8')).join('\n');
+const src = ['./audio.js', './tap.js', './i18n.js', './app.js'].map(f => fs.readFileSync(f, 'utf8')).join('\n');
 vm.createContext(sandbox);
 const fails = [];
 function check(name, cond){ if(cond) console.log('  OK  ' + name); else { console.log('  NG  ' + name); fails.push(name); } }
@@ -247,6 +247,45 @@ check('みせる7日表に 🍀/わたしのきぶん が無い', !t7.includes('
 check('みせる30日表に 🍀/わたしのきぶん が無い', !t30.includes('🍀') && !t30.includes('わたしのきぶん'));
 check('みせる週表(3か月)に 🍀/わたしのきぶん が無い', !tw.includes('🍀') && !tw.includes('わたしのきぶん'));
 check('りれき日計には 🍀 が出る(こちらは表示する)', byId('hist-sum').textContent.length >= 0 && (sandbox.renderHist(), byId('hist-sum').textContent.includes('🍀')));
+
+/* ---- [v3.1] Sound一本化 / 画面の色 / おんがく / タップ音 ---- */
+console.log('[v3.1] Sound一本化・画面の色・おんがく・タップ音');
+sandbox.setLang('ja');
+
+/* Sound一本化: audio.js の Sound がタップ音+BGM APIを持ち、メトロノームは除去されている */
+let soundProbe = null;
+try{ soundProbe = vm.runInContext('typeof Sound!=="undefined" ? {tap:typeof Sound.tap, mode:typeof Sound.setBgmMode, en:typeof Sound.setBgmEnabled, playing:typeof Sound.bgmPlaying, metro:typeof Sound.metroStart} : null', sandbox); }catch(_){}
+check('Sound一本化: audio.js の Sound(tap+BGM API)有効', !!soundProbe && soundProbe.tap === 'function' && soundProbe.mode === 'function' && soundProbe.en === 'function');
+check('Sound一本化: メトロノーム(metro)は除去済み', !!soundProbe && soundProbe.metro === 'undefined');
+
+/* 画面の色: あお→body.theme-blue付与+prefs保存 / みどり→解除 */
+const body = documentStub.body;
+check('初期テーマは みどり(theme-blue が付かない)', !body.classList.contains('theme-blue'));
+tap(byId('themeBtnB'));
+check('がめんの色=あお タップで body に theme-blue', body.classList.contains('theme-blue'));
+check('あお選択で prefs.theme=blue が保存される', JSON.parse(store['okiroku.prefs']).theme === 'blue');
+check('themeBtnB が active・themeBtnG が非active', byId('themeBtnB').classList.contains('active') && !byId('themeBtnG').classList.contains('active'));
+tap(byId('themeBtnG'));
+check('がめんの色=みどり タップで theme-blue が外れる', !body.classList.contains('theme-blue'));
+check('みどり選択で prefs.theme=green が保存される', JSON.parse(store['okiroku.prefs']).theme === 'green');
+
+/* おんがく(BGM): 曲2→b / ながさない→off / 曲1→a が prefs とボタンに反映 */
+tap(byId('musicBtnB'));
+check('おんがく=曲2 で prefs.music=b・musicBtnB が active', JSON.parse(store['okiroku.prefs']).music === 'b' && byId('musicBtnB').classList.contains('active'));
+tap(byId('musicBtnOff'));
+check('おんがく=ながさない で prefs.music=off・musicBtnOff が active', JSON.parse(store['okiroku.prefs']).music === 'off' && byId('musicBtnOff').classList.contains('active'));
+tap(byId('musicBtnA'));
+check('おんがく=曲1 で prefs.music=a・他ボタンは非active', JSON.parse(store['okiroku.prefs']).music === 'a' && byId('musicBtnA').classList.contains('active') && !byId('musicBtnOff').classList.contains('active'));
+
+/* タップ音 ON/OFF */
+tap(byId('soundBtnOff'));
+check('タップ音OFF で prefs.sound=false・soundBtnOff が active', JSON.parse(store['okiroku.prefs']).sound === false && byId('soundBtnOff').classList.contains('active'));
+tap(byId('soundBtnOn'));
+check('タップ音ON で prefs.sound=true・soundBtnOn が active', JSON.parse(store['okiroku.prefs']).sound === true && byId('soundBtnOn').classList.contains('active'));
+
+/* 新i18nキーが引ける(欠けるとキー名が画面に出る) */
+const I18Nsm = sandbox.OKIROKU_I18N;
+check('新i18n set.bgmHead/themeBlue/tapSound が ja/en/ar で引ける', !!(I18Nsm && I18Nsm.ja.set.bgmHead && I18Nsm.en.set.themeBlue && I18Nsm.ar.set.tapSound));
 
 console.log('');
 if(fails.length){ console.log('SMOKE NG: ' + fails.length + '件失敗'); process.exit(1); }
