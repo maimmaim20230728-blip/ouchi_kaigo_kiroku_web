@@ -1,0 +1,21 @@
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "miniapp": {
+    "version": "1",
+    "name": "おうち介護記録・そよぎ",
+    "iconUrl": "https://ouchi-kaigo-kiroku-web.vercel.app/icons/icon-512.png",
+    "homeUrl": "https://ouchi-kaigo-kiroku-web.vercel.app/",
+    "imageUrl": "https://ouchi-kaigo-kiroku-web.vercel.app/icons/fc-card-3x2.png",
+    "buttonTitle": "🍃 ひらく / Open",
+    "splashImageUrl": "https://ouchi-kaigo-kiroku-web.vercel.app/icons/icon-512.png",
+    "splashBackgroundColor": "#4a9d7f",
+    "subtitle": "毎日の介護をかんたん記録",
+    "description": "毎日の介護の記録を、タップだけでかんたんに残せるアプリ。おくすり・水分・食事・トイレ・体温・血圧などをまとめて記録でき、受診のときに医師や看護師へそのまま見せられます。無料・広告なし・登録不要・オフラインOK・12言語。",
+    "primaryCategory": "health-fitness",
+    "tags": ["care", "caregiving", "welfare", "family", "soyogi"]
+  }
+}

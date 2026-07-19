@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4a9d7f">
+<title>おうち介護記録・そよぎ</title>
+<meta name="description" content="家庭で介護をするご家族のための、毎日の様子をかんたんに記録できるアプリ。無料・広告なし・オフライン・12言語。">
+<!-- OGP / X（Twitter）リンクカード -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="おうち介護記録・そよぎ">
+<meta property="og:description" content="毎日の介護の記録を、タップだけでかんたんに。おくすり・水分・食事・トイレ・体温・血圧などをまとめて残せて、受診のとき医師や看護師に見せられます。無料・広告なし・オフライン（12言語）。">
+<meta property="og:url" content="https://ouchi-kaigo-kiroku-web.vercel.app/">
+<meta property="og:image" content="https://ouchi-kaigo-kiroku-web.vercel.app/icons/fc-card-3x2.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ouchi-kaigo-kiroku-web.vercel.app/icons/fc-card-3x2.png">
+<!-- Farcaster Mini App 埋め込み（タイムラインで画像＋ボタン→タップで起動） -->
+<meta name="fc:miniapp" content='{"version":"1","imageUrl":"https://ouchi-kaigo-kiroku-web.vercel.app/icons/fc-card-3x2.png","button":{"title":"🍃 ひらく / Open","action":{"type":"launch_miniapp","name":"おうち介護記録・そよぎ","url":"https://ouchi-kaigo-kiroku-web.vercel.app/","splashImageUrl":"https://ouchi-kaigo-kiroku-web.vercel.app/icons/icon-512.png","splashBackgroundColor":"#4a9d7f"}}}' />
+<!-- 旧クライアント/バリデータ互換の fc:frame 併記（中身同一） -->
+<meta name="fc:frame" content='{"version":"1","imageUrl":"https://ouchi-kaigo-kiroku-web.vercel.app/icons/fc-card-3x2.png","button":{"title":"🍃 ひらく / Open","action":{"type":"launch_frame","name":"おうち介護記録・そよぎ","url":"https://ouchi-kaigo-kiroku-web.vercel.app/","splashImageUrl":"https://ouchi-kaigo-kiroku-web.vercel.app/icons/icon-512.png","splashBackgroundColor":"#4a9d7f"}}}' />
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="fs0">
+<header id="hd">
+  <div id="hd-title"><span data-i18n="app.name">おうち介護記録・そよぎ</span></div>
+</header>
+
+<main id="main">
+  <!-- きょう -->
+  <section id="scr-today" class="screen">
+    <div id="today-date" class="date-line"></div>
+    <div id="item-grid" class="grid"></div>
+    <div id="goto-set" class="goto-set"></div>
+    <h2 class="sec-h" data-i18n="today.records">きょうの記録</h2>
+    <div id="today-list" class="loglist"></div>
+  </section>
+
+  <!-- りれき -->
+  <section id="scr-hist" class="screen hidden">
+    <div class="date-nav">
+      <button id="hist-prev" class="nav-btn" data-i18n="hist.prev">◀ 前の日</button>
+      <div id="hist-date" class="date-line" style="margin:0;"></div>
+      <button id="hist-next" class="nav-btn" data-i18n="hist.next">次の日 ▶</button>
+    </div>
+    <div id="hist-sum" class="daysum"></div>
+    <div id="hist-list" class="loglist"></div>
+  </section>
+
+  <!-- みせる -->
+  <section id="scr-show" class="screen hidden">
+    <h2 class="sec-h" data-i18n="show.noteHead">つたえたいこと・心配なこと</h2>
+    <textarea id="show-note" rows="3" data-i18n-ph="show.notePlaceholder" placeholder="受診や面談で伝えたいことを、ここにメモしておけます"></textarea>
+    <h2 class="sec-h" id="show-span-title">この1週間</h2>
+    <div class="fs-row show-span-row">
+      <button class="span-btn" data-span="7" data-i18n="show.span7btn">1週間</button>
+      <button class="span-btn" data-span="30" data-i18n="show.span30btn">1か月</button>
+      <button class="span-btn" data-span="90" data-i18n="show.span90btn">3か月</button>
+    </div>
+    <div id="show-table-wrap"></div>
+    <p class="hint" data-i18n="show.hint">この画面をそのまま、お医者さん・看護師さん・ケアマネさんに見せてください。上の表は記録から自動で作られます。 記録じたいはずっと残ります。むかしの日は「りれき」でさかのぼれます。</p>
+  </section>
+
+  <!-- せってい -->
+  <section id="scr-set" class="screen hidden">
+    <h2 class="sec-h" data-i18n="set.langHead">🌐 ことば / Language</h2>
+    <div id="lang-box" class="lang-box"></div>
+    <h2 class="sec-h" data-i18n="set.fontHead">文字の大きさ</h2>
+    <div class="fs-row">
+      <button class="fs-btn" data-fs="0" data-i18n="set.fsNormal">ふつう</button>
+      <button class="fs-btn" data-fs="1" data-i18n="set.fsLarge">大きい</button>
+      <button class="fs-btn" data-fs="2" data-i18n="set.fsXL">とくだい</button>
+    </div>
+    <h2 class="sec-h" data-i18n="set.waterHead">水分の目標量(1日)</h2>
+    <div id="water-goal-box" class="set-block"></div>
+    <p class="hint" data-i18n="set.waterHint">はじめの1200mlは、厚生労働省の目安(1日に必要な水分2.5L=食事から約1.0L+体内で作られる約0.3L+飲み水約1.2L)のうち「飲み水」の量です。食事にふくまれる水分は入れずに、飲み物だけを数えてください。心臓や腎臓の病気などで水分の制限がある方は、お医者さん・看護師さんから言われた量に合わせて変えてください。</p>
+    <h2 class="sec-h" data-i18n="set.heightHead">身長(体重のBMI計算に使います)</h2>
+    <div id="height-box" class="set-block"></div>
+    <p class="hint" data-i18n="set.heightHint">身長を入れると、体重の記録にBMIのめやすが出ます。空欄にすると判定は出ません。</p>
+    <h2 class="sec-h" data-i18n="set.itemsHead">記録するこうもく</h2>
+    <div id="item-toggles"></div>
+    <h2 class="sec-h" data-i18n="set.backupHead">バックアップ</h2>
+    <div class="fs-row">
+      <button id="bk-export" class="set-btn" data-i18n="set.export">記録を書き出す</button>
+      <button id="bk-import" class="set-btn" data-i18n="set.import">記録を読み込む</button>
+    </div>
+    <input type="file" id="bk-file" accept="application/json" hidden>
+    <p class="hint" data-i18n="set.backupHint">記録はこの端末の中だけに保存されます。どこにも送信されません。機種変更のときは「書き出す」で保存したファイルを新しい端末で「読み込む」してください。</p>
+    <p class="credit"><a class="credit-link" href="https://soyogi.hp.peraichi.com/top" target="_blank" rel="noopener" data-i18n="set.credit">アプリ開発：介護と支援の相談どころ　そよぎ</a></p>
+    <p class="credit-ver" data-i18n="set.ver">試作版 v2</p>
+  </section>
+</main>
+
+<nav id="tabbar">
+  <button class="tab active" data-scr="today">✏️<span data-i18n="tab.today">きょう</span></button>
+  <button class="tab" data-scr="hist">📅<span data-i18n="tab.hist">りれき</span></button>
+  <button class="tab" data-scr="show">📋<span data-i18n="tab.show">みせる</span></button>
+  <button class="tab" data-scr="set">⚙️<span data-i18n="tab.set">せってい</span></button>
+</nav>
+
+<!-- 選択シート -->
+<div id="sheet" class="overlay hidden">
+  <div class="sheet-box">
+    <div id="sheet-title" class="sheet-title"></div>
+    <div id="sheet-choices"></div>
+    <button id="sheet-cancel" class="cancel-btn" data-i18n="common.cancel">やめる</button>
+  </div>
+</div>
+
+<!-- 数値/メモ入力 -->
+<div id="modal" class="overlay hidden">
+  <div class="sheet-box">
+    <div id="modal-title" class="sheet-title"></div>
+    <div id="modal-num-label" class="num-label hidden"></div>
+    <input id="modal-num" type="number" step="0.1" inputmode="decimal" class="num-in hidden">
+    <div id="modal-num2-label" class="num-label hidden"></div>
+    <input id="modal-num2" type="number" step="1" inputmode="numeric" class="num-in hidden">
+    <textarea id="modal-text" rows="3" class="text-in hidden"></textarea>
+    <div class="fs-row">
+      <button id="modal-ok" class="ok-btn" data-i18n="common.save">きろくする</button>
+      <button id="modal-cancel" class="cancel-btn" data-i18n="common.cancel">やめる</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="tap.js"></script>
+<script src="i18n.js"></script>
+<script src="app.js"></script>
+<!-- Farcaster Mini App SDK: ホスト内なら起動準備完了を通知。通常のWeb/PWA・オフラインでは無害（失敗は握りつぶす）。 -->
+<script type="module">
+  try {
+    const { sdk } = await import("https://esm.sh/@farcaster/miniapp-sdk");
+    await sdk.actions.ready();
+  } catch (e) { /* Farcaster外／オフラインでは何もしない */ }
+</script>
+</body>
+</html>
