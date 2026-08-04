@@ -5,19 +5,27 @@
   --bg:#f2f7f3; --card:#fff; --ink:#333c36; --muted:#7f8d84; --line:#dbe8de;
   --ok:#2e8b57; --danger:#c0392b; --danger-bg:#fdf0ee;
   --accent:#e8a13d; --mizu:#5bb7c9;
+  /* 下タブの高さ。app.js が実測値で上書きする(文字の大きさ・言語・端末の下部インセットで変わるため)。
+     ここの値はJSが動く前のフォールバック(84px + ナビゲーションバー/ジェスチャーバーの分) */
+  --tabbar-h:calc(84px + env(safe-area-inset-bottom));
 }
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
 html,body{margin:0; padding:0;}
 body{
   font-family:"Hiragino Sans","Yu Gothic UI","Meiryo",sans-serif;
   background:var(--bg); color:var(--ink);
-  padding-bottom:84px;
+  /* 下タブに隠れないよう「CSSだけで安全な下限」と「実測値+10px」の大きい方を採る。
+     JSの計測が遅れても・小さく出ても、下限を割らない */
+  padding-bottom:max(calc(84px + env(safe-area-inset-bottom)), calc(var(--tabbar-h) + 10px));
 }
 body.fs0{font-size:19px;} body.fs1{font-size:22px;} body.fs2{font-size:25px;}
 
 #hd{
   background:var(--brand); color:#fff;
-  padding:12px 14px; position:sticky; top:0; z-index:5;
+  /* 上は時計や電池アイコン(ステータスバー)と重ならないよう、その分だけ下げる */
+  padding:calc(12px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right))
+          12px calc(14px + env(safe-area-inset-left));
+  position:sticky; top:0; z-index:5;
 }
 #hd-title{font-weight:700; font-size:1.0em;}
 .proto{
@@ -25,7 +33,11 @@ body.fs0{font-size:19px;} body.fs1{font-size:22px;} body.fs2{font-size:25px;}
   font-size:.7em; padding:2px 8px; margin-left:6px; vertical-align:middle;
 }
 
-#main{padding:12px; max-width:640px; margin:0 auto;}
+#main{
+  /* 横は画面の丸みやノッチ(横向き時)に食われないよう最低12px確保 */
+  padding:12px max(12px, env(safe-area-inset-right)) 12px max(12px, env(safe-area-inset-left));
+  max-width:640px; margin:0 auto;
+}
 .screen.hidden{display:none;}
 .sec-h{
   font-size:.9em; color:var(--brand-dark); margin:18px 0 8px;
@@ -97,20 +109,51 @@ body.fs0{font-size:19px;} body.fs1{font-size:22px;} body.fs2{font-size:25px;}
 .fs-btn.active{background:var(--brand); border-color:var(--brand); color:#fff; font-weight:700;}
 .tgl-row{
   background:var(--card); border:1px solid var(--line); border-radius:12px;
-  padding:10px 12px; display:flex; align-items:center; gap:10px; margin-bottom:8px; cursor:pointer;
+  padding:10px 8px 10px 4px; display:flex; align-items:center; gap:6px; margin-bottom:8px;
 }
-.tgl-row .lb{flex:1;}
+.tgl-row .lb{flex:1; min-width:0; overflow-wrap:anywhere;}
 .tgl-pill{
   border-radius:999px; padding:4px 14px; font-size:.8em; font-weight:700;
   background:#eee; color:var(--muted);
 }
 .tgl-row.on .tgl-pill{background:var(--brand); color:#fff;}
 
+/* ============ v1.1 追加(こうもくのならびかえ) ============ */
+/* 文字の部分だけを ON/OFF の当たり判定にする(△▽と二重に反応させないため) */
+.tgl-hit{
+  flex:1; min-width:0; display:flex; align-items:center; gap:10px;
+  min-height:44px; cursor:pointer; user-select:none;
+}
+/* つまんで動かす取っ手。touch-action:none で「ドラッグ中に画面が動く」のを防ぐ */
+.ord-grip{
+  flex-shrink:0; min-width:40px; min-height:44px;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--muted); font-size:1.2em; cursor:grab;
+  user-select:none; touch-action:none;
+}
+.ord-btns{display:flex; gap:6px; flex-shrink:0;}
+.ord-btn{
+  background:#ecf5ef; border:2px solid var(--line); border-radius:12px;
+  /* 🔴 flex-shrink:0 が無いと文字が大きい時に44pxを下回るまで潰される */
+  flex-shrink:0; min-width:44px; min-height:44px; padding:4px 6px; font-size:.95em; font-weight:700;
+  color:var(--brand-dark); cursor:pointer; user-select:none;
+  display:flex; align-items:center; justify-content:center;
+}
+/* 端の項目は押しても動かないので薄く見せる(押せてしまっても何も起きない) */
+.ord-btn.disabled{opacity:.3;}
+/* 動かしている最中の行 */
+.tgl-row.dragging{
+  border-color:var(--brand); border-width:2px;
+  box-shadow:0 3px 10px rgba(0,0,0,.16); opacity:.92;
+}
+
 /* タブバー */
 #tabbar{
   position:fixed; left:0; right:0; bottom:0; z-index:10;
   background:var(--card); border-top:1px solid var(--line);
-  display:flex; padding:4px 4px calc(4px + env(safe-area-inset-bottom));
+  display:flex;
+  padding:4px max(4px, env(safe-area-inset-right))
+          calc(4px + env(safe-area-inset-bottom)) max(4px, env(safe-area-inset-left));
 }
 .tab{
   flex:1; background:none; border:none; border-radius:12px;
@@ -127,7 +170,11 @@ body.fs0{font-size:19px;} body.fs1{font-size:22px;} body.fs2{font-size:25px;}
 .overlay.hidden{display:none;}
 .sheet-box{
   background:var(--card); border-radius:20px 20px 0 0;
-  width:100%; max-width:640px; padding:16px 16px calc(16px + env(safe-area-inset-bottom));
+  width:100%; max-width:640px;
+  padding:16px max(16px, env(safe-area-inset-right))
+          calc(16px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  /* 選択肢が多い/文字がとくだいの時に画面からはみ出して下が押せなくなるのを防ぐ */
+  max-height:calc(100% - env(safe-area-inset-top) - 16px); overflow-y:auto;
 }
 .sheet-title{font-weight:700; margin-bottom:12px; text-align:center;}
 #sheet-choices{display:flex; flex-direction:column; gap:10px; margin-bottom:12px;}
@@ -153,7 +200,8 @@ body.fs0{font-size:19px;} body.fs1{font-size:22px;} body.fs2{font-size:25px;}
 
 /* トースト */
 .toast{
-  position:fixed; left:50%; bottom:96px; transform:translateX(-50%);
+  position:fixed; left:50%; transform:translateX(-50%);
+  bottom:max(calc(96px + env(safe-area-inset-bottom)), calc(var(--tabbar-h) + 12px));
   background:var(--brand-dark); color:#fff; border-radius:999px;
   padding:10px 22px; font-weight:700; z-index:30; white-space:nowrap;
 }
@@ -262,7 +310,9 @@ body.fs0{font-size:19px;} body.fs1{font-size:22px;} body.fs2{font-size:25px;}
 /* 画像 全画面 */
 .img-full{
   position:fixed; inset:0; background:rgba(0,0,0,.9); z-index:40;
-  display:flex; align-items:center; justify-content:center; padding:16px;
+  display:flex; align-items:center; justify-content:center;
+  padding:max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+          max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
 }
 .img-full img{max-width:100%; max-height:100%; border-radius:8px;}
 
@@ -323,6 +373,7 @@ body.theme-blue .goto-set{background:#edf3f8;}
 body.theme-blue .step-btn{background:#edf3f8;}
 body.theme-blue .step-live{background:#edf3f8;}
 body.theme-blue .ton-reason-btn{background:#edf3f8;}
+body.theme-blue .ord-btn{background:#edf3f8;}
 body.theme-blue .water-bar{background:#dfe8f5;}
 body.theme-blue .seg-btn,
 body.theme-blue .ms-btn{background:#eef3fa;}

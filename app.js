@@ -56,7 +56,7 @@ const LS_EN = 'okiroku.entries', LS_PF = 'okiroku.prefs';
 function loadJSON(key, fb){ try{ const v = JSON.parse(localStorage.getItem(key)); return v == null ? fb : v; }catch(e){ return fb; } }
 function saveJSON(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
 let entries = loadJSON(LS_EN, []);
-let prefs = Object.assign({ fs:0, off:null, shownote:'', waterGoal:1200, height:null, showSpan:7, music:'a', sound:true, theme:'green' }, loadJSON(LS_PF, {}));
+let prefs = Object.assign({ fs:0, off:null, shownote:'', waterGoal:1200, height:null, showSpan:7, music:'a', sound:true, theme:'green', order:null }, loadJSON(LS_PF, {}));
 if(!Array.isArray(prefs.off)) prefs.off = ITEMS.filter(i => !i.on).map(i => i.k);
 if(typeof prefs.waterGoal !== 'number') prefs.waterGoal = 1200;
 if(prefs.height === undefined) prefs.height = null;
@@ -64,6 +64,21 @@ if([7,30,90].indexOf(prefs.showSpan) < 0) prefs.showSpan = 7;   // みせるの�
 if(['a','b','off'].indexOf(prefs.music) < 0) prefs.music = 'a';  // BGM(a=曲1あたたかい/b=曲2すんだ/off=ながさない)
 if(typeof prefs.sound !== 'boolean') prefs.sound = true;         // タップ音
 if(['green','blue'].indexOf(prefs.theme) < 0) prefs.theme = 'green';  // 画面の色
+
+/* ---- こうもくのならび順 ----
+   prefs.order は項目キーの並び。保存値が壊れていても・アプリ更新で項目が増減しても
+   必ず「ITEMSの全キーが重複なく1回ずつ」になるよう正規化する(欠けたキーは末尾に足す)。 */
+function normalizeOrder(){
+  const known = ITEMS.map(i => i.k);
+  const src = Array.isArray(prefs.order) ? prefs.order : [];
+  const ord = [];
+  src.forEach(k => { if(known.indexOf(k) >= 0 && ord.indexOf(k) < 0) ord.push(k); });
+  known.forEach(k => { if(ord.indexOf(k) < 0) ord.push(k); });   // 新しく増えた項目は末尾へ
+  prefs.order = ord;
+}
+normalizeOrder();
+function orderedItems(){ return prefs.order.map(k => ITEM[k]); }
+
 function saveAll(){ saveJSON(LS_EN, entries); saveJSON(LS_PF, prefs); }
 
 /* ---- i18n(多言語) ----
@@ -893,7 +908,7 @@ const HANDLERS = {
 function onItemTap(item){ const h = HANDLERS[item.k]; if(h) h(); }
 
 /* ---- きょう ---- */
-function activeItems(){ return ITEMS.filter(i => !prefs.off.includes(i.k)); }
+function activeItems(){ return orderedItems().filter(i => !prefs.off.includes(i.k)); }
 function renderGrid(){
   const grid = document.getElementById('item-grid');
   grid.textContent = '';
@@ -1355,26 +1370,148 @@ function renderSet(){
   document.querySelectorAll('.fs-btn[data-fs]').forEach(b => b.classList.toggle('active', Number(b.dataset.fs) === prefs.fs));
   renderWaterGoalBox();
   renderHeightBox();
+  renderItemToggles();
+}
+
+/* ---- 記録するこうもく: ON/OFF + ならびかえ(△▽ボタン / ≡ドラッグ) ----
+   ・行の左半分(≡以外の文字の部分)をタップ = ON/OFF。ボタンを入れ子にすると
+     行のタップと二重に反応するため、当たり判定は .tgl-hit に分けている
+   ・△▽は片手・手がふるえる方でも確実に動かせる主役の操作。ドラッグは補助 */
+function renderItemToggles(){
   const box = document.getElementById('item-toggles');
+  if(!box) return;
   box.textContent = '';
-  ITEMS.forEach(item => {
-    const row = el('div', 'tgl-row' + (!prefs.off.includes(item.k) ? ' on' : ''));
+  const list = orderedItems();
+  list.forEach((item, idx) => {
     const on = !prefs.off.includes(item.k);
-    row.appendChild(el('span', 'lb', item.icon + ' ' + labelFor(item.k)));
-    row.appendChild(el('span', 'tgl-pill', on ? T('set.on') : T('set.off')));
-    Tap.bind(row, () => {
+    const row = el('div', 'tgl-row' + (on ? ' on' : '') + (dragKey === item.k ? ' dragging' : ''));
+    row.dataset.k = item.k;
+
+    /* ≡ つまんで動かす取っ手(touch-action:none で画面のスクロールと取り合わない) */
+    const grip = el('span', 'ord-grip', '≡');
+    grip.addEventListener('pointerdown', e => onDragStart(e, item.k));
+    row.appendChild(grip);
+
+    /* 文字の部分 = ON/OFF の当たり判定 */
+    const hit = el('span', 'tgl-hit');
+    hit.appendChild(el('span', 'lb', item.icon + ' ' + labelFor(item.k)));
+    hit.appendChild(el('span', 'tgl-pill', on ? T('set.on') : T('set.off')));
+    Tap.bind(hit, () => {
       if(prefs.off.includes(item.k)) prefs.off = prefs.off.filter(x => x !== item.k);
       else prefs.off.push(item.k);
-      saveAll(); renderSet(); renderGrid();
+      saveAll(); renderItemToggles(); renderGrid();
     });
+    row.appendChild(hit);
+
+    /* △上へ / ▽下へ(端では押しても動かないので薄く見せる) */
+    const btns = el('span', 'ord-btns');
+    const up   = el('button', 'ord-btn' + (idx === 0 ? ' disabled' : ''), '△');
+    const down = el('button', 'ord-btn' + (idx === list.length - 1 ? ' disabled' : ''), '▽');
+    up.setAttribute('aria-label', T('set.moveUp'));
+    down.setAttribute('aria-label', T('set.moveDown'));
+    up.setAttribute('title', T('set.moveUp'));
+    down.setAttribute('title', T('set.moveDown'));
+    Tap.bind(up,   () => moveItem(item.k, -1));
+    Tap.bind(down, () => moveItem(item.k, +1));
+    btns.appendChild(up); btns.appendChild(down);
+    row.appendChild(btns);
+
     box.appendChild(row);
   });
+}
+
+/* 1つ上/下へ入れ替える。端なら何もしない(押しても壊れない) */
+function moveItem(k, dir){
+  const arr = prefs.order.slice();
+  const i = arr.indexOf(k), j = i + dir;
+  if(i < 0 || j < 0 || j >= arr.length) return false;
+  arr[i] = arr[j]; arr[j] = k;
+  prefs.order = arr;
+  saveAll(); renderItemToggles(); renderGrid();
+  return true;
+}
+
+/* 並び順をつくった時の順(ITEMSの定義順)に戻す */
+function resetOrder(){
+  prefs.order = null; normalizeOrder();
+  saveAll(); renderItemToggles(); renderGrid();
+  toast(T('toast.orderReset'));
+}
+
+/* ---- ≡ のドラッグ並びかえ ----
+   setPointerCapture は使わない(iOS Safariで pointerup が届かなくなる既知問題・tap.js参照)。
+   代わりに document 側で move/up を拾う。 */
+let dragKey = null;
+function onDragStart(e, k){
+  if(!e.isPrimary) return;
+  dragKey = k;
+  if(e.preventDefault) e.preventDefault();   // 取っ手から始まる選択/スクロールを止める
+  renderItemToggles();
+}
+function onDragMove(e){
+  if(dragKey == null) return;
+  if(e.preventDefault) e.preventDefault();
+  const box = document.getElementById('item-toggles');
+  if(!box) return;
+  const rows = Array.prototype.slice.call(box.children);
+  if(!rows.length) return;
+  const y = e.clientY;
+  let target = -1;
+  for(let i = 0; i < rows.length; i++){
+    const r = rows[i].getBoundingClientRect();
+    if(y >= r.top && y <= r.bottom){ target = i; break; }
+  }
+  if(target < 0){   // 一覧の外まで動かしたら先頭/末尾に寄せる
+    if(y < rows[0].getBoundingClientRect().top) target = 0;
+    else if(y > rows[rows.length - 1].getBoundingClientRect().bottom) target = rows.length - 1;
+    else return;
+  }
+  const arr = prefs.order.slice();
+  const cur = arr.indexOf(dragKey);
+  if(cur < 0 || cur === target) return;
+  arr.splice(cur, 1); arr.splice(target, 0, dragKey);
+  prefs.order = arr;
+  renderItemToggles();   // 動かしている最中も並びが見える
+}
+function onDragEnd(){
+  if(dragKey == null) return;
+  dragKey = null;
+  saveAll(); renderItemToggles(); renderGrid();
+}
+if(typeof document !== 'undefined' && document.addEventListener){
+  document.addEventListener('pointermove', onDragMove, { passive:false });
+  document.addEventListener('pointerup', onDragEnd);
+  document.addEventListener('pointercancel', onDragEnd);
 }
 document.querySelectorAll('.fs-btn[data-fs]').forEach(b => Tap.bind(b, () => {
   prefs.fs = Number(b.dataset.fs); saveAll(); applyFs(); renderSet();
 }));
 /* fs のclassNameを丸ごと書くため、画面の色(theme-blue)も必ず一緒に付け直す */
-function applyFs(){ document.body.className = 'fs' + prefs.fs + (prefs.theme === 'blue' ? ' theme-blue' : ''); }
+function applyFs(){
+  document.body.className = 'fs' + prefs.fs + (prefs.theme === 'blue' ? ' theme-blue' : '');
+  applyTabbarSpace();   // 文字を大きくするとタブも高くなる → 下余白を測り直す
+}
+
+/* ---- 下タブの高さを実測して本文の下余白に反映 ----
+   タブバーの高さは「文字の大きさ」「言語(ラベルの折り返し)」「端末の下部インセット
+   (ナビゲーションバー/ジェスチャーバー)」で変わる。CSSの固定値だと足りず、
+   みせるの説明文などがタブバーに隠れて最後まで読めなくなるため実測値を使う。 */
+function applyTabbarSpace(){
+  const bar = document.getElementById('tabbar');
+  const st = document.documentElement && document.documentElement.style;
+  if(!bar || !bar.getBoundingClientRect || !st || !st.setProperty) return;
+  const h = Math.ceil(bar.getBoundingClientRect().height);
+  if(h > 0) st.setProperty('--tabbar-h', h + 'px');
+}
+/* タブバーの実寸が変わった瞬間に測り直す。
+   フォントの読み込み・画面回転・文字サイズ変更のどれで変わっても取りこぼさないよう、
+   イベント頼みではなく ResizeObserver で箱そのものを見張る(非対応環境は下のイベントで代替)。 */
+function watchTabbarSpace(){
+  const bar = document.getElementById('tabbar');
+  if(!bar || typeof ResizeObserver === 'undefined') return false;
+  try{ new ResizeObserver(applyTabbarSpace).observe(bar); return true; }
+  catch(_){ return false; }
+}
 
 /* ---- おんがく(BGM)/タップ音/がめんの色 ---- */
 function applyMusic(){
@@ -1409,6 +1546,7 @@ Tap.bind(document.getElementById('musicBtnB'),   () => { prefs.music = 'b';   sa
 Tap.bind(document.getElementById('musicBtnOff'), () => { prefs.music = 'off'; saveAll(); applyMusic(); });
 Tap.bind(document.getElementById('soundBtnOn'),  () => { prefs.sound = true;  saveAll(); applySound(); });
 Tap.bind(document.getElementById('soundBtnOff'), () => { prefs.sound = false; saveAll(); applySound(); });
+Tap.bind(document.getElementById('order-reset'), () => resetOrder());
 Tap.bind(document.getElementById('themeBtnG'),   () => { prefs.theme = 'green'; saveAll(); applyTheme(); });
 Tap.bind(document.getElementById('themeBtnB'),   () => { prefs.theme = 'blue';  saveAll(); applyTheme(); });
 
@@ -1433,7 +1571,7 @@ document.getElementById('bk-file').addEventListener('change', e => {
       const d = JSON.parse(r.result);
       if(d.app !== 'ouchi_kaigo_kiroku') throw new Error('different app');
       entries = Array.isArray(d.entries) ? d.entries : [];
-      prefs = Object.assign({ fs:0, off:[], shownote:'', waterGoal:1200, height:null, showSpan:7, music:'a', sound:true, theme:'green' }, d.prefs || {});
+      prefs = Object.assign({ fs:0, off:[], shownote:'', waterGoal:1200, height:null, showSpan:7, music:'a', sound:true, theme:'green', order:null }, d.prefs || {});
       if(!Array.isArray(prefs.off)) prefs.off = ITEMS.filter(i => !i.on).map(i => i.k);
       if(typeof prefs.waterGoal !== 'number') prefs.waterGoal = 1200;
       if(prefs.height === undefined) prefs.height = null;
@@ -1441,6 +1579,7 @@ document.getElementById('bk-file').addEventListener('change', e => {
       if(['a','b','off'].indexOf(prefs.music) < 0) prefs.music = 'a';
       if(typeof prefs.sound !== 'boolean') prefs.sound = true;
       if(['green','blue'].indexOf(prefs.theme) < 0) prefs.theme = 'green';
+      normalizeOrder();          // 古いバックアップ(ならび順なし)や壊れた並びも必ず整える
       migrateEntries(entries);   // ver1バックアップ(v文字列)ならコード化。v2は無変換で安全
       prefs.schema = 2;
       if(prefs.lang && SUPPORTED.indexOf(prefs.lang) >= 0) lang = prefs.lang;   // バックアップの言語設定を反映
@@ -1473,6 +1612,7 @@ function applyLang(){
   document.title = T('app.title');
   applyStaticI18n();
   showScreen(curScreen);   // 動的部分(グリッド・記録・表)も現在の言語で再描画
+  applyTabbarSpace();      // 言語でタブのラベル幅が変わる(折り返しで高さが増える)ため測り直す
 }
 function setLang(code){
   if(SUPPORTED.indexOf(code) < 0) return;
@@ -1486,6 +1626,14 @@ applyTheme();     // 画面の色(meta theme-color連動・ボタン状態)
 applySound();     // タップ音ON/OFF
 applyMusic();     // BGM(実際の再生開始は最初のタップから=自動再生制限対応)
 applyLang();
+applyTabbarSpace();
+watchTabbarSpace();
+/* ResizeObserver が無い環境(古いWebView)向けの保険 */
+if(typeof window !== 'undefined' && window.addEventListener){
+  window.addEventListener('load', applyTabbarSpace);
+  window.addEventListener('resize', applyTabbarSpace);
+  window.addEventListener('orientationchange', applyTabbarSpace);
+}
 
 /* ---- Service Worker 登録(https / localhost のみ・オフライン対応。姉妹アプリouchi_kaigo_webと同方式) ---- */
 if(navigator.serviceWorker && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')){

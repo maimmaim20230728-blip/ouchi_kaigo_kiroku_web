@@ -287,6 +287,146 @@ check('タップ音ON で prefs.sound=true・soundBtnOn が active', JSON.parse(
 const I18Nsm = sandbox.OKIROKU_I18N;
 check('新i18n set.bgmHead/themeBlue/tapSound が ja/en/ar で引ける', !!(I18Nsm && I18Nsm.ja.set.bgmHead && I18Nsm.en.set.themeBlue && I18Nsm.ar.set.tapSound));
 
+/* ---- [v1.1] 記録するこうもくのならびかえ(△▽ / ドラッグ) ---- */
+console.log('[v1.1] こうもくのならびかえ');
+sandbox.setLang('ja');
+const ORD = () => JSON.parse(store['okiroku.prefs']).order;
+const gridKeys = () => sandbox.activeItems().map(i => i.k);
+
+sandbox.resetOrder();
+const base = ORD().slice();
+const N = base.length;   // 項目の総数(ITEMS の件数)
+check('初期のならび順は ITEMS の定義順(先頭=water・2番目=med)', base[0] === 'water' && base[1] === 'med');
+check('ならび順に全項目が重複なく入る', N > 0 && N === new Set(base).size);
+
+/* △で上へ */
+check('2番目の項目を△で上へ → 先頭と入れ替わる',
+  sandbox.moveItem(base[1], -1) && ORD()[0] === base[1] && ORD()[1] === base[0]);
+/* ▽で下へ(元に戻る) */
+check('▽で下へ → 元の並びに戻る',
+  sandbox.moveItem(base[1], +1) && ORD().join(',') === base.join(','));
+/* 端では動かない */
+check('先頭の項目は△を押しても動かない(falseで壊れない)',
+  sandbox.moveItem(base[0], -1) === false && ORD().join(',') === base.join(','));
+check('末尾の項目は▽を押しても動かない',
+  sandbox.moveItem(base[base.length-1], +1) === false && ORD().join(',') === base.join(','));
+
+/* きょう画面のグリッドが並び順に従う(OFFの項目は出さない) */
+sandbox.moveItem(base[base.length-1], -1);   // 最後の項目を1つ上へ
+sandbox.moveItem(base[base.length-1], -1);
+const gk = gridKeys();
+const pk = ORD().filter(k => gk.indexOf(k) >= 0);
+check('きょうのグリッドがならび順どおりに並ぶ', gk.join(',') === pk.join(','));
+check('OFFの項目はグリッドに出ない(ならびかえても変わらず)',
+  gk.every(k => !JSON.parse(store['okiroku.prefs']).off.includes(k)));
+
+sandbox.resetOrder();
+check('「ならび順をもとにもどす」で定義順に戻る', ORD().join(',') === base.join(','));
+
+/* ドラッグ(≡)で移動。疑似DOMは全行が同じ矩形(top0/bottom50)を返すので、
+   clientY=10 は「一番上の行」に落ちる = 先頭へ動かす操作になる */
+const target = ORD()[5];
+sandbox.onDragStart({ isPrimary:true, preventDefault(){} }, target);
+sandbox.onDragMove({ clientY:10, preventDefault(){} });
+sandbox.onDragEnd();
+check('≡ドラッグで6番目の項目を先頭へ動かせる', ORD()[0] === target);
+check('ドラッグ後も全項目が重複なく残る', ORD().length === N && ORD().length === new Set(ORD()).size);
+/* 取っ手を押しただけ(動かさず離す)で並びが変わらない */
+sandbox.resetOrder();
+const beforeTapOnly = ORD().join(',');
+sandbox.onDragStart({ isPrimary:true, preventDefault(){} }, ORD()[3]);
+sandbox.onDragEnd();
+check('≡を押して動かさず離しただけでは並びが変わらない', ORD().join(',') === beforeTapOnly);
+sandbox.resetOrder();
+
+/* i18n 5キーが12言語で引ける */
+const I18Nord = sandbox.OKIROKU_I18N;
+check('新i18n set.orderHint/moveUp/moveDown/orderReset + toast.orderReset が全12言語で引ける',
+  I18Nord._order.every(c => I18Nord[c].set.orderHint && I18Nord[c].set.moveUp &&
+    I18Nord[c].set.moveDown && I18Nord[c].set.orderReset && I18Nord[c].toast.orderReset));
+
+/* ---- [v1.1] 下タブ/ステータスバーに隠れない(セーフエリア対応) ----
+   Android15+(targetSdk36)はエッジtoエッジ強制で、WebViewがナビゲーションバーの
+   下まで描画される。CSSの固定余白だと「みせる」の説明文がタブバーに隠れて
+   最後まで読めなくなるため、下記が消えていないことを機械で見張る。 */
+console.log('[v1.1] セーフエリア(上のステータスバー/下のタブバー)');
+const css = fs.readFileSync('./style.css', 'utf8');
+const cssFlat = css.replace(/\s+/g, ' ');
+check('body の下余白が max(CSS下限, 実測+10px)になっている',
+  /body\{[^}]*padding-bottom:max\(calc\(84px\+env\(safe-area-inset-bottom\)\),calc\(var\(--tabbar-h\)\+10px\)\)/.test(cssFlat.replace(/ /g, '')));
+check('--tabbar-h のフォールバックに env(safe-area-inset-bottom) が入る',
+  /--tabbar-h:calc\(84px\+env\(safe-area-inset-bottom\)\)/.test(cssFlat.replace(/ /g, '')));
+check('#hd の上余白に env(safe-area-inset-top) が入る(時計と重ならない)',
+  /#hd\{[^}]*padding:calc\(12px\+env\(safe-area-inset-top\)\)/.test(cssFlat.replace(/ /g, '')));
+check('#tabbar 自身の下余白に env(safe-area-inset-bottom) が残っている',
+  /#tabbar\{[^}]*env\(safe-area-inset-bottom\)/.test(cssFlat.replace(/ /g, '')));
+check('トーストの位置も max(CSS下限, 実測+12px)(タブに重ならない)',
+  /\.toast\{[^}]*bottom:max\(calc\(96px\+env\(safe-area-inset-bottom\)\),calc\(var\(--tabbar-h\)\+12px\)\)/.test(cssFlat.replace(/ /g, '')));
+check('ResizeObserver でタブバーの箱を見張っている', typeof sandbox.watchTabbarSpace === 'function');
+check('シートに max-height + overflow-y(選択肢が多い時に下が押せる)',
+  /\.sheet-box\{[^}]*max-height:[^}]*overflow-y:auto/.test(cssFlat.replace(/ /g, '')));
+check('△▽のタップ域が44px以上・文字が大きくても潰れない(flex-shrink:0)',
+  /\.ord-btn\{[^}]*flex-shrink:0;min-width:44px;min-height:44px/.test(cssFlat.replace(/ /g, '')));
+
+/* applyTabbarSpace が実測値を CSS変数に書き込む(style.setProperty が有る環境) */
+check('applyTabbarSpace が定義されている', typeof sandbox.applyTabbarSpace === 'function');
+const setProps = {};
+documentStub.documentElement.style.setProperty = (k, v) => { setProps[k] = v; };
+let okTb = true;
+try{ sandbox.applyTabbarSpace(); }catch(e){ okTb = false; console.log('    ' + e.message); }
+check('applyTabbarSpace が例外なく動く', okTb);
+check('タブバーの実測高さが --tabbar-h に入る(疑似DOMは50px)', setProps['--tabbar-h'] === '50px');
+delete documentStub.documentElement.style.setProperty;
+let okTb2 = true;
+try{ sandbox.applyTabbarSpace(); }catch(e){ okTb2 = false; }
+check('setProperty が無い環境でも例外を出さない(安全側に無視)', okTb2);
+
+/* ---- [v1.1] 壊れた/古いならび順の保存値からの自動復旧 ----
+   別コンテキストで「未知キー・重複・大量欠落」を含む order を仕込んで起動し、
+   normalizeOrder が必ず全項目1回ずつに整えることを実証する。 */
+console.log('[v1.1] 壊れた/古い ならび順 保存値からの自動復旧');
+{
+  const created2 = {};
+  const byId2 = id => ids.has(id) ? (created2[id] || (created2[id] = makeEl())) : null;
+  const store2 = {
+    'okiroku.entries':'[]',
+    'okiroku.prefs':JSON.stringify({ schema:2, order:['note','xxx_未知の項目','note','med'] })
+  };
+  const doc2 = {
+    documentElement:Object.assign(makeEl('html'), { lang:'', dir:'' }),
+    head:makeEl('head'), body:makeEl('body'), title:'',
+    createElement:t => makeEl(t), getElementById:byId2, addEventListener(){},
+    querySelector(sel){ const m = /^#([A-Za-z0-9_-]+)$/.exec(String(sel).trim()); return m ? byId2(m[1]) : makeEl(); },
+    querySelectorAll(){ return []; }
+  };
+  const sb2 = {
+    console:{ log(){}, warn(){}, error(){} }, document:doc2, navigator:{ language:'ja-JP' },
+    localStorage:{ getItem:k => (k in store2 ? store2[k] : null), setItem:(k, v) => { store2[k] = String(v); }, removeItem:k => { delete store2[k]; } },
+    location:{ hostname:'smoke.test', protocol:'https:' }, Intl, scrollTo(){}, addEventListener(){},
+    setTimeout:() => 0, setInterval:() => 0, clearInterval(){}, clearTimeout(){},
+    URL:{ createObjectURL:() => 'blob:', revokeObjectURL(){} },
+    Image:function(){ return {}; }, FileReader:function(){ return { readAsText(){}, onload:null }; }, Blob:function(){ return {}; }
+  };
+  sb2.window = sb2; sb2.globalThis = sb2;
+  vm.createContext(sb2);
+  let boot2 = true;
+  try{ vm.runInContext(src, sb2, { filename:'app-bundle-2.js' }); }
+  catch(e){ boot2 = false; console.log('    ' + e.message); }
+  check('壊れたならび順でも起動時に例外が出ない', boot2);
+  if(boot2){
+    /* ≡を押して離すだけ(並びは変えない)で保存させ、正規化後の値を取り出す */
+    sb2.onDragStart({ isPrimary:true, preventDefault(){} }, 'med');
+    sb2.onDragEnd();
+    const fixed = JSON.parse(store2['okiroku.prefs']).order;
+    check('保存されていた順(note→med)は先頭に保たれる', fixed[0] === 'note' && fixed[1] === 'med');
+    check('未知キーは捨てられる', fixed.indexOf('xxx_未知の項目') < 0);
+    check('重複が取り除かれる', fixed.length === new Set(fixed).size);
+    check('欠けていた項目が末尾に補われ、全項目そろう', fixed.length === N);
+    check('きょうのグリッドも復旧後の順で出る',
+      sb2.activeItems().map(i => i.k).join(',') === fixed.filter(k => !JSON.parse(store2['okiroku.prefs']).off.includes(k)).join(','));
+  }
+}
+
 console.log('');
 if(fails.length){ console.log('SMOKE NG: ' + fails.length + '件失敗'); process.exit(1); }
 console.log('SMOKE OK: 全チェック通過');

@@ -16,7 +16,7 @@
 
   /* ============ ja(正) ============ */
   var ja = {
-    app: { title:'おうち介護記録・そよぎ', name:'おうち介護記録・そよぎ', ver:'1.0' },
+    app: { title:'おうち介護記録・そよぎ', name:'おうち介護記録・そよぎ', ver:'1.1' },
 
     tab: { today:'きょう', hist:'りれき', show:'みせる', set:'せってい' },
 
@@ -29,6 +29,7 @@
       exported:'書き出しました ✓',
       imported:'読み込みました ✓',
       importFail:'読み込めませんでした',
+      orderReset:'ならび順をもとにもどしました ✓',
       waterNoUndo:'もどす水分がありません',
       waterUndone:'1つもどしました ✓',
       photoFail:'写真を読み込めませんでした'
@@ -62,10 +63,14 @@
       heightHint:'身長を入れると、体重の記録にBMIのめやすが出ます。空欄にすると判定は出ません。',
       heightPlaceholder:'未設定',
       itemsHead:'記録するこうもく',
+      orderHint:'こうもくの文字をタップすると、記録する・しないを切りかえられます。ならびかえは △▽ のボタンか、≡ をつまんだまま上下に動かしてください。この順番が「きょう」の画面にそのまま出ます。',
+      moveUp:'上へ',
+      moveDown:'下へ',
+      orderReset:'ならび順をもとにもどす',
       backupHead:'バックアップ', export:'記録を書き出す', import:'記録を読み込む',
       backupHint:'記録はこの端末の中だけに保存されます。どこにも送信されません。機種変更のときは「書き出す」で保存したファイルを新しい端末で「読み込む」してください。',
       credit:'アプリ開発：介護と支援の相談どころ　そよぎ',
-      ver:'バージョン 1.0',
+      ver:'バージョン 1.1',
       on:'ON', off:'OFF'
     },
 
@@ -169,7 +174,7 @@
 
   /* ============ en(下書き・Fableが後で磨く前提) ============ */
   var en = {
-    app: { title:'Home Care Log - SOYOGI', name:'Home Care Log - SOYOGI', ver:'1.0' },
+    app: { title:'Home Care Log - SOYOGI', name:'Home Care Log - SOYOGI', ver:'1.1' },
 
     tab: { today:'Today', hist:'History', show:'Show', set:'Settings' },
 
@@ -182,6 +187,7 @@
       exported:'Exported ✓',
       imported:'Imported ✓',
       importFail:'Could not read the file',
+      orderReset:'Order reset ✓',
       waterNoUndo:'No water intake to undo',
       waterUndone:'Removed one ✓',
       photoFail:'Could not load the photo'
@@ -215,10 +221,14 @@
       heightHint:'If you enter your height, a BMI guide appears on weight records. Leave it blank to hide the judgment.',
       heightPlaceholder:'not set',
       itemsHead:'Items to record',
+      orderHint:'Tap the name of an item to turn recording on or off. To change the order, use the △▽ buttons, or hold ≡ and move it up or down. This order is used on the "Today" screen.',
+      moveUp:'Move up',
+      moveDown:'Move down',
+      orderReset:'Reset the order',
       backupHead:'Backup', export:'Export records', import:'Import records',
       backupHint:'Records are stored only on this device. Nothing is sent anywhere. When you change devices, use "Export" to save a file, then "Import" it on the new device.',
       credit:'App development: SOYOGI - Care & Support Consultation',
-      ver:'Version 1.0',
+      ver:'Version 1.1',
       on:'ON', off:'OFF'
     },
 
@@ -318,7 +328,7 @@
 
   /* ============ de ============ */
   var de = {
-    app: { title:'Pflegetagebuch Zuhause - SOYOGI', name:'Pflegetagebuch Zuhause - SOYOGI', ver:'1.0' },
+    app: { title:'Pflegetagebuch Zuhause - SOYOGI', name:'Pflegetagebuch Zuhause - SOYOGI', ver:'1.1' },
     tab: { today:'Heute', hist:'Verlauf', show:'Bericht', set:'Einstellungen' },
     common: { save:'Speichern', cancel:'Abbrechen', empty:'Noch keine Einträge', delConfirm:'Löschen?' },
     toast: {
@@ -328,6 +338,7 @@
       exported:'Exportiert ✓',
       imported:'Importiert ✓',
       importFail:'Die Datei konnte nicht gelesen werden',
+      orderReset:'Reihenfolge zurückgesetzt ✓',
       waterNoUndo:'Kein Eintrag zum Zurücknehmen',
       waterUndone:'Einen Eintrag zurückgenommen ✓',
       photoFail:'Das Foto konnte nicht geladen werden'
@@ -357,10 +368,14 @@
       heightHint:'Mit eingetragener Größe erscheint beim Gewicht ein BMI-Hinweis. Leer lassen, um keine Bewertung zu zeigen.',
       heightPlaceholder:'nicht gesetzt',
       itemsHead:'Punkte zum Aufzeichnen',
+      orderHint:'Tippen Sie auf den Namen eines Punktes, um das Aufzeichnen ein- oder auszuschalten. Zum Umsortieren nutzen Sie die Tasten △▽ oder halten Sie ≡ gedrückt und schieben den Punkt nach oben oder unten. Diese Reihenfolge gilt auch im Bildschirm „Heute“.',
+      moveUp:'Nach oben',
+      moveDown:'Nach unten',
+      orderReset:'Reihenfolge zurücksetzen',
       backupHead:'Sicherung', export:'Einträge exportieren', import:'Einträge importieren',
       backupHint:'Die Einträge werden nur auf diesem Gerät gespeichert. Nichts wird gesendet. Beim Gerätewechsel mit „Exportieren“ eine Datei sichern und auf dem neuen Gerät „Importieren“.',
       credit:'App-Entwicklung: SOYOGI - Beratungsstelle für Pflege und Unterstützung',
-      ver:'Version 1.0',
+      ver:'Version 1.1',
       on:'AN', off:'AUS'
     },
     items: {
@@ -441,7 +456,7 @@
 
   /* ============ fr ============ */
   var fr = {
-    app: { title:'Journal de soins à domicile - SOYOGI', name:'Journal de soins à domicile - SOYOGI', ver:'1.0' },
+    app: { title:'Journal de soins à domicile - SOYOGI', name:'Journal de soins à domicile - SOYOGI', ver:'1.1' },
     tab: { today:'Aujourd’hui', hist:'Historique', show:'Rapport', set:'Réglages' },
     common: { save:'Enregistrer', cancel:'Annuler', empty:'Pas encore d’enregistrement', delConfirm:'Effacer ?' },
     toast: {
@@ -451,6 +466,7 @@
       exported:'Exporté ✓',
       imported:'Importé ✓',
       importFail:'Impossible de lire le fichier',
+      orderReset:'Ordre rétabli ✓',
       waterNoUndo:'Aucune prise d’eau à annuler',
       waterUndone:'Une prise annulée ✓',
       photoFail:'Impossible de charger la photo'
@@ -480,10 +496,14 @@
       heightHint:'Si vous saisissez la taille, un repère d’IMC apparaît sur les pesées. Laissez vide pour ne rien afficher.',
       heightPlaceholder:'non renseignée',
       itemsHead:'Éléments à suivre',
+      orderHint:'Touchez le nom d’un élément pour activer ou désactiver son enregistrement. Pour changer l’ordre, utilisez les boutons △▽, ou maintenez ≡ et déplacez l’élément vers le haut ou le bas. Cet ordre est repris dans l’écran « Aujourd’hui ».',
+      moveUp:'Monter',
+      moveDown:'Descendre',
+      orderReset:'Rétablir l’ordre initial',
       backupHead:'Sauvegarde', export:'Exporter les données', import:'Importer les données',
       backupHint:'Les enregistrements restent uniquement sur cet appareil. Rien n’est envoyé. En cas de changement d’appareil, « Exporter » un fichier puis « Importer » sur le nouvel appareil.',
       credit:'Développement de l’application : SOYOGI - Lieu de conseil en soins et soutien',
-      ver:'Version 1.0',
+      ver:'Version 1.1',
       on:'ON', off:'OFF'
     },
     items: {
@@ -564,7 +584,7 @@
 
   /* ============ es ============ */
   var es = {
-    app: { title:'Diario de cuidados en casa - SOYOGI', name:'Diario de cuidados en casa - SOYOGI', ver:'1.0' },
+    app: { title:'Diario de cuidados en casa - SOYOGI', name:'Diario de cuidados en casa - SOYOGI', ver:'1.1' },
     tab: { today:'Hoy', hist:'Historial', show:'Informe', set:'Ajustes' },
     common: { save:'Guardar', cancel:'Cancelar', empty:'Aún no hay registros', delConfirm:'¿Borrar?' },
     toast: {
@@ -574,6 +594,7 @@
       exported:'Exportado ✓',
       imported:'Importado ✓',
       importFail:'No se pudo leer el archivo',
+      orderReset:'Orden restablecido ✓',
       waterNoUndo:'No hay tomas de agua que deshacer',
       waterUndone:'Una toma deshecha ✓',
       photoFail:'No se pudo cargar la foto'
@@ -603,10 +624,14 @@
       heightHint:'Si introduce la estatura, aparecerá una referencia de IMC en los registros de peso. Déjela vacía para no mostrar la valoración.',
       heightPlaceholder:'sin definir',
       itemsHead:'Elementos para registrar',
+      orderHint:'Toque el nombre de un elemento para activar o desactivar su registro. Para cambiar el orden, use los botones △▽, o mantenga pulsado ≡ y muévalo hacia arriba o abajo. Este orden se usa en la pantalla «Hoy».',
+      moveUp:'Subir',
+      moveDown:'Bajar',
+      orderReset:'Restablecer el orden',
       backupHead:'Copia de seguridad', export:'Exportar registros', import:'Importar registros',
       backupHint:'Los registros se guardan solo en este dispositivo. No se envía nada. Al cambiar de dispositivo, use «Exportar» para guardar un archivo e «Importar» en el nuevo.',
       credit:'Desarrollo de la aplicación: SOYOGI - Centro de consultas de cuidados y apoyo',
-      ver:'Versión 1.0',
+      ver:'Versión 1.1',
       on:'ON', off:'OFF'
     },
     items: {
@@ -687,7 +712,7 @@
 
   /* ============ it ============ */
   var it = {
-    app: { title:'Diario di cura a casa - SOYOGI', name:'Diario di cura a casa - SOYOGI', ver:'1.0' },
+    app: { title:'Diario di cura a casa - SOYOGI', name:'Diario di cura a casa - SOYOGI', ver:'1.1' },
     tab: { today:'Oggi', hist:'Cronologia', show:'Riepilogo', set:'Impostazioni' },
     common: { save:'Salva', cancel:'Annulla', empty:'Ancora nessuna registrazione', delConfirm:'Eliminare?' },
     toast: {
@@ -697,6 +722,7 @@
       exported:'Esportato ✓',
       imported:'Importato ✓',
       importFail:'Impossibile leggere il file',
+      orderReset:'Ordine ripristinato ✓',
       waterNoUndo:'Nessuna assunzione da annullare',
       waterUndone:'Una annullata ✓',
       photoFail:'Impossibile caricare la foto'
@@ -726,10 +752,14 @@
       heightHint:'Inserendo l’altezza, sulle pesate compare un riferimento BMI. Lascia vuoto per non mostrare la valutazione.',
       heightPlaceholder:'non impostata',
       itemsHead:'Voci da registrare',
+      orderHint:'Tocca il nome di una voce per attivare o disattivare la registrazione. Per cambiare l’ordine usa i pulsanti △▽, oppure tieni premuto ≡ e spostala in alto o in basso. Questo ordine viene usato nella schermata «Oggi».',
+      moveUp:'Sposta su',
+      moveDown:'Sposta giù',
+      orderReset:'Ripristina l’ordine',
       backupHead:'Backup', export:'Esporta registrazioni', import:'Importa registrazioni',
       backupHint:'Le registrazioni restano solo su questo dispositivo. Non viene inviato nulla. Cambiando dispositivo, usa «Esporta» per salvare un file e «Importa» sul nuovo.',
       credit:'Sviluppo dell’app: SOYOGI - Sportello di consulenza per cura e sostegno',
-      ver:'Versione 1.0',
+      ver:'Versione 1.1',
       on:'ON', off:'OFF'
     },
     items: {
@@ -810,7 +840,7 @@
 
   /* ============ pt ============ */
   var pt = {
-    app: { title:'Diário de cuidados em casa - SOYOGI', name:'Diário de cuidados em casa - SOYOGI', ver:'1.0' },
+    app: { title:'Diário de cuidados em casa - SOYOGI', name:'Diário de cuidados em casa - SOYOGI', ver:'1.1' },
     tab: { today:'Hoje', hist:'Histórico', show:'Relatório', set:'Configurações' },
     common: { save:'Salvar', cancel:'Cancelar', empty:'Ainda não há registros', delConfirm:'Apagar?' },
     toast: {
@@ -820,6 +850,7 @@
       exported:'Exportado ✓',
       imported:'Importado ✓',
       importFail:'Não foi possível ler o arquivo',
+      orderReset:'Ordem restaurada ✓',
       waterNoUndo:'Nenhuma ingestão para desfazer',
       waterUndone:'Uma desfeita ✓',
       photoFail:'Não foi possível carregar a foto'
@@ -849,10 +880,14 @@
       heightHint:'Com a altura preenchida, uma referência de IMC aparece nos registros de peso. Deixe em branco para não mostrar a avaliação.',
       heightPlaceholder:'não definida',
       itemsHead:'Itens para registrar',
+      orderHint:'Toque no nome de um item para ativar ou desativar o registro. Para mudar a ordem, use os botões △▽ ou segure ≡ e mova para cima ou para baixo. Esta ordem é usada na tela «Hoje».',
+      moveUp:'Mover para cima',
+      moveDown:'Mover para baixo',
+      orderReset:'Restaurar a ordem',
       backupHead:'Backup', export:'Exportar registros', import:'Importar registros',
       backupHint:'Os registros ficam apenas neste aparelho. Nada é enviado. Ao trocar de aparelho, use «Exportar» para salvar um arquivo e «Importar» no novo.',
       credit:'Desenvolvimento do app: SOYOGI - Centro de consultas de cuidado e apoio',
-      ver:'Versão 1.0',
+      ver:'Versão 1.1',
       on:'ON', off:'OFF'
     },
     items: {
@@ -933,7 +968,7 @@
 
   /* ============ nl ============ */
   var nl = {
-    app: { title:'Zorgdagboek thuis - SOYOGI', name:'Zorgdagboek thuis - SOYOGI', ver:'1.0' },
+    app: { title:'Zorgdagboek thuis - SOYOGI', name:'Zorgdagboek thuis - SOYOGI', ver:'1.1' },
     tab: { today:'Vandaag', hist:'Overzicht', show:'Rapport', set:'Instellingen' },
     common: { save:'Opslaan', cancel:'Annuleren', empty:'Nog geen registraties', delConfirm:'Wissen?' },
     toast: {
@@ -943,6 +978,7 @@
       exported:'Geëxporteerd ✓',
       imported:'Geïmporteerd ✓',
       importFail:'Het bestand kon niet worden gelezen',
+      orderReset:'Volgorde hersteld ✓',
       waterNoUndo:'Geen inname om ongedaan te maken',
       waterUndone:'Eén ongedaan gemaakt ✓',
       photoFail:'De foto kon niet worden geladen'
@@ -972,10 +1008,14 @@
       heightHint:'Met een ingevulde lengte verschijnt bij het gewicht een BMI-indicatie. Laat leeg om geen beoordeling te tonen.',
       heightPlaceholder:'niet ingesteld',
       itemsHead:'Onderdelen om te registreren',
+      orderHint:'Tik op de naam van een onderdeel om het registreren aan of uit te zetten. Gebruik de knoppen △▽ om de volgorde te wijzigen, of houd ≡ vast en beweeg omhoog of omlaag. Deze volgorde wordt gebruikt in het scherm „Vandaag”.',
+      moveUp:'Omhoog',
+      moveDown:'Omlaag',
+      orderReset:'Volgorde herstellen',
       backupHead:'Back-up', export:'Registraties exporteren', import:'Registraties importeren',
       backupHint:'Registraties staan alleen op dit apparaat. Er wordt niets verzonden. Bij een nieuw apparaat: "Exporteren" naar een bestand en op het nieuwe apparaat "Importeren".',
       credit:'App-ontwikkeling: SOYOGI - Adviespunt voor zorg en ondersteuning',
-      ver:'Versie 1.0',
+      ver:'Versie 1.1',
       on:'AAN', off:'UIT'
     },
     items: {
@@ -1056,7 +1096,7 @@
 
   /* ============ sv ============ */
   var sv = {
-    app: { title:'Omsorgsdagbok hemma - SOYOGI', name:'Omsorgsdagbok hemma - SOYOGI', ver:'1.0' },
+    app: { title:'Omsorgsdagbok hemma - SOYOGI', name:'Omsorgsdagbok hemma - SOYOGI', ver:'1.1' },
     tab: { today:'Idag', hist:'Historik', show:'Rapport', set:'Inställningar' },
     common: { save:'Spara', cancel:'Avbryt', empty:'Inga anteckningar ännu', delConfirm:'Radera?' },
     toast: {
@@ -1066,6 +1106,7 @@
       exported:'Exporterat ✓',
       imported:'Importerat ✓',
       importFail:'Filen kunde inte läsas',
+      orderReset:'Ordningen återställd ✓',
       waterNoUndo:'Inget vattenintag att ångra',
       waterUndone:'Ett ångrat ✓',
       photoFail:'Fotot kunde inte laddas'
@@ -1095,10 +1136,14 @@
       heightHint:'Med längden ifylld visas en BMI-vägledning vid viktanteckningar. Lämna tomt för att inte visa bedömningen.',
       heightPlaceholder:'ej angiven',
       itemsHead:'Punkter att anteckna',
+      orderHint:'Tryck på namnet på en punkt för att slå på eller av registreringen. Ändra ordningen med knapparna △▽, eller håll in ≡ och flytta uppåt eller nedåt. Denna ordning används på skärmen ”I dag”.',
+      moveUp:'Flytta upp',
+      moveDown:'Flytta ner',
+      orderReset:'Återställ ordningen',
       backupHead:'Säkerhetskopia', export:'Exportera anteckningar', import:'Importera anteckningar',
       backupHint:'Anteckningarna sparas bara på den här enheten. Inget skickas någonstans. Vid byte av enhet: "Exportera" till en fil och "Importera" på den nya enheten.',
       credit:'Apputveckling: SOYOGI - Rådgivning för omsorg och stöd',
-      ver:'Version 1.0',
+      ver:'Version 1.1',
       on:'PÅ', off:'AV'
     },
     items: {
@@ -1179,7 +1224,7 @@
 
   /* ============ ko ============ */
   var ko = {
-    app: { title:'우리집 돌봄 기록 - SOYOGI', name:'우리집 돌봄 기록 - SOYOGI', ver:'1.0' },
+    app: { title:'우리집 돌봄 기록 - SOYOGI', name:'우리집 돌봄 기록 - SOYOGI', ver:'1.1' },
     tab: { today:'오늘', hist:'지난 기록', show:'보여주기', set:'설정' },
     common: { save:'기록하기', cancel:'취소', empty:'아직 기록이 없습니다', delConfirm:'지울까요?' },
     toast: {
@@ -1189,6 +1234,7 @@
       exported:'내보냈습니다 ✓',
       imported:'불러왔습니다 ✓',
       importFail:'파일을 읽을 수 없습니다',
+      orderReset:'순서를 되돌렸습니다 ✓',
       waterNoUndo:'되돌릴 수분 기록이 없습니다',
       waterUndone:'하나 되돌렸습니다 ✓',
       photoFail:'사진을 불러올 수 없습니다'
@@ -1218,10 +1264,14 @@
       heightHint:'키를 입력하면 체중 기록에 BMI 기준이 표시됩니다. 비워 두면 판정이 나오지 않습니다.',
       heightPlaceholder:'미설정',
       itemsHead:'기록할 항목',
+      orderHint:'항목 이름을 누르면 기록 여부를 켜고 끌 수 있습니다. 순서를 바꾸려면 △▽ 버튼을 누르거나 ≡ 를 누른 채 위아래로 움직이세요. 이 순서가 「오늘」 화면에 그대로 표시됩니다.',
+      moveUp:'위로',
+      moveDown:'아래로',
+      orderReset:'순서를 처음으로 되돌리기',
       backupHead:'백업', export:'기록 내보내기', import:'기록 불러오기',
       backupHint:'기록은 이 기기 안에만 저장됩니다. 어디에도 전송되지 않습니다. 기기를 바꿀 때는 「내보내기」로 파일을 저장한 뒤 새 기기에서 「불러오기」 해 주세요.',
       credit:'앱 개발: SOYOGI - 돌봄과 지원 상담소',
-      ver:'버전 1.0',
+      ver:'버전 1.1',
       on:'ON', off:'OFF'
     },
     items: {
@@ -1302,7 +1352,7 @@
 
   /* ============ zh(簡体字) ============ */
   var zh = {
-    app: { title:'居家照护记录 - SOYOGI', name:'居家照护记录 - SOYOGI', ver:'1.0' },
+    app: { title:'居家照护记录 - SOYOGI', name:'居家照护记录 - SOYOGI', ver:'1.1' },
     tab: { today:'今天', hist:'历史', show:'报告', set:'设置' },
     common: { save:'记录', cancel:'取消', empty:'还没有记录', delConfirm:'删除?' },
     toast: {
@@ -1312,6 +1362,7 @@
       exported:'已导出 ✓',
       imported:'已导入 ✓',
       importFail:'无法读取文件',
+      orderReset:'顺序已恢复 ✓',
       waterNoUndo:'没有可撤销的饮水记录',
       waterUndone:'已撤销一条 ✓',
       photoFail:'无法加载照片'
@@ -1341,10 +1392,14 @@
       heightHint:'输入身高后,体重记录会显示BMI参考。留空则不显示判定。',
       heightPlaceholder:'未设置',
       itemsHead:'记录项目',
+      orderHint:'点按项目名称可以打开或关闭记录。要调整顺序，请使用 △▽ 按钮，或按住 ≡ 上下移动。此顺序会直接用于「今天」页面。',
+      moveUp:'上移',
+      moveDown:'下移',
+      orderReset:'恢复原来的顺序',
       backupHead:'备份', export:'导出记录', import:'导入记录',
       backupHint:'记录只保存在这台设备里,不会发送到任何地方。换设备时,请用「导出」保存文件,再在新设备上「导入」。',
       credit:'应用开发: SOYOGI - 照护与支援咨询处',
-      ver:'版本 1.0',
+      ver:'版本 1.1',
       on:'开', off:'关'
     },
     items: {
@@ -1425,7 +1480,7 @@
 
   /* ============ ar ============ */
   var ar = {
-    app: { title:'سجل الرعاية المنزلية - SOYOGI', name:'سجل الرعاية المنزلية - SOYOGI', ver:'1.0' },
+    app: { title:'سجل الرعاية المنزلية - SOYOGI', name:'سجل الرعاية المنزلية - SOYOGI', ver:'1.1' },
     tab: { today:'اليوم', hist:'السجل', show:'تقرير', set:'الإعدادات' },
     common: { save:'تسجيل', cancel:'إلغاء', empty:'لا توجد تسجيلات بعد', delConfirm:'حذف؟' },
     toast: {
@@ -1435,6 +1490,7 @@
       exported:'تم التصدير ✓',
       imported:'تم الاستيراد ✓',
       importFail:'تعذّر قراءة الملف',
+      orderReset:'تمت إعادة الترتيب ✓',
       waterNoUndo:'لا يوجد تسجيل شرب للتراجع عنه',
       waterUndone:'تم التراجع عن واحد ✓',
       photoFail:'تعذّر تحميل الصورة'
@@ -1464,10 +1520,14 @@
       heightHint:'عند إدخال الطول يظهر مؤشر BMI مع تسجيلات الوزن. اتركه فارغًا لعدم إظهار التقييم.',
       heightPlaceholder:'غير محدد',
       itemsHead:'بنود التسجيل',
+      orderHint:'اضغط على اسم البند لتشغيل التسجيل أو إيقافه. لتغيير الترتيب استخدم زرَّي △▽، أو اضغط مطولًا على ≡ وحرّك البند لأعلى أو لأسفل. يُستخدم هذا الترتيب في شاشة «اليوم».',
+      moveUp:'لأعلى',
+      moveDown:'لأسفل',
+      orderReset:'إعادة الترتيب الأصلي',
       backupHead:'نسخة احتياطية', export:'تصدير التسجيلات', import:'استيراد التسجيلات',
       backupHint:'تُحفظ التسجيلات على هذا الجهاز فقط ولا يُرسل أي شيء إلى أي مكان. عند تغيير الجهاز استخدم «تصدير» لحفظ ملف ثم «استيراد» على الجهاز الجديد.',
       credit:'تطوير التطبيق: SOYOGI - مركز استشارات الرعاية والدعم',
-      ver:'الإصدار 1.0',
+      ver:'الإصدار 1.1',
       on:'تشغيل', off:'إيقاف'
     },
     items: {
