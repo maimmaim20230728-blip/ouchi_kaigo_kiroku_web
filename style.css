@@ -197,6 +197,18 @@ body.fs0{font-size:19px;} body.fs1{font-size:22px;} body.fs2{font-size:25px;}
 }
 .num-in.hidden,.text-in.hidden{display:none;}
 .num-label{color:var(--muted); font-size:.8em; margin-bottom:4px;}
+/* アプリの中の確かめの窓(Play版だけ・app.js askBox・2026-09-30)。シート・写真の拡大より上に、まん中に出す */
+.overlay.ask-ov{
+  z-index:50; align-items:center;
+  padding:calc(16px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+          calc(16px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+.ask-box{
+  background:var(--card); color:var(--ink); border-radius:20px;
+  padding:20px 16px 16px; width:100%; max-width:460px; max-height:100%; overflow-y:auto;
+}
+.ask-msg{font-weight:700; line-height:1.6; margin:0 0 16px; white-space:pre-wrap;}
+.ask-row .ask-no,.ask-row .ask-yes{flex:1 1 7em; min-height:56px; font-size:1em;}
 
 /* トースト */
 .toast{

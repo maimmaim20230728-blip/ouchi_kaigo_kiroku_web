@@ -20,7 +20,8 @@
 
     tab: { today:'きょう', hist:'りれき', show:'みせる', set:'せってい' },
 
-    common: { save:'きろくする', cancel:'やめる', empty:'まだ記録はありません', delConfirm:'けす?' },
+    common: { save:'きろくする', cancel:'やめる', empty:'まだ記録はありません', delConfirm:'けす?',
+      yes:'はい', no:'いいえ', backConfirm:'入れた内容は、まだきろくしていません。やめてもどりますか?' },
 
     toast: {
       saved:'きろくしました ✓',
@@ -32,7 +33,8 @@
       orderReset:'ならび順をもとにもどしました ✓',
       waterNoUndo:'もどす水分がありません',
       waterUndone:'1つもどしました ✓',
-      photoFail:'写真を読み込めませんでした'
+      photoFail:'写真を読み込めませんでした',
+      exportFail:'書き出せませんでした'
     },
 
     today: {
@@ -70,7 +72,7 @@
       backupHead:'バックアップ', export:'記録を書き出す', import:'記録を読み込む',
       backupHint:'記録はこの端末の中だけに保存されます。どこにも送信されません。機種変更のときは「書き出す」で保存したファイルを新しい端末で「読み込む」してください。',
       credit:'アプリ開発：介護と支援の相談どころ　そよぎ',
-      ver:'バージョン 1.2',
+      ver:'バージョン 1.3',
       on:'ON', off:'OFF'
     },
 
@@ -178,7 +180,8 @@
 
     tab: { today:'Today', hist:'History', show:'Show', set:'Settings' },
 
-    common: { save:'Save', cancel:'Cancel', empty:'No records yet', delConfirm:'Delete?' },
+    common: { save:'Save', cancel:'Cancel', empty:'No records yet', delConfirm:'Delete?',
+      yes:'Yes', no:'No', backConfirm:'What you entered is not saved yet. Cancel and go back?' },
 
     toast: {
       saved:'Saved ✓',
@@ -190,7 +193,8 @@
       orderReset:'Order reset ✓',
       waterNoUndo:'No water intake to undo',
       waterUndone:'Removed one ✓',
-      photoFail:'Could not load the photo'
+      photoFail:'Could not load the photo',
+      exportFail:'Could not export the file'
     },
 
     today: {
@@ -228,7 +232,7 @@
       backupHead:'Backup', export:'Export records', import:'Import records',
       backupHint:'Records are stored only on this device. Nothing is sent anywhere. When you change devices, use "Export" to save a file, then "Import" it on the new device.',
       credit:'App development: SOYOGI - Care & Support Consultation',
-      ver:'Version 1.2',
+      ver:'Version 1.3',
       on:'ON', off:'OFF'
     },
 
@@ -330,7 +334,8 @@
   var de = {
     app: { title:'Pflegetagebuch Zuhause - SOYOGI', name:'Pflegetagebuch Zuhause - SOYOGI', ver:'1.1' },
     tab: { today:'Heute', hist:'Verlauf', show:'Bericht', set:'Einstellungen' },
-    common: { save:'Speichern', cancel:'Abbrechen', empty:'Noch keine Einträge', delConfirm:'Löschen?' },
+    common: { save:'Speichern', cancel:'Abbrechen', empty:'Noch keine Einträge', delConfirm:'Löschen?',
+      yes:'Ja', no:'Nein', backConfirm:'Ihre Eingaben sind noch nicht gespeichert. Abbrechen und zurückgehen?' },
     toast: {
       saved:'Gespeichert ✓',
       savedNoPhoto:'Das Foto konnte wegen des Speicherlimits nicht gespeichert werden',
@@ -341,7 +346,8 @@
       orderReset:'Reihenfolge zurückgesetzt ✓',
       waterNoUndo:'Kein Eintrag zum Zurücknehmen',
       waterUndone:'Einen Eintrag zurückgenommen ✓',
-      photoFail:'Das Foto konnte nicht geladen werden'
+      photoFail:'Das Foto konnte nicht geladen werden',
+      exportFail:'Die Datei konnte nicht exportiert werden'
     },
     today: {
       records:'Einträge von heute',
@@ -375,7 +381,7 @@
       backupHead:'Sicherung', export:'Einträge exportieren', import:'Einträge importieren',
       backupHint:'Die Einträge werden nur auf diesem Gerät gespeichert. Nichts wird gesendet. Beim Gerätewechsel mit „Exportieren“ eine Datei sichern und auf dem neuen Gerät „Importieren“.',
       credit:'App-Entwicklung: SOYOGI - Beratungsstelle für Pflege und Unterstützung',
-      ver:'Version 1.2',
+      ver:'Version 1.3',
       on:'AN', off:'AUS'
     },
     items: {
@@ -458,7 +464,8 @@
   var fr = {
     app: { title:'Journal de soins à domicile - SOYOGI', name:'Journal de soins à domicile - SOYOGI', ver:'1.1' },
     tab: { today:'Aujourd’hui', hist:'Historique', show:'Rapport', set:'Réglages' },
-    common: { save:'Enregistrer', cancel:'Annuler', empty:'Pas encore d’enregistrement', delConfirm:'Effacer ?' },
+    common: { save:'Enregistrer', cancel:'Annuler', empty:'Pas encore d’enregistrement', delConfirm:'Effacer ?',
+      yes:'Oui', no:'Non', backConfirm:'Ce que vous avez saisi n’est pas encore enregistré. Annuler et revenir en arrière ?' },
     toast: {
       saved:'Enregistré ✓',
       savedNoPhoto:'La photo n’a pas pu être gardée (limite de stockage)',
@@ -469,7 +476,8 @@
       orderReset:'Ordre rétabli ✓',
       waterNoUndo:'Aucune prise d’eau à annuler',
       waterUndone:'Une prise annulée ✓',
-      photoFail:'Impossible de charger la photo'
+      photoFail:'Impossible de charger la photo',
+      exportFail:'Impossible d’exporter le fichier'
     },
     today: {
       records:'Enregistrements du jour',
@@ -503,7 +511,7 @@
       backupHead:'Sauvegarde', export:'Exporter les données', import:'Importer les données',
       backupHint:'Les enregistrements restent uniquement sur cet appareil. Rien n’est envoyé. En cas de changement d’appareil, « Exporter » un fichier puis « Importer » sur le nouvel appareil.',
       credit:'Développement de l’application : SOYOGI - Lieu de conseil en soins et soutien',
-      ver:'Version 1.2',
+      ver:'Version 1.3',
       on:'ON', off:'OFF'
     },
     items: {
@@ -586,7 +594,8 @@
   var es = {
     app: { title:'Diario de cuidados en casa - SOYOGI', name:'Diario de cuidados en casa - SOYOGI', ver:'1.1' },
     tab: { today:'Hoy', hist:'Historial', show:'Informe', set:'Ajustes' },
-    common: { save:'Guardar', cancel:'Cancelar', empty:'Aún no hay registros', delConfirm:'¿Borrar?' },
+    common: { save:'Guardar', cancel:'Cancelar', empty:'Aún no hay registros', delConfirm:'¿Borrar?',
+      yes:'Sí', no:'No', backConfirm:'Lo que ha introducido aún no se ha guardado. ¿Cancelar y volver?' },
     toast: {
       saved:'Guardado ✓',
       savedNoPhoto:'La foto no se pudo guardar por el límite de almacenamiento',
@@ -597,7 +606,8 @@
       orderReset:'Orden restablecido ✓',
       waterNoUndo:'No hay tomas de agua que deshacer',
       waterUndone:'Una toma deshecha ✓',
-      photoFail:'No se pudo cargar la foto'
+      photoFail:'No se pudo cargar la foto',
+      exportFail:'No se pudo exportar el archivo'
     },
     today: {
       records:'Registros de hoy',
@@ -631,7 +641,7 @@
       backupHead:'Copia de seguridad', export:'Exportar registros', import:'Importar registros',
       backupHint:'Los registros se guardan solo en este dispositivo. No se envía nada. Al cambiar de dispositivo, use «Exportar» para guardar un archivo e «Importar» en el nuevo.',
       credit:'Desarrollo de la aplicación: SOYOGI - Centro de consultas de cuidados y apoyo',
-      ver:'Versión 1.2',
+      ver:'Versión 1.3',
       on:'ON', off:'OFF'
     },
     items: {
@@ -714,7 +724,8 @@
   var it = {
     app: { title:'Diario di cura a casa - SOYOGI', name:'Diario di cura a casa - SOYOGI', ver:'1.1' },
     tab: { today:'Oggi', hist:'Cronologia', show:'Riepilogo', set:'Impostazioni' },
-    common: { save:'Salva', cancel:'Annulla', empty:'Ancora nessuna registrazione', delConfirm:'Eliminare?' },
+    common: { save:'Salva', cancel:'Annulla', empty:'Ancora nessuna registrazione', delConfirm:'Eliminare?',
+      yes:'Sì', no:'No', backConfirm:'Quanto inserito non è ancora stato salvato. Annullare e tornare indietro?' },
     toast: {
       saved:'Salvato ✓',
       savedNoPhoto:'La foto non è stata salvata per il limite di spazio',
@@ -725,7 +736,8 @@
       orderReset:'Ordine ripristinato ✓',
       waterNoUndo:'Nessuna assunzione da annullare',
       waterUndone:'Una annullata ✓',
-      photoFail:'Impossibile caricare la foto'
+      photoFail:'Impossibile caricare la foto',
+      exportFail:'Impossibile esportare il file'
     },
     today: {
       records:'Registrazioni di oggi',
@@ -759,7 +771,7 @@
       backupHead:'Backup', export:'Esporta registrazioni', import:'Importa registrazioni',
       backupHint:'Le registrazioni restano solo su questo dispositivo. Non viene inviato nulla. Cambiando dispositivo, usa «Esporta» per salvare un file e «Importa» sul nuovo.',
       credit:'Sviluppo dell’app: SOYOGI - Sportello di consulenza per cura e sostegno',
-      ver:'Versione 1.2',
+      ver:'Versione 1.3',
       on:'ON', off:'OFF'
     },
     items: {
@@ -842,7 +854,8 @@
   var pt = {
     app: { title:'Diário de cuidados em casa - SOYOGI', name:'Diário de cuidados em casa - SOYOGI', ver:'1.1' },
     tab: { today:'Hoje', hist:'Histórico', show:'Relatório', set:'Configurações' },
-    common: { save:'Salvar', cancel:'Cancelar', empty:'Ainda não há registros', delConfirm:'Apagar?' },
+    common: { save:'Salvar', cancel:'Cancelar', empty:'Ainda não há registros', delConfirm:'Apagar?',
+      yes:'Sim', no:'Não', backConfirm:'O que você inseriu ainda não foi salvo. Cancelar e voltar?' },
     toast: {
       saved:'Salvo ✓',
       savedNoPhoto:'A foto não pôde ser salva pelo limite de armazenamento',
@@ -853,7 +866,8 @@
       orderReset:'Ordem restaurada ✓',
       waterNoUndo:'Nenhuma ingestão para desfazer',
       waterUndone:'Uma desfeita ✓',
-      photoFail:'Não foi possível carregar a foto'
+      photoFail:'Não foi possível carregar a foto',
+      exportFail:'Não foi possível exportar o arquivo'
     },
     today: {
       records:'Registros de hoje',
@@ -887,7 +901,7 @@
       backupHead:'Backup', export:'Exportar registros', import:'Importar registros',
       backupHint:'Os registros ficam apenas neste aparelho. Nada é enviado. Ao trocar de aparelho, use «Exportar» para salvar um arquivo e «Importar» no novo.',
       credit:'Desenvolvimento do app: SOYOGI - Centro de consultas de cuidado e apoio',
-      ver:'Versão 1.2',
+      ver:'Versão 1.3',
       on:'ON', off:'OFF'
     },
     items: {
@@ -970,7 +984,8 @@
   var nl = {
     app: { title:'Zorgdagboek thuis - SOYOGI', name:'Zorgdagboek thuis - SOYOGI', ver:'1.1' },
     tab: { today:'Vandaag', hist:'Overzicht', show:'Rapport', set:'Instellingen' },
-    common: { save:'Opslaan', cancel:'Annuleren', empty:'Nog geen registraties', delConfirm:'Wissen?' },
+    common: { save:'Opslaan', cancel:'Annuleren', empty:'Nog geen registraties', delConfirm:'Wissen?',
+      yes:'Ja', no:'Nee', backConfirm:'Wat u hebt ingevoerd, is nog niet opgeslagen. Annuleren en teruggaan?' },
     toast: {
       saved:'Opgeslagen ✓',
       savedNoPhoto:'De foto kon niet worden bewaard (opslaglimiet)',
@@ -981,7 +996,8 @@
       orderReset:'Volgorde hersteld ✓',
       waterNoUndo:'Geen inname om ongedaan te maken',
       waterUndone:'Eén ongedaan gemaakt ✓',
-      photoFail:'De foto kon niet worden geladen'
+      photoFail:'De foto kon niet worden geladen',
+      exportFail:'Het bestand kon niet worden geëxporteerd'
     },
     today: {
       records:'Registraties van vandaag',
@@ -1015,7 +1031,7 @@
       backupHead:'Back-up', export:'Registraties exporteren', import:'Registraties importeren',
       backupHint:'Registraties staan alleen op dit apparaat. Er wordt niets verzonden. Bij een nieuw apparaat: "Exporteren" naar een bestand en op het nieuwe apparaat "Importeren".',
       credit:'App-ontwikkeling: SOYOGI - Adviespunt voor zorg en ondersteuning',
-      ver:'Versie 1.2',
+      ver:'Versie 1.3',
       on:'AAN', off:'UIT'
     },
     items: {
@@ -1098,7 +1114,8 @@
   var sv = {
     app: { title:'Omsorgsdagbok hemma - SOYOGI', name:'Omsorgsdagbok hemma - SOYOGI', ver:'1.1' },
     tab: { today:'Idag', hist:'Historik', show:'Rapport', set:'Inställningar' },
-    common: { save:'Spara', cancel:'Avbryt', empty:'Inga anteckningar ännu', delConfirm:'Radera?' },
+    common: { save:'Spara', cancel:'Avbryt', empty:'Inga anteckningar ännu', delConfirm:'Radera?',
+      yes:'Ja', no:'Nej', backConfirm:'Det du har fyllt i är inte sparat än. Vill du avbryta och gå tillbaka?' },
     toast: {
       saved:'Sparat ✓',
       savedNoPhoto:'Fotot kunde inte sparas på grund av lagringsgränsen',
@@ -1109,7 +1126,8 @@
       orderReset:'Ordningen återställd ✓',
       waterNoUndo:'Inget vattenintag att ångra',
       waterUndone:'Ett ångrat ✓',
-      photoFail:'Fotot kunde inte laddas'
+      photoFail:'Fotot kunde inte laddas',
+      exportFail:'Filen kunde inte exporteras'
     },
     today: {
       records:'Dagens anteckningar',
@@ -1143,7 +1161,7 @@
       backupHead:'Säkerhetskopia', export:'Exportera anteckningar', import:'Importera anteckningar',
       backupHint:'Anteckningarna sparas bara på den här enheten. Inget skickas någonstans. Vid byte av enhet: "Exportera" till en fil och "Importera" på den nya enheten.',
       credit:'Apputveckling: SOYOGI - Rådgivning för omsorg och stöd',
-      ver:'Version 1.2',
+      ver:'Version 1.3',
       on:'PÅ', off:'AV'
     },
     items: {
@@ -1226,7 +1244,8 @@
   var ko = {
     app: { title:'우리집 돌봄 기록 - SOYOGI', name:'우리집 돌봄 기록 - SOYOGI', ver:'1.1' },
     tab: { today:'오늘', hist:'지난 기록', show:'보여주기', set:'설정' },
-    common: { save:'기록하기', cancel:'취소', empty:'아직 기록이 없습니다', delConfirm:'지울까요?' },
+    common: { save:'기록하기', cancel:'취소', empty:'아직 기록이 없습니다', delConfirm:'지울까요?',
+      yes:'예', no:'아니요', backConfirm:'입력한 내용이 아직 기록되지 않았습니다. 취소하고 돌아갈까요?' },
     toast: {
       saved:'기록했습니다 ✓',
       savedNoPhoto:'저장 공간이 부족해 사진은 저장하지 못했습니다',
@@ -1237,7 +1256,8 @@
       orderReset:'순서를 되돌렸습니다 ✓',
       waterNoUndo:'되돌릴 수분 기록이 없습니다',
       waterUndone:'하나 되돌렸습니다 ✓',
-      photoFail:'사진을 불러올 수 없습니다'
+      photoFail:'사진을 불러올 수 없습니다',
+      exportFail:'파일을 내보낼 수 없습니다'
     },
     today: {
       records:'오늘의 기록',
@@ -1271,7 +1291,7 @@
       backupHead:'백업', export:'기록 내보내기', import:'기록 불러오기',
       backupHint:'기록은 이 기기 안에만 저장됩니다. 어디에도 전송되지 않습니다. 기기를 바꿀 때는 「내보내기」로 파일을 저장한 뒤 새 기기에서 「불러오기」 해 주세요.',
       credit:'앱 개발: SOYOGI - 돌봄과 지원 상담소',
-      ver:'버전 1.2',
+      ver:'버전 1.3',
       on:'ON', off:'OFF'
     },
     items: {
@@ -1354,7 +1374,8 @@
   var zh = {
     app: { title:'居家照护记录 - SOYOGI', name:'居家照护记录 - SOYOGI', ver:'1.1' },
     tab: { today:'今天', hist:'历史', show:'报告', set:'设置' },
-    common: { save:'记录', cancel:'取消', empty:'还没有记录', delConfirm:'删除?' },
+    common: { save:'记录', cancel:'取消', empty:'还没有记录', delConfirm:'删除?',
+      yes:'是', no:'否', backConfirm:'输入的内容还没有记录。要取消并返回吗?' },
     toast: {
       saved:'已记录 ✓',
       savedNoPhoto:'因存储空间不足,照片未能保存',
@@ -1365,7 +1386,8 @@
       orderReset:'顺序已恢复 ✓',
       waterNoUndo:'没有可撤销的饮水记录',
       waterUndone:'已撤销一条 ✓',
-      photoFail:'无法加载照片'
+      photoFail:'无法加载照片',
+      exportFail:'无法导出文件'
     },
     today: {
       records:'今天的记录',
@@ -1399,7 +1421,7 @@
       backupHead:'备份', export:'导出记录', import:'导入记录',
       backupHint:'记录只保存在这台设备里,不会发送到任何地方。换设备时,请用「导出」保存文件,再在新设备上「导入」。',
       credit:'应用开发: SOYOGI - 照护与支援咨询处',
-      ver:'版本 1.2',
+      ver:'版本 1.3',
       on:'开', off:'关'
     },
     items: {
@@ -1482,7 +1504,8 @@
   var ar = {
     app: { title:'سجل الرعاية المنزلية - SOYOGI', name:'سجل الرعاية المنزلية - SOYOGI', ver:'1.1' },
     tab: { today:'اليوم', hist:'السجل', show:'تقرير', set:'الإعدادات' },
-    common: { save:'تسجيل', cancel:'إلغاء', empty:'لا توجد تسجيلات بعد', delConfirm:'حذف؟' },
+    common: { save:'تسجيل', cancel:'إلغاء', empty:'لا توجد تسجيلات بعد', delConfirm:'حذف؟',
+      yes:'نعم', no:'لا', backConfirm:'ما أدخلته لم يُسجَّل بعد. هل تريد الإلغاء والرجوع؟' },
     toast: {
       saved:'تم التسجيل ✓',
       savedNoPhoto:'تعذّر حفظ الصورة بسبب حد التخزين',
@@ -1493,7 +1516,8 @@
       orderReset:'تمت إعادة الترتيب ✓',
       waterNoUndo:'لا يوجد تسجيل شرب للتراجع عنه',
       waterUndone:'تم التراجع عن واحد ✓',
-      photoFail:'تعذّر تحميل الصورة'
+      photoFail:'تعذّر تحميل الصورة',
+      exportFail:'تعذّر تصدير الملف'
     },
     today: {
       records:'تسجيلات اليوم',
@@ -1527,7 +1551,7 @@
       backupHead:'نسخة احتياطية', export:'تصدير التسجيلات', import:'استيراد التسجيلات',
       backupHint:'تُحفظ التسجيلات على هذا الجهاز فقط ولا يُرسل أي شيء إلى أي مكان. عند تغيير الجهاز استخدم «تصدير» لحفظ ملف ثم «استيراد» على الجهاز الجديد.',
       credit:'تطوير التطبيق: SOYOGI - مركز استشارات الرعاية والدعم',
-      ver:'الإصدار 1.2',
+      ver:'الإصدار 1.3',
       on:'تشغيل', off:'إيقاف'
     },
     items: {

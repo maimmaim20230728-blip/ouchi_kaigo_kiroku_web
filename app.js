@@ -876,7 +876,10 @@ function openSkinConcern(){
   const onPickPhoto = ev => {
     const f = ev.target.files[0]; if(!f) return;
     resizeImage(f, 640, 0.72, dataUrl => {
-      if(dataUrl){ photoData = dataUrl; preview.src = dataUrl; preview.style.display = 'block'; }
+      if(dataUrl){
+        photoData = dataUrl; preview.src = dataUrl; preview.style.display = 'block';
+        ctx.ov._dirty = true;   // 写真を入れた = 書きかけ(Play版の戻るボタンは、閉じる前に確かめる・2026-09-30)
+      }
       else toast(T('toast.photoFail'));
     });
     ev.target.value = '';
@@ -1553,11 +1556,21 @@ Tap.bind(document.getElementById('themeBtnB'),   () => { prefs.theme = 'blue';  
 /* ---- バックアップ(ver2でエクスポート・ver1/2両対応でインポート) ---- */
 Tap.bind(document.getElementById('bk-export'), () => {
   const data = { app:'ouchi_kaigo_kiroku', ver:2, entries, prefs };
+  const d = new Date();
+  const fname = 'okiroku-backup-' + d.getFullYear() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0') + '.json';
+  /* Play版(2026-09-30): 一時フォルダに書いて共有の画面へ(下の「Play版のファイル保存」)。
+     選べたら「書き出しました」・閉じたら何も出さない・書けなければ「書き出せませんでした」 */
+  if(isNativeApp()){
+    nativeSaveFile(fname, JSON.stringify(data), T('set.export'), r => {
+      if(r === 'ok') toast(T('toast.exported'));
+      else if(r === 'fail') toast(T('toast.exportFail'));
+    });
+    return;
+  }
   const blob = new Blob([JSON.stringify(data)], { type:'application/json' });
   const a = document.createElement('a');
-  const d = new Date();
   a.href = URL.createObjectURL(blob);
-  a.download = 'okiroku-backup-' + d.getFullYear() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0') + '.json';
+  a.download = fname;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 3000);
   toast(T('toast.exported'));
@@ -1620,12 +1633,153 @@ function setLang(code){
   applyLang();
 }
 
+/* ---- Play版(Capacitor)だけで使う部品(2026-09-30・キットの templates/app.js と同じ考え方) ----
+   🔴 プラグインはネイティブが入れる Capacitor.Plugins.X を使う(registerPlugin は @capacitor/core の関数で WebView には無い)。
+   Web版(ブラウザ)では isNativeApp() が false なので、どれも動かない */
+function isNativeApp(){
+  try{ const c = window.Capacitor; return !!(c && typeof c.isNativePlatform === 'function' && c.isNativePlatform()); }catch(_){ return false; }
+}
+function nativePlugin(name, fn){
+  try{
+    const c = window.Capacitor;
+    if(typeof c.isPluginAvailable === 'function' && !c.isPluginAvailable(name)) return null;
+    const p = c.Plugins && c.Plugins[name];
+    return (p && typeof p[fn] === 'function') ? p : null;
+  }catch(_){ return null; }
+}
+
+/* ---- Play版のファイル保存(2026-09-30) ----
+   Capacitor 8 の WebView には DownloadListener が無く、<a download> では何も保存されない(なのに「書き出しました」と出ていた)。
+   端末の一時フォルダ(CACHE)に書いてから Android の共有の画面を出し、保存先は利用者が選ぶ。
+   done('ok')=送り先を選べた / done('quiet')=共有の画面を閉じた(何も出さない) / done('fail')=書けない・共有できない・プラグインが無い */
+function shareQuiet(err){
+  const m = String((err && (err.message || err.errorMessage)) || err || '');
+  return !!err && (err.name === 'AbortError' || /cancel|in progress/i.test(m));
+}
+function nativeSaveFile(name, data, label, done){
+  const fsp = nativePlugin('Filesystem', 'writeFile'), shp = nativePlugin('Share', 'share');
+  if(!fsp || !shp){ done('fail'); return; }
+  let w;
+  try{ w = fsp.writeFile({ path:name, data:data, directory:'CACHE', encoding:'utf8' }); }catch(_){ done('fail'); return; }
+  if(!w || typeof w.then !== 'function'){ done('fail'); return; }
+  w.then(r => {
+    if(!r || !r.uri){ done('fail'); return; }
+    let s;
+    try{ s = shp.share({ title:name, files:[r.uri], dialogTitle:label }); }catch(err){ done(shareQuiet(err) ? 'quiet' : 'fail'); return; }
+    if(s && typeof s.then === 'function') s.then(() => done('ok'), err => done(shareQuiet(err) ? 'quiet' : 'fail'));
+    else done('ok');
+  }, () => done('fail'));
+}
+
+/* ---- アプリの中の確かめの窓(Play版だけ・2026-09-30) ----
+   Play版の window.confirm は、Capacitor(BridgeWebChromeClient)がボタンを英語の OK / Cancel に決め打ちしている。
+   Play版はアプリの中に「いいえ / はい」(common.no / common.yes・12言語・文字の大きさの設定どおり)の窓を出す。
+   Web版は window.confirm(ブラウザの言葉で出る)。今は戻るボタン(Play版だけ)の書きかけの確かめでだけ使う。
+   done(true=はい / false=いいえ)。戻るボタン=いいえ */
+function askBox(msg, done, dflt){
+  if(!isNativeApp()){
+    let r = !!dflt;
+    try{ if(typeof window.confirm === 'function') r = !!window.confirm(msg); }catch(_){ r = false; }
+    done(r);
+    return;
+  }
+  const ov = el('div', 'overlay ask-ov');
+  ov.setAttribute('role', 'alertdialog');
+  ov.setAttribute('aria-modal', 'true');
+  const box = el('div', 'ask-box');
+  const row = el('div', 'fs-row ask-row');
+  const no = el('button', 'cancel-btn ask-no', T('common.no'));
+  const yes = el('button', 'ok-btn ask-yes', T('common.yes'));
+  no.type = 'button'; yes.type = 'button';
+  no.setAttribute('data-back', '1');
+  let closed = false;
+  function close(v){ if(closed) return; closed = true; ov.remove(); done(v); }
+  ov._back = () => close(false);
+  Tap.bind(no, () => close(false), { silent:true });
+  Tap.bind(yes, () => close(true));
+  /* TalkBack などは click だけを出すので、この窓のボタンは click も受ける(二重に来ても close は1回だけ) */
+  no.addEventListener('click', () => close(false));
+  yes.addEventListener('click', () => close(true));
+  row.appendChild(no); row.appendChild(yes);
+  box.appendChild(el('p', 'ask-msg', msg)); box.appendChild(row); ov.appendChild(box);
+  document.body.appendChild(ov);
+  try{ no.focus(); }catch(_){}
+}
+
+/* ---- Android の戻るボタン(Play版だけ・2026-09-30) ----
+   @capacitor/app が無いと、戻るでアプリごと後ろに下がっていた(Android 11 以前は閉じる)。
+   押したときの順: ①いちばん上の窓を、その窓の「やめる」と同じ動きで閉じる
+                    (確かめの窓=いいえ / えらぶシート・入力の窓・記録の窓=やめる / 写真の拡大=とじる)
+                  ②きょう以外の画面(りれき・みせる・せってい)→ きょう(下のタブ「きょう」と同じ)
+                  ③きょう → アプリを後ろに下げる(minimizeApp。中身はそのまま)
+   書きかけ: 窓の中の欄に文字や数字を入れて(皮膚の窓は写真を入れて)、まだ「きろくする」を押していないときだけ、閉じる前に確かめる(いいえ=そのまま)。
+     みせるの「つたえたいこと」は入れたらすぐ保存・せっていの数字の欄は画面を離れる前に確定させる(blur で change=保存)ので確かめない。
+   🗑 の「けす?」は窓ではない(2.5秒で元に戻る)ので、戻るで記録が消えることは無い。
+   Web版(ブラウザ)は何も変えない(戻るはブラウザのまま) */
+function layerZ(e){ const z = parseInt(getComputedStyle(e).zIndex, 10); return isNaN(z) ? 0 : z; }
+function topLayer(){
+  let top = null;
+  document.querySelectorAll('.overlay, .img-full').forEach(e => {
+    if(!e.getClientRects().length) return;
+    if(!top || layerZ(e) >= layerZ(top)) top = e;   // 同じ高さなら、あとから出た(DOMの後ろの)窓が上
+  });
+  return top;
+}
+function isWriting(t){
+  if(!t || !t.tagName) return false;
+  if(t.tagName === 'TEXTAREA' || t.isContentEditable) return true;
+  if(t.tagName !== 'INPUT') return false;
+  return /^(text|tel|email|url|number|date|time|datetime-local|month|week|)$/.test(String(t.type || 'text').toLowerCase());
+}
+function layerDirty(ov){
+  if(ov === modal) return [mNum, mText].some(x => !x.classList.contains('hidden') && String(x.value).trim() !== '');   // 開くたびに空にしている
+  return !!ov._dirty;
+}
+function closeLayer(ov){
+  if(typeof ov._back === 'function'){ ov._back(); return; }   // 確かめの窓 = いいえ
+  if(ov === sheet){ closeSheet(); return; }                     // えらぶシート = やめる
+  if(ov === modal){ modal.classList.add('hidden'); return; }    // 入力の窓 = やめる
+  ov.remove();                                                  // 記録の窓(やめる = ctx.close)・写真の拡大(とじる)
+}
+function minimizeApp(){
+  const ap = nativePlugin('App', 'minimizeApp');
+  try{ if(ap){ const p = ap.minimizeApp(); if(p && p.catch) p.catch(() => {}); } }catch(_){}
+}
+function onBack(){
+  const ov = topLayer();
+  if(ov){
+    if(!ov.classList.contains('ask-ov') && layerDirty(ov)){
+      askBox(T('common.backConfirm'), ok => { if(ok) closeLayer(ov); });
+      return;
+    }
+    closeLayer(ov);
+    return;
+  }
+  const a = document.activeElement;   // せっていの数字の欄など: 画面を離れる前に確定させる(change で保存)
+  if(a && a !== document.body && typeof a.blur === 'function'){ try{ a.blur(); }catch(_){} }
+  if(curScreen !== 'today'){ showScreen('today'); return; }
+  minimizeApp();
+}
+function watchBack(){
+  if(!isNativeApp()) return;
+  const ap = nativePlugin('App', 'addListener');
+  if(!ap) return;
+  try{ ap.addListener('backButton', () => onBack()); }catch(_){ return; }
+  document.addEventListener('input', e => {
+    const t = e.target;
+    if(!isWriting(t)) return;
+    const ov = t.closest && t.closest('.overlay');
+    if(ov) ov._dirty = true;
+  }, true);
+}
+
 /* ---- 起動 ---- */
 applyFs();
 applyTheme();     // 画面の色(meta theme-color連動・ボタン状態)
 applySound();     // タップ音ON/OFF
 applyMusic();     // BGM(実際の再生開始は最初のタップから=自動再生制限対応)
 applyLang();
+watchBack();      // Android の戻るボタン(Play版だけ)
 applyTabbarSpace();
 watchTabbarSpace();
 /* ResizeObserver が無い環境(古いWebView)向けの保険 */
