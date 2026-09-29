@@ -104,6 +104,8 @@ const preload = [
   { k:'xxx', v:'なぞの旧項目', t:T() }                            // 未知k → 温存
 ];
 store['okiroku.entries'] = JSON.stringify(preload);
+/* はじめての つかいかた(2026-09-30)は読み終えた扱いで始める(案内そのものは store/_back_check.js で本物のChromeで試す) */
+store['okiroku.guide.v1'] = 'true';
 
 /* ---- sandbox ---- */
 const documentStub = {
@@ -390,7 +392,8 @@ console.log('[v1.1] 壊れた/古い ならび順 保存値からの自動復旧
   const byId2 = id => ids.has(id) ? (created2[id] || (created2[id] = makeEl())) : null;
   const store2 = {
     'okiroku.entries':'[]',
-    'okiroku.prefs':JSON.stringify({ schema:2, order:['note','xxx_未知の項目','note','med'] })
+    'okiroku.prefs':JSON.stringify({ schema:2, order:['note','xxx_未知の項目','note','med'] }),
+    'okiroku.guide.v1':'true'
   };
   const doc2 = {
     documentElement:Object.assign(makeEl('html'), { lang:'', dir:'' }),

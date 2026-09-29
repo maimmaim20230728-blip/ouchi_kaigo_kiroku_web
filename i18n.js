@@ -72,7 +72,7 @@
       backupHead:'バックアップ', export:'記録を書き出す', import:'記録を読み込む',
       backupHint:'記録はこの端末の中だけに保存されます。どこにも送信されません。機種変更のときは「書き出す」で保存したファイルを新しい端末で「読み込む」してください。',
       credit:'アプリ開発：介護と支援の相談どころ　そよぎ',
-      ver:'バージョン 1.3',
+      ver:'バージョン 1.4',
       on:'ON', off:'OFF'
     },
 
@@ -171,6 +171,34 @@
     col: {
       med:'💊くすり', water:'🥛水分', meal:'🍚食事', mealWeek:'🍚食べず', toilet:'🚻トイレ',
       temp:'🌡体温', bp:'❤️血圧', sleep:'🌙ねむり', fall:'⚠転倒等'
+    },
+    /* はじめての つかいかた(app.js openGuide・初回に必ず出す・2026-09-30)。heads と bodies は同じ数。
+       ボタン名・画面名は その言語の画面の文字と同じにする(画面の文言を変えたら ここも)。隠れた入口は無い=せっていから もう一度 見られる */
+    "guide": {
+      "title": "つかいかた",
+      "step": "{n} / {m}",
+      "start": "はじめる",
+      "again": "もういちど見る",
+      "prev": "まえ",
+      "next": "つぎ",
+      "heads": [
+        "おうち介護記録・そよぎへ ようこそ",
+        "「きょう」でワンタップ記録",
+        "記録をなおす・けす",
+        "こうもくをふやす・へらす",
+        "「りれき」と「みせる」",
+        "記録はこの端末の中だけ",
+        "せってい"
+      ],
+      "bodies": [
+        "このアプリは、おうちで介護をしている方が、毎日のようすをワンタップで記録するノートです。\n記録は「みせる」の画面で表になり、受診や面談のときに、お医者さん・看護師さん・ケアマネさんに見せられます。",
+        "下の「きょう」の画面で、「おくすり」「食事」「トイレ」「体温」などのこうもくをおして、あてはまるものをえらぶと記録されます。体温などの数字は ＋ と − であわせて「きろくする」をおします。\n水分は「コップ1杯 200ml」「半分 100ml」「少し 50ml」をおすだけです。まちがえたら「⤺ 1つもどす」をおします。\n記録したものは「きょうの記録」にならびます。",
+        "「きょうの記録」で記録の時刻をおすと「時刻をなおす」が出て、時刻をなおせます。\n🗑 をおすと「けす?」にかわります。もう一度おすと記録がきえます。そのままにしておくと、もとにもどります。",
+        "「血圧・脈」「体重」「おふろ」「皮膚のようす」は、はじめはOFFです。\n「せってい」の「記録するこうもく」で、こうもくの文字をおすとON・OFFがかわります。△▽ か ≡ でならびかえると、「きょう」の画面もその順になります。\n「わたしのきぶん」は、介護するあなた自身の記録です。「みせる」の表には出ません。",
+        "「りれき」では「◀ 前の日」「次の日 ▶」で日をかえて、その日のまとめと記録を見られます。\n「みせる」では、記録から自動で表が作られます。「1週間」「1か月」「3か月」で期間をえらび、この画面をそのまま、お医者さん・看護師さん・ケアマネさんに見せてください。\n「つたえたいこと・心配なこと」に、伝えたいことをメモしておけます。",
+        "記録はこの端末の中だけに保存され、どこにも送られません。登録もいりません。\n機種変更のときは、「せってい」の「記録を書き出す」でファイルを保存し、新しい端末で「記録を読み込む」をおしてください。",
+        "「せってい」では「水分の目標量(1日)」(はじめは1200ml)と身長を入れられます。身長を入れると、体重の記録にBMIのめやすが出ます。\n「文字の大きさ」(ふつう・大きい・とくだい)、「がめんの色」(みどり・あお)、「おんがく(BGM)」、「タップ音」もかえられます。\nことばは「せってい」のいちばん上の「🌐 ことば / Language」でえらべます。\nこの案内は「せってい」の「つかいかた」の「もういちど見る」で、いつでももう一度見られます。"
+      ]
     }
   };
 
@@ -232,7 +260,7 @@
       backupHead:'Backup', export:'Export records', import:'Import records',
       backupHint:'Records are stored only on this device. Nothing is sent anywhere. When you change devices, use "Export" to save a file, then "Import" it on the new device.',
       credit:'App development: SOYOGI - Care & Support Consultation',
-      ver:'Version 1.3',
+      ver:'Version 1.4',
       on:'ON', off:'OFF'
     },
 
@@ -327,6 +355,32 @@
     col: {
       med:'💊 Med', water:'🥛 Water', meal:'🍚 Meal', mealWeek:'🍚 Skipped', toilet:'🚻 Toilet',
       temp:'🌡 Temp', bp:'❤️ BP', sleep:'🌙 Sleep', fall:'⚠ Fall'
+    },
+    "guide": {
+      "title": "How to use",
+      "step": "{n} / {m}",
+      "start": "Start",
+      "again": "Show again",
+      "prev": "Previous",
+      "next": "Next",
+      "heads": [
+        "Welcome to Home Care Log - SOYOGI",
+        "One-tap records on \"Today\"",
+        "Fix or delete a record",
+        "Add or remove items",
+        "\"History\" and \"Show\"",
+        "Records stay on this device",
+        "Settings"
+      ],
+      "bodies": [
+        "This app is a notebook for people caring for someone at home, to record each day with one tap.\nYour records become a table on the \"Show\" screen, which you can show to the doctor, nurse, or care manager at a visit or meeting.",
+        "On the \"Today\" screen, tap an item such as \"Medicine\", \"Meals\", \"Toilet\" or \"Temperature\" and choose what applies to record it. For numbers such as temperature, adjust with ＋ and − and tap \"Save\".\nFor water, just tap \"1 cup 200 ml\", \"Half 100 ml\" or \"A little 50 ml\". If you make a mistake, tap \"⤺ Undo one\".\nWhat you record is listed under \"Today’s records\".",
+        "In \"Today’s records\", tap the time of a record to open \"Fix the time\" and change it.\nTap 🗑 and it changes to \"Delete?\". Tap it again to delete the record. If you leave it, it goes back.",
+        "\"Blood pressure & pulse\", \"Weight\", \"Bath\" and \"Skin\" are OFF at first.\nIn \"Settings\", under \"Items to record\", tap the name of an item to turn it ON or OFF. Reorder them with △▽ or ≡, and the \"Today\" screen follows that order.\n\"My mood\" is a record about you, the caregiver. It does not appear in the table on \"Show\".",
+        "On \"History\", use \"◀ Prev day\" and \"Next day ▶\" to change the day and see that day’s summary and records.\nOn \"Show\", a table is made automatically from your records. Choose the period with \"1 week\", \"1 month\" or \"3 months\", and show this screen as it is to the doctor, nurse, or care manager.\nYou can also write notes under \"Things to tell / concerns\".",
+        "Records are stored only on this device. Nothing is sent anywhere, and no sign-up is needed.\nWhen you change devices, tap \"Export records\" in \"Settings\" to save a file, then tap \"Import records\" on the new device.",
+        "In \"Settings\" you can set the \"Daily water goal\" (1200 ml at first) and the height. When a height is entered, a BMI guide appears on weight records.\nYou can also change \"Text size\" (Normal, Large, Extra large), \"Screen color\" (Green, Blue), \"Music (BGM)\" and \"Tap sound\".\nChoose the language with \"🌐 ことば / Language\" at the top of \"Settings\".\nYou can see this guide again at any time with \"Show again\" under \"How to use\" in \"Settings\"."
+      ]
     }
   };
 
@@ -381,7 +435,7 @@
       backupHead:'Sicherung', export:'Einträge exportieren', import:'Einträge importieren',
       backupHint:'Die Einträge werden nur auf diesem Gerät gespeichert. Nichts wird gesendet. Beim Gerätewechsel mit „Exportieren“ eine Datei sichern und auf dem neuen Gerät „Importieren“.',
       credit:'App-Entwicklung: SOYOGI - Beratungsstelle für Pflege und Unterstützung',
-      ver:'Version 1.3',
+      ver:'Version 1.4',
       on:'AN', off:'AUS'
     },
     items: {
@@ -457,6 +511,32 @@
     col: {
       med:'💊 Medik.', water:'🥛 Trinken', meal:'🍚 Essen', mealWeek:'🍚 Nichts geg.', toilet:'🚻 Toilette',
       temp:'🌡 Temp.', bp:'❤️ RR', sleep:'🌙 Schlaf', fall:'⚠ Sturz'
+    },
+    "guide": {
+      "title": "Anleitung",
+      "step": "{n} / {m}",
+      "start": "Loslegen",
+      "again": "Noch einmal ansehen",
+      "prev": "Vorherige",
+      "next": "Weiter",
+      "heads": [
+        "Willkommen bei Pflegetagebuch Zuhause - SOYOGI",
+        "Mit einem Tipp aufzeichnen unter „Heute“",
+        "Einträge korrigieren oder löschen",
+        "Punkte hinzufügen oder entfernen",
+        "„Verlauf“ und „Bericht“",
+        "Die Einträge bleiben auf diesem Gerät",
+        "Einstellungen"
+      ],
+      "bodies": [
+        "Diese App ist ein Heft für Menschen, die jemanden zu Hause pflegen: Jeder Tag wird mit einem Tipp aufgezeichnet.\nAus den Einträgen entsteht im Bildschirm „Bericht“ eine Tabelle, die Sie beim Arztbesuch oder Gespräch dem Arzt, der Pflegekraft oder der Beratungsstelle zeigen können.",
+        "Tippen Sie im Bildschirm „Heute“ auf einen Punkt wie „Medikamente“, „Essen“, „Toilette“ oder „Temperatur“ und wählen Sie, was zutrifft; so wird es aufgezeichnet. Zahlen wie die Temperatur stellen Sie mit ＋ und − ein und tippen auf „Speichern“.\nFür das Trinken tippen Sie einfach auf „1 Glas 200 ml“, „Halb 100 ml“ oder „Wenig 50 ml“. Bei einem Fehler tippen Sie auf „⤺ Eins zurück“.\nDie Einträge erscheinen unter „Einträge von heute“.",
+        "Tippen Sie unter „Einträge von heute“ auf die Uhrzeit eines Eintrags; mit „Uhrzeit korrigieren“ ändern Sie die Zeit.\nWenn Sie auf 🗑 tippen, wird daraus „Löschen?“. Tippen Sie noch einmal, wird der Eintrag gelöscht. Lassen Sie es so, geht es wieder zurück.",
+        "„Blutdruck & Puls“, „Gewicht“, „Baden“ und „Haut“ sind anfangs AUS.\nIn den „Einstellungen“ unter „Punkte zum Aufzeichnen“ schalten Sie einen Punkt mit einem Tipp auf seinen Namen AN oder AUS. Mit △▽ oder ≡ ändern Sie die Reihenfolge, und der Bildschirm „Heute“ folgt ihr.\n„Meine Stimmung“ ist ein Eintrag über Sie selbst als pflegende Person. Er erscheint nicht in der Tabelle unter „Bericht“.",
+        "Unter „Verlauf“ wechseln Sie mit „◀ Vortag“ und „Nächster Tag ▶“ den Tag und sehen die Zusammenfassung und die Einträge dieses Tages.\nUnter „Bericht“ entsteht aus den Einträgen automatisch eine Tabelle. Wählen Sie den Zeitraum mit „1 Woche“, „1 Monat“ oder „3 Monate“ und zeigen Sie diesen Bildschirm einfach dem Arzt, der Pflegekraft oder der Beratungsstelle.\nUnter „Mitteilungen / Sorgen“ können Sie sich Notizen machen.",
+        "Die Einträge werden nur auf diesem Gerät gespeichert. Nichts wird gesendet, und eine Anmeldung ist nicht nötig.\nBeim Gerätewechsel sichern Sie in den „Einstellungen“ mit „Einträge exportieren“ eine Datei und tippen auf dem neuen Gerät auf „Einträge importieren“.",
+        "In den „Einstellungen“ legen Sie das „Tagesziel Trinkmenge“ (anfangs 1200 ml) und die Größe fest. Ist eine Größe eingetragen, erscheint bei Gewichtseinträgen ein BMI-Richtwert.\nAußerdem ändern Sie dort „Schriftgröße“ (Normal, Groß, Sehr groß), „Bildschirmfarbe“ (Grün, Blau), „Musik (BGM)“ und „Tippton“.\nDie Sprache wählen Sie ganz oben in den „Einstellungen“ unter „🌐 Sprache / Language“.\nDiese Anleitung können Sie jederzeit mit „Noch einmal ansehen“ unter „Anleitung“ in den „Einstellungen“ erneut ansehen."
+      ]
     }
   };
 
@@ -511,7 +591,7 @@
       backupHead:'Sauvegarde', export:'Exporter les données', import:'Importer les données',
       backupHint:'Les enregistrements restent uniquement sur cet appareil. Rien n’est envoyé. En cas de changement d’appareil, « Exporter » un fichier puis « Importer » sur le nouvel appareil.',
       credit:'Développement de l’application : SOYOGI - Lieu de conseil en soins et soutien',
-      ver:'Version 1.3',
+      ver:'Version 1.4',
       on:'ON', off:'OFF'
     },
     items: {
@@ -587,6 +667,32 @@
     col: {
       med:'💊 Médic.', water:'🥛 Hydrat.', meal:'🍚 Repas', mealWeek:'🍚 Rien mangé', toilet:'🚻 Toilettes',
       temp:'🌡 Temp.', bp:'❤️ Tension', sleep:'🌙 Sommeil', fall:'⚠ Chute'
+    },
+    "guide": {
+      "title": "Mode d’emploi",
+      "step": "{n} / {m}",
+      "start": "Commencer",
+      "again": "Revoir",
+      "prev": "Précédent",
+      "next": "Suivant",
+      "heads": [
+        "Bienvenue dans Journal de soins à domicile - SOYOGI",
+        "Noter en une touche dans « Aujourd’hui »",
+        "Corriger ou effacer un enregistrement",
+        "Ajouter ou retirer des éléments",
+        "« Historique » et « Rapport »",
+        "Les enregistrements restent sur cet appareil",
+        "Réglages"
+      ],
+      "bodies": [
+        "Cette application est un carnet qui permet aux personnes qui s’occupent d’un proche à la maison de noter chaque jour en une touche.\nVos enregistrements deviennent un tableau dans l’écran « Rapport », que vous pouvez montrer au médecin, à l’infirmière ou au gestionnaire de soins lors d’une consultation ou d’une réunion.",
+        "Dans l’écran « Aujourd’hui », touchez un élément comme « Médicaments », « Repas », « Toilettes » ou « Température », puis choisissez ce qui convient pour l’enregistrer. Pour les nombres comme la température, réglez avec ＋ et − puis touchez « Enregistrer ».\nPour l’hydratation, touchez simplement « 1 verre 200 ml », « Moitié 100 ml » ou « Un peu 50 ml ». En cas d’erreur, touchez « ⤺ Annuler une prise ».\nVos enregistrements s’affichent dans « Enregistrements du jour ».",
+        "Dans « Enregistrements du jour », touchez l’heure d’un enregistrement pour ouvrir « Corriger l’heure » et la modifier.\nSi vous touchez 🗑, il devient « Effacer ? ». Touchez-le encore une fois pour effacer l’enregistrement. Si vous n’y touchez plus, il revient comme avant.",
+        "« Tension & pouls », « Poids », « Bain » et « Peau » sont sur OFF au départ.\nDans « Réglages », sous « Éléments à suivre », touchez le nom d’un élément pour le passer sur ON ou OFF. Changez l’ordre avec △▽ ou ≡ : l’écran « Aujourd’hui » suit cet ordre.\n« Mon moral » concerne vous-même, l’aidant(e). Il n’apparaît pas dans le tableau de « Rapport ».",
+        "Dans « Historique », changez de jour avec « ◀ Jour précédent » et « Jour suivant ▶ » pour voir le résumé et les enregistrements de ce jour.\nDans « Rapport », un tableau est créé automatiquement à partir des enregistrements. Choisissez la période avec « 1 semaine », « 1 mois » ou « 3 mois », puis montrez cet écran tel quel au médecin, à l’infirmière ou au gestionnaire de soins.\nVous pouvez aussi prendre des notes dans « À transmettre / inquiétudes ».",
+        "Les enregistrements sont conservés uniquement sur cet appareil. Rien n’est envoyé, et aucune inscription n’est nécessaire.\nEn cas de changement d’appareil, touchez « Exporter les données » dans « Réglages » pour enregistrer un fichier, puis « Importer les données » sur le nouvel appareil.",
+        "Dans « Réglages », vous pouvez définir l’« Objectif d’hydratation (par jour) » (1200 ml au départ) et la taille. Quand une taille est saisie, un repère d’IMC s’affiche sur les enregistrements de poids.\nVous pouvez aussi changer la « Taille du texte » (Normale, Grande, Très grande), la « Couleur de l’écran » (Vert, Bleu), la « Musique (fond) » et le « Son des touches ».\nChoisissez la langue avec « 🌐 Langue / Language », tout en haut de « Réglages ».\nVous pouvez revoir ce guide à tout moment avec « Revoir », sous « Mode d’emploi » dans « Réglages »."
+      ]
     }
   };
 
@@ -641,7 +747,7 @@
       backupHead:'Copia de seguridad', export:'Exportar registros', import:'Importar registros',
       backupHint:'Los registros se guardan solo en este dispositivo. No se envía nada. Al cambiar de dispositivo, use «Exportar» para guardar un archivo e «Importar» en el nuevo.',
       credit:'Desarrollo de la aplicación: SOYOGI - Centro de consultas de cuidados y apoyo',
-      ver:'Versión 1.3',
+      ver:'Versión 1.4',
       on:'ON', off:'OFF'
     },
     items: {
@@ -717,6 +823,32 @@
     col: {
       med:'💊 Medic.', water:'🥛 Líquidos', meal:'🍚 Comidas', mealWeek:'🍚 No comió', toilet:'🚻 Baño',
       temp:'🌡 Temp.', bp:'❤️ Tensión', sleep:'🌙 Sueño', fall:'⚠ Caída'
+    },
+    "guide": {
+      "title": "Cómo se usa",
+      "step": "{n} / {m}",
+      "start": "Empezar",
+      "again": "Ver de nuevo",
+      "prev": "Anterior",
+      "next": "Siguiente",
+      "heads": [
+        "Le damos la bienvenida a Diario de cuidados en casa - SOYOGI",
+        "Registrar con un toque en «Hoy»",
+        "Corregir o borrar un registro",
+        "Añadir o quitar elementos",
+        "«Historial» e «Informe»",
+        "Los registros se quedan en este dispositivo",
+        "Ajustes"
+      ],
+      "bodies": [
+        "Esta app es un cuaderno para que quienes cuidan a alguien en casa registren cada día con un toque.\nSus registros se convierten en una tabla en la pantalla «Informe», que puede mostrar al médico, a la enfermera o al coordinador de cuidados en la consulta o en una reunión.",
+        "En la pantalla «Hoy», toque un elemento como «Medicación», «Comidas», «Baño» o «Temperatura» y elija lo que corresponda para registrarlo. Para números como la temperatura, ajuste con ＋ y − y toque «Guardar».\nPara los líquidos, basta con tocar «1 vaso 200 ml», «Medio 100 ml» o «Un poco 50 ml». Si se equivoca, toque «⤺ Deshacer una».\nLo registrado aparece en «Registros de hoy».",
+        "En «Registros de hoy», toque la hora de un registro para abrir «Corregir la hora» y cambiarla.\nAl tocar 🗑, cambia a «¿Borrar?». Tóquelo otra vez para borrar el registro. Si lo deja así, vuelve a como estaba.",
+        "«Tensión y pulso», «Peso», «Baño e higiene» y «Piel» están en OFF al principio.\nEn «Ajustes», dentro de «Elementos para registrar», toque el nombre de un elemento para ponerlo en ON u OFF. Cambie el orden con △▽ o ≡, y la pantalla «Hoy» seguirá ese orden.\n«Mi ánimo» es un registro sobre usted, la persona que cuida. No aparece en la tabla de «Informe».",
+        "En «Historial», cambie de día con «◀ Día anterior» y «Día siguiente ▶» para ver el resumen y los registros de ese día.\nEn «Informe», se crea una tabla automáticamente con los registros. Elija el periodo con «1 semana», «1 mes» o «3 meses» y muestre esta pantalla tal cual al médico, a la enfermera o al coordinador de cuidados.\nTambién puede tomar notas en «Cosas que contar / preocupaciones».",
+        "Los registros se guardan solo en este dispositivo. No se envía nada y no hace falta darse de alta.\nAl cambiar de dispositivo, toque «Exportar registros» en «Ajustes» para guardar un archivo y luego «Importar registros» en el nuevo.",
+        "En «Ajustes» puede fijar el «Objetivo diario de líquidos» (1200 ml al principio) y la estatura. Si se introduce una estatura, aparece una referencia de IMC en los registros de peso.\nTambién puede cambiar el «Tamaño del texto» (Normal, Grande, Muy grande), el «Color de pantalla» (Verde, Azul), la «Música (BGM)» y el «Sonido al tocar».\nElija el idioma con «🌐 Idioma / Language», arriba del todo en «Ajustes».\nPuede volver a ver esta guía cuando quiera con «Ver de nuevo», en «Cómo se usa» dentro de «Ajustes»."
+      ]
     }
   };
 
@@ -771,7 +903,7 @@
       backupHead:'Backup', export:'Esporta registrazioni', import:'Importa registrazioni',
       backupHint:'Le registrazioni restano solo su questo dispositivo. Non viene inviato nulla. Cambiando dispositivo, usa «Esporta» per salvare un file e «Importa» sul nuovo.',
       credit:'Sviluppo dell’app: SOYOGI - Sportello di consulenza per cura e sostegno',
-      ver:'Versione 1.3',
+      ver:'Versione 1.4',
       on:'ON', off:'OFF'
     },
     items: {
@@ -847,6 +979,32 @@
     col: {
       med:'💊 Farmaci', water:'🥛 Liquidi', meal:'🍚 Pasti', mealWeek:'🍚 Non mangiato', toilet:'🚻 Bagno',
       temp:'🌡 Temp.', bp:'❤️ Press.', sleep:'🌙 Sonno', fall:'⚠ Caduta'
+    },
+    "guide": {
+      "title": "Come si usa",
+      "step": "{n} / {m}",
+      "start": "Inizia",
+      "again": "Rivedi",
+      "prev": "Prima",
+      "next": "Avanti",
+      "heads": [
+        "Ti diamo il benvenuto in Diario di cura a casa - SOYOGI",
+        "Registra con un tocco in «Oggi»",
+        "Correggere o eliminare una registrazione",
+        "Aggiungere o togliere voci",
+        "«Cronologia» e «Riepilogo»",
+        "Le registrazioni restano su questo dispositivo",
+        "Impostazioni"
+      ],
+      "bodies": [
+        "Questa app è un quaderno per chi assiste qualcuno a casa: ogni giorno si registra con un tocco.\nLe registrazioni diventano una tabella nella schermata «Riepilogo», che puoi mostrare al medico, all’infermiere o al responsabile dell’assistenza durante una visita o un colloquio.",
+        "Nella schermata «Oggi», tocca una voce come «Farmaci», «Pasti», «Bagno» o «Temperatura» e scegli ciò che vale per registrarlo. Per i numeri come la temperatura, regola con ＋ e − e tocca «Salva».\nPer i liquidi basta toccare «1 bicchiere 200 ml», «Metà 100 ml» o «Un po’ 50 ml». Se sbagli, tocca «⤺ Annulla una».\nCiò che registri compare in «Registrazioni di oggi».",
+        "In «Registrazioni di oggi», tocca l’orario di una registrazione per aprire «Correggi l’orario» e cambiarlo.\nToccando 🗑 diventa «Eliminare?». Toccalo ancora una volta per eliminare la registrazione. Se lo lasci così, torna com’era.",
+        "«Pressione e polso», «Peso», «Bagno e igiene» e «Pelle» all’inizio sono OFF.\nIn «Impostazioni», sotto «Voci da registrare», tocca il nome di una voce per metterla ON o OFF. Cambia l’ordine con △▽ o ≡: la schermata «Oggi» segue quell’ordine.\n«Il mio umore» è una registrazione su di te che assisti. Non compare nella tabella di «Riepilogo».",
+        "In «Cronologia» cambi giorno con «◀ Giorno prima» e «Giorno dopo ▶» e vedi il riepilogo e le registrazioni di quel giorno.\nIn «Riepilogo» si crea automaticamente una tabella dalle registrazioni. Scegli il periodo con «1 settimana», «1 mese» o «3 mesi» e mostra questa schermata così com’è al medico, all’infermiere o al responsabile dell’assistenza.\nPuoi anche prendere appunti in «Cose da riferire / preoccupazioni».",
+        "Le registrazioni restano solo su questo dispositivo. Non viene inviato nulla e non serve iscriversi.\nQuando cambi dispositivo, tocca «Esporta registrazioni» in «Impostazioni» per salvare un file, poi «Importa registrazioni» sul nuovo.",
+        "In «Impostazioni» puoi fissare l’«Obiettivo giornaliero di liquidi» (all’inizio 1200 ml) e l’altezza. Se inserisci un’altezza, sulle registrazioni del peso compare un riferimento BMI.\nPuoi anche cambiare «Dimensione del testo» (Normale, Grande, Molto grande), «Colore dello schermo» (Verde, Blu), «Musica (BGM)» e «Suono dei tocchi».\nScegli la lingua con «🌐 Lingua / Language», in cima a «Impostazioni».\nPuoi rivedere questa guida in qualsiasi momento con «Rivedi», sotto «Come si usa» in «Impostazioni»."
+      ]
     }
   };
 
@@ -901,7 +1059,7 @@
       backupHead:'Backup', export:'Exportar registros', import:'Importar registros',
       backupHint:'Os registros ficam apenas neste aparelho. Nada é enviado. Ao trocar de aparelho, use «Exportar» para salvar um arquivo e «Importar» no novo.',
       credit:'Desenvolvimento do app: SOYOGI - Centro de consultas de cuidado e apoio',
-      ver:'Versão 1.3',
+      ver:'Versão 1.4',
       on:'ON', off:'OFF'
     },
     items: {
@@ -977,6 +1135,32 @@
     col: {
       med:'💊 Medic.', water:'🥛 Líquidos', meal:'🍚 Refeições', mealWeek:'🍚 Não comeu', toilet:'🚻 Banheiro',
       temp:'🌡 Temp.', bp:'❤️ Pressão', sleep:'🌙 Sono', fall:'⚠ Queda'
+    },
+    "guide": {
+      "title": "Como usar",
+      "step": "{n} / {m}",
+      "start": "Começar",
+      "again": "Ver de novo",
+      "prev": "Anterior",
+      "next": "Próximo",
+      "heads": [
+        "Boas-vindas ao Diário de cuidados em casa - SOYOGI",
+        "Registrar com um toque em «Hoje»",
+        "Corrigir ou apagar um registro",
+        "Adicionar ou remover itens",
+        "«Histórico» e «Relatório»",
+        "Os registros ficam neste aparelho",
+        "Configurações"
+      ],
+      "bodies": [
+        "Este app é um caderno para quem cuida de alguém em casa registrar cada dia com um toque.\nOs registros viram uma tabela na tela «Relatório», que você pode mostrar ao médico, à enfermeira ou ao coordenador de cuidados na consulta ou em uma reunião.",
+        "Na tela «Hoje», toque em um item como «Medicamentos», «Refeições», «Banheiro» ou «Temperatura» e escolha o que se aplica para registrar. Para números como a temperatura, ajuste com ＋ e − e toque em «Salvar».\nPara líquidos, basta tocar em «1 copo 200 ml», «Metade 100 ml» ou «Um pouco 50 ml». Se errar, toque em «⤺ Desfazer uma».\nO que você registra aparece em «Registros de hoje».",
+        "Em «Registros de hoje», toque no horário de um registro para abrir «Corrigir o horário» e mudá-lo.\nAo tocar em 🗑, ele muda para «Apagar?». Toque mais uma vez para apagar o registro. Se deixar assim, ele volta ao normal.",
+        "«Pressão e pulso», «Peso», «Banho e higiene» e «Pele» começam em OFF.\nEm «Configurações», em «Itens para registrar», toque no nome de um item para deixá-lo em ON ou OFF. Mude a ordem com △▽ ou ≡, e a tela «Hoje» segue essa ordem.\n«Meu ânimo» é um registro sobre você, que cuida. Ele não aparece na tabela de «Relatório».",
+        "Em «Histórico», mude o dia com «◀ Dia anterior» e «Dia seguinte ▶» para ver o resumo e os registros daquele dia.\nEm «Relatório», uma tabela é criada automaticamente a partir dos registros. Escolha o período com «1 semana», «1 mês» ou «3 meses» e mostre esta tela como está ao médico, à enfermeira ou ao coordenador de cuidados.\nVocê também pode fazer anotações em «O que contar / preocupações».",
+        "Os registros ficam salvos apenas neste aparelho. Nada é enviado e não é preciso cadastro.\nAo trocar de aparelho, toque em «Exportar registros» em «Configurações» para salvar um arquivo e depois em «Importar registros» no novo.",
+        "Em «Configurações» você define a «Meta diária de líquidos» (1200 ml no início) e a altura. Com uma altura informada, aparece uma referência de IMC nos registros de peso.\nTambém pode mudar o «Tamanho do texto» (Normal, Grande, Muito grande), a «Cor da tela» (Verde, Azul), a «Música (BGM)» e o «Som ao tocar».\nEscolha o idioma em «🌐 Idioma / Language», no topo de «Configurações».\nVocê pode ver este guia de novo a qualquer momento com «Ver de novo», em «Como usar» dentro de «Configurações»."
+      ]
     }
   };
 
@@ -1031,7 +1215,7 @@
       backupHead:'Back-up', export:'Registraties exporteren', import:'Registraties importeren',
       backupHint:'Registraties staan alleen op dit apparaat. Er wordt niets verzonden. Bij een nieuw apparaat: "Exporteren" naar een bestand en op het nieuwe apparaat "Importeren".',
       credit:'App-ontwikkeling: SOYOGI - Adviespunt voor zorg en ondersteuning',
-      ver:'Versie 1.3',
+      ver:'Versie 1.4',
       on:'AAN', off:'UIT'
     },
     items: {
@@ -1107,6 +1291,32 @@
     col: {
       med:'💊 Medic.', water:'🥛 Vocht', meal:'🍚 Eten', mealWeek:'🍚 Niet gegeten', toilet:'🚻 Toilet',
       temp:'🌡 Temp.', bp:'❤️ Bloeddruk', sleep:'🌙 Slaap', fall:'⚠ Val'
+    },
+    "guide": {
+      "title": "Zo werkt het",
+      "step": "{n} / {m}",
+      "start": "Beginnen",
+      "again": "Nog eens bekijken",
+      "prev": "Vorige",
+      "next": "Volgende",
+      "heads": [
+        "Welkom bij Zorgdagboek thuis - SOYOGI",
+        "Met één tik registreren bij \"Vandaag\"",
+        "Een registratie aanpassen of wissen",
+        "Onderdelen toevoegen of weghalen",
+        "\"Overzicht\" en \"Rapport\"",
+        "De registraties blijven op dit apparaat",
+        "Instellingen"
+      ],
+      "bodies": [
+        "Deze app is een schrift voor wie thuis voor iemand zorgt: elke dag registreert u met één tik.\nDe registraties worden een tabel in het scherm \"Rapport\", die u bij een bezoek of gesprek aan de arts, verpleegkundige of zorgcoördinator kunt laten zien.",
+        "Tik in het scherm \"Vandaag\" op een onderdeel zoals \"Medicijnen\", \"Maaltijden\", \"Toilet\" of \"Temperatuur\" en kies wat van toepassing is om het te registreren. Getallen zoals de temperatuur stelt u in met ＋ en − en tik dan op \"Opslaan\".\nVoor vocht tikt u gewoon op \"1 glas 200 ml\", \"Half 100 ml\" of \"Beetje 50 ml\". Vergist u zich, tik dan op \"⤺ Eén terug\".\nWat u registreert, staat onder \"Registraties van vandaag\".",
+        "Tik bij \"Registraties van vandaag\" op de tijd van een registratie om \"Tijd aanpassen\" te openen en de tijd te wijzigen.\nAls u op 🗑 tikt, verandert die in \"Wissen?\". Tik nog een keer om de registratie te wissen. Laat u het zo, dan gaat het terug.",
+        "\"Bloeddruk & pols\", \"Gewicht\", \"Wassen\" en \"Huid\" staan eerst op UIT.\nBij \"Instellingen\", onder \"Onderdelen om te registreren\", tikt u op de naam van een onderdeel om het AAN of UIT te zetten. Wijzig de volgorde met △▽ of ≡; het scherm \"Vandaag\" volgt die volgorde.\n\"Mijn stemming\" gaat over uzelf als mantelzorger. Het staat niet in de tabel bij \"Rapport\".",
+        "Bij \"Overzicht\" wisselt u van dag met \"◀ Vorige dag\" en \"Volgende dag ▶\" en ziet u de samenvatting en de registraties van die dag.\nBij \"Rapport\" wordt uit de registraties automatisch een tabel gemaakt. Kies de periode met \"1 week\", \"1 maand\" of \"3 maanden\" en laat dit scherm zo zien aan de arts, verpleegkundige of zorgcoördinator.\nBij \"Door te geven / zorgen\" kunt u ook notities maken.",
+        "De registraties staan alleen op dit apparaat. Er wordt niets verzonden en u hoeft geen account aan te maken.\nBij een nieuw apparaat tikt u bij \"Instellingen\" op \"Registraties exporteren\" om een bestand op te slaan, en op het nieuwe apparaat op \"Registraties importeren\".",
+        "Bij \"Instellingen\" stelt u het \"Dagelijks vochtdoel\" (eerst 1200 ml) en de lengte in. Is er een lengte ingevuld, dan verschijnt bij gewichtsregistraties een BMI-richtwaarde.\nU kunt er ook \"Tekstgrootte\" (Normaal, Groot, Extra groot), \"Schermkleur\" (Groen, Blauw), \"Muziek (BGM)\" en \"Tikgeluid\" wijzigen.\nKies de taal met \"🌐 Taal / Language\" helemaal bovenaan in \"Instellingen\".\nDeze uitleg kunt u altijd opnieuw bekijken met \"Nog eens bekijken\" onder \"Zo werkt het\" in \"Instellingen\"."
+      ]
     }
   };
 
@@ -1161,7 +1371,7 @@
       backupHead:'Säkerhetskopia', export:'Exportera anteckningar', import:'Importera anteckningar',
       backupHint:'Anteckningarna sparas bara på den här enheten. Inget skickas någonstans. Vid byte av enhet: "Exportera" till en fil och "Importera" på den nya enheten.',
       credit:'Apputveckling: SOYOGI - Rådgivning för omsorg och stöd',
-      ver:'Version 1.3',
+      ver:'Version 1.4',
       on:'PÅ', off:'AV'
     },
     items: {
@@ -1237,6 +1447,32 @@
     col: {
       med:'💊 Läkem.', water:'🥛 Vätska', meal:'🍚 Mat', mealWeek:'🍚 Åt inget', toilet:'🚻 Toalett',
       temp:'🌡 Temp.', bp:'❤️ Blodtryck', sleep:'🌙 Sömn', fall:'⚠ Fall'
+    },
+    "guide": {
+      "title": "Så används appen",
+      "step": "{n} / {m}",
+      "start": "Börja",
+      "again": "Visa igen",
+      "prev": "Föregående",
+      "next": "Nästa",
+      "heads": [
+        "Välkommen till Omsorgsdagbok hemma - SOYOGI",
+        "Anteckna med ett tryck under \"Idag\"",
+        "Ändra eller radera en anteckning",
+        "Lägg till eller ta bort punkter",
+        "\"Historik\" och \"Rapport\"",
+        "Anteckningarna stannar på den här enheten",
+        "Inställningar"
+      ],
+      "bodies": [
+        "Den här appen är en anteckningsbok för dig som vårdar någon hemma: varje dag antecknas med ett tryck.\nAnteckningarna blir en tabell på skärmen \"Rapport\", som du kan visa för läkaren, sjuksköterskan eller omsorgssamordnaren vid ett besök eller möte.",
+        "På skärmen \"Idag\" trycker du på en punkt som \"Läkemedel\", \"Måltider\", \"Toalett\" eller \"Temperatur\" och väljer det som stämmer för att anteckna det. Siffror som temperaturen ställer du in med ＋ och − och trycker sedan på \"Spara\".\nFör vätska trycker du bara på \"1 glas 200 ml\", \"Halvt 100 ml\" eller \"Lite 50 ml\". Blev det fel, tryck på \"⤺ Ångra ett\".\nDet du antecknar visas under \"Dagens anteckningar\".",
+        "Under \"Dagens anteckningar\" trycker du på tiden för en anteckning för att öppna \"Ändra tiden\" och ändra den.\nNär du trycker på 🗑 blir den \"Radera?\". Tryck en gång till för att radera anteckningen. Låter du den vara går den tillbaka.",
+        "\"Blodtryck & puls\", \"Vikt\", \"Bad & hygien\" och \"Hud\" är AV från början.\nUnder \"Inställningar\", i \"Punkter att anteckna\", trycker du på namnet på en punkt för att slå PÅ eller AV. Ändra ordningen med △▽ eller ≡, så följer skärmen \"Idag\" den ordningen.\n\"Mitt mående\" är en anteckning om dig själv som vårdar. Den visas inte i tabellen under \"Rapport\".",
+        "Under \"Historik\" byter du dag med \"◀ Föregående dag\" och \"Nästa dag ▶\" och ser dagens sammanfattning och anteckningar.\nUnder \"Rapport\" skapas en tabell automatiskt av anteckningarna. Välj period med \"1 vecka\", \"1 månad\" eller \"3 månader\" och visa skärmen som den är för läkaren, sjuksköterskan eller omsorgssamordnaren.\nDu kan också skriva anteckningar under \"Att berätta / oro\".",
+        "Anteckningarna sparas bara på den här enheten. Inget skickas någonstans och inget konto behövs.\nNär du byter enhet trycker du på \"Exportera anteckningar\" under \"Inställningar\" för att spara en fil, och sedan på \"Importera anteckningar\" på den nya enheten.",
+        "Under \"Inställningar\" ställer du in \"Dagligt vätskemål\" (1200 ml från början) och längden. När en längd är ifylld visas ett BMI-riktvärde vid viktanteckningar.\nDu kan också ändra \"Textstorlek\" (Normal, Stor, Extra stor), \"Skärmfärg\" (Grön, Blå), \"Musik (BGM)\" och \"Tryckljud\".\nVälj språk med \"🌐 Språk / Language\" högst upp under \"Inställningar\".\nDen här guiden kan du se igen när som helst med \"Visa igen\" under \"Så används appen\" i \"Inställningar\"."
+      ]
     }
   };
 
@@ -1291,7 +1527,7 @@
       backupHead:'백업', export:'기록 내보내기', import:'기록 불러오기',
       backupHint:'기록은 이 기기 안에만 저장됩니다. 어디에도 전송되지 않습니다. 기기를 바꿀 때는 「내보내기」로 파일을 저장한 뒤 새 기기에서 「불러오기」 해 주세요.',
       credit:'앱 개발: SOYOGI - 돌봄과 지원 상담소',
-      ver:'버전 1.3',
+      ver:'버전 1.4',
       on:'ON', off:'OFF'
     },
     items: {
@@ -1367,6 +1603,32 @@
     col: {
       med:'💊약', water:'🥛수분', meal:'🍚식사', mealWeek:'🍚결식', toilet:'🚻화장실',
       temp:'🌡체온', bp:'❤️혈압', sleep:'🌙수면', fall:'⚠낙상'
+    },
+    "guide": {
+      "title": "사용 방법",
+      "step": "{n} / {m}",
+      "start": "시작하기",
+      "again": "다시 보기",
+      "prev": "이전",
+      "next": "다음",
+      "heads": [
+        "우리집 돌봄 기록 - SOYOGI에 오신 것을 환영합니다",
+        "「오늘」에서 한 번에 기록",
+        "기록 고치기 · 지우기",
+        "항목 늘리기 · 줄이기",
+        "「지난 기록」과 「보여주기」",
+        "기록은 이 기기 안에만",
+        "설정"
+      ],
+      "bodies": [
+        "이 앱은 집에서 돌봄을 하는 분이 매일의 모습을 한 번의 터치로 기록하는 노트입니다.\n기록은 「보여주기」 화면에서 표가 되어, 진료나 상담 때 의사·간호사·케어매니저에게 보여 줄 수 있습니다.",
+        "「오늘」 화면에서 「약」 「식사」 「화장실」 「체온」 같은 항목을 누르고 해당하는 것을 고르면 기록됩니다. 체온 같은 숫자는 ＋ − 로 맞추고 「기록하기」를 누르세요.\n수분은 「한 컵 200ml」 「반 컵 100ml」 「조금 50ml」를 누르기만 하면 됩니다. 잘못 눌렀으면 「⤺ 하나 되돌리기」를 누르세요.\n기록한 것은 「오늘의 기록」에 나옵니다.",
+        "「오늘의 기록」에서 기록의 시각을 누르면 「시각 고치기」가 나와 시각을 고칠 수 있습니다.\n🗑 을 누르면 「지울까요?」로 바뀝니다. 한 번 더 누르면 기록이 지워집니다. 그대로 두면 원래대로 돌아갑니다.",
+        "「혈압·맥박」 「체중」 「목욕」 「피부 상태」는 처음에는 OFF입니다.\n「설정」의 「기록할 항목」에서 항목 이름을 누르면 ON·OFF가 바뀝니다. △▽ 또는 ≡ 로 순서를 바꾸면 「오늘」 화면도 그 순서가 됩니다.\n「나의 기분」은 돌보는 나 자신의 기록입니다. 「보여주기」의 표에는 나오지 않습니다.",
+        "「지난 기록」에서는 「◀ 전날」 「다음날 ▶」로 날짜를 바꿔 그날의 요약과 기록을 볼 수 있습니다.\n「보여주기」에서는 기록으로 표가 자동으로 만들어집니다. 「1주일」 「1개월」 「3개월」로 기간을 고르고, 이 화면을 그대로 의사·간호사·케어매니저에게 보여 주세요.\n「전하고 싶은 것 · 걱정되는 것」에 메모해 둘 수도 있습니다.",
+        "기록은 이 기기 안에만 저장되고 어디에도 전송되지 않습니다. 가입도 필요 없습니다.\n기기를 바꿀 때는 「설정」의 「기록 내보내기」로 파일을 저장하고, 새 기기에서 「기록 불러오기」를 눌러 주세요.",
+        "「설정」에서 「하루 수분 목표량」(처음에는 1200ml)과 키를 정할 수 있습니다. 키를 넣으면 체중 기록에 BMI 기준이 나옵니다.\n「글자 크기」(보통, 크게, 아주 크게), 「화면 색」(초록, 파랑), 「음악(BGM)」, 「터치음」도 바꿀 수 있습니다.\n언어는 「설정」 맨 위의 「🌐 언어 / Language」에서 고릅니다.\n이 안내는 「설정」의 「사용 방법」에 있는 「다시 보기」로 언제든지 다시 볼 수 있습니다."
+      ]
     }
   };
 
@@ -1421,7 +1683,7 @@
       backupHead:'备份', export:'导出记录', import:'导入记录',
       backupHint:'记录只保存在这台设备里,不会发送到任何地方。换设备时,请用「导出」保存文件,再在新设备上「导入」。',
       credit:'应用开发: SOYOGI - 照护与支援咨询处',
-      ver:'版本 1.3',
+      ver:'版本 1.4',
       on:'开', off:'关'
     },
     items: {
@@ -1497,6 +1759,32 @@
     col: {
       med:'💊药', water:'🥛水分', meal:'🍚饮食', mealWeek:'🍚未进食', toilet:'🚻如厕',
       temp:'🌡体温', bp:'❤️血压', sleep:'🌙睡眠', fall:'⚠跌倒'
+    },
+    "guide": {
+      "title": "使用方法",
+      "step": "{n} / {m}",
+      "start": "开始",
+      "again": "再看一次",
+      "prev": "上一步",
+      "next": "下一步",
+      "heads": [
+        "欢迎使用居家照护记录 - SOYOGI",
+        "在「今天」一键记录",
+        "修改或删除记录",
+        "增加或减少项目",
+        "「历史」和「报告」",
+        "记录只保存在这台设备里",
+        "设置"
+      ],
+      "bodies": [
+        "这个应用是一本笔记，供在家照护的人一键记录每天的情况。\n记录会在「报告」画面变成表格，就诊或面谈时可以给医生、护士或护理经理看。",
+        "在「今天」画面点按「吃药」「饮食」「如厕」「体温」等项目，再选择符合的内容，就会记录下来。体温等数字用 ＋ 和 − 调整后点按「记录」。\n饮水只需点按「一杯 200ml」「半杯 100ml」「一点 50ml」。点错了就点按「⤺ 撤销一条」。\n记录的内容会显示在「今天的记录」里。",
+        "在「今天的记录」里点按某条记录的时刻，会打开「修改时刻」，可以修改时间。\n点按 🗑 后会变成「删除?」。再点按一次，记录就会被删除。放着不动的话会恢复原样。",
+        "「血压·脉搏」「体重」「洗澡」「皮肤状态」一开始是关闭的。\n在「设置」的「记录项目」里点按项目名称，可以打开或关闭。用 △▽ 或 ≡ 调整顺序后，「今天」画面也会按这个顺序显示。\n「我的心情」是照护者本人的记录，不会出现在「报告」的表格里。",
+        "在「历史」里用「◀ 前一天」「后一天 ▶」切换日期，可以查看那天的汇总和记录。\n在「报告」里，表格会根据记录自动生成。用「1周」「1个月」「3个月」选择期间，然后把这个画面直接给医生、护士或护理经理看。\n也可以在「想转达的事 · 担心的事」里做笔记。",
+        "记录只保存在这台设备里，不会发送到任何地方，也不需要注册。\n换设备时，请在「设置」里用「导出记录」保存文件，再在新设备上点按「导入记录」。",
+        "在「设置」里可以设定「每日饮水目标量」(一开始是 1200ml)和身高。输入身高后，体重记录会显示 BMI 参考。\n还可以更改「文字大小」(普通、大、特大)、「界面颜色」(绿色、蓝色)、「音乐(BGM)」和「按键音」。\n语言在「设置」最上面的「🌐 语言 / Language」里选择。\n在「设置」的「使用方法」里点按「再看一次」，随时可以再次查看本说明。"
+      ]
     }
   };
 
@@ -1551,7 +1839,7 @@
       backupHead:'نسخة احتياطية', export:'تصدير التسجيلات', import:'استيراد التسجيلات',
       backupHint:'تُحفظ التسجيلات على هذا الجهاز فقط ولا يُرسل أي شيء إلى أي مكان. عند تغيير الجهاز استخدم «تصدير» لحفظ ملف ثم «استيراد» على الجهاز الجديد.',
       credit:'تطوير التطبيق: SOYOGI - مركز استشارات الرعاية والدعم',
-      ver:'الإصدار 1.3',
+      ver:'الإصدار 1.4',
       on:'تشغيل', off:'إيقاف'
     },
     items: {
@@ -1627,6 +1915,32 @@
     col: {
       med:'💊 دواء', water:'🥛 سوائل', meal:'🍚 طعام', mealWeek:'🍚 لم يأكل', toilet:'🚻 حمّام',
       temp:'🌡 حرارة', bp:'❤️ ضغط', sleep:'🌙 نوم', fall:'⚠ سقوط'
+    },
+    "guide": {
+      "title": "طريقة الاستخدام",
+      "step": "{n} / {m}",
+      "start": "ابدأ",
+      "again": "عرض مرة أخرى",
+      "prev": "السابق",
+      "next": "التالي",
+      "heads": [
+        "مرحبًا بك في سجل الرعاية المنزلية - SOYOGI",
+        "التسجيل بلمسة في «اليوم»",
+        "تصحيح تسجيل أو حذفه",
+        "إضافة البنود أو إزالتها",
+        "«السجل» و«تقرير»",
+        "التسجيلات تبقى على هذا الجهاز",
+        "الإعدادات"
+      ],
+      "bodies": [
+        "هذا التطبيق دفتر يساعد من يرعى أحدًا في البيت على تسجيل كل يوم بلمسة واحدة.\nتتحول التسجيلات إلى جدول في شاشة «تقرير»، يمكنك أن تُريه للطبيب أو الممرضة أو منسق الرعاية عند الزيارة أو الاجتماع.",
+        "في شاشة «اليوم» اضغط على بند مثل «الدواء» أو «الوجبات» أو «الحمّام» أو «الحرارة» واختر ما يناسب ليُسجَّل. أما الأرقام مثل الحرارة فاضبطها بـ ＋ و − ثم اضغط «تسجيل».\nللسوائل يكفي أن تضغط «كوب واحد 200 مل» أو «نصف كوب 100 مل» أو «قليل 50 مل». وإذا أخطأت اضغط «⤺ تراجع عن واحد».\nتظهر تسجيلاتك تحت «تسجيلات اليوم».",
+        "في «تسجيلات اليوم» اضغط على وقت أي تسجيل لتفتح «تصحيح الوقت» وتغيّر الوقت.\nعند الضغط على 🗑 يتحول إلى «حذف؟». اضغط مرة أخرى ليُحذف التسجيل، وإن تركته يعود كما كان.",
+        "«الضغط والنبض» و«الوزن» و«الاستحمام» و«الجلد» تكون متوقفة في البداية.\nفي «الإعدادات» ضمن «بنود التسجيل» اضغط على اسم البند لتشغيله أو إيقافه. غيّر الترتيب بـ △▽ أو ≡، فتتبع شاشة «اليوم» هذا الترتيب.\n«مزاجي أنا» تسجيل عنك أنت، مقدّم الرعاية، ولا يظهر في جدول «تقرير».",
+        "في «السجل» غيّر اليوم بـ «◀ اليوم السابق» و«اليوم التالي ▶» لترى ملخص ذلك اليوم وتسجيلاته.\nفي «تقرير» يُنشأ جدول تلقائيًا من التسجيلات. اختر المدة بـ «أسبوع» أو «شهر» أو «3 أشهر»، ثم أرِ هذه الشاشة كما هي للطبيب أو الممرضة أو منسق الرعاية.\nويمكنك أيضًا أن تكتب ملاحظات في «أمور تريد قولها / مخاوف».",
+        "تُحفظ التسجيلات على هذا الجهاز فقط، ولا يُرسل أي شيء إلى أي مكان، ولا حاجة لإنشاء حساب.\nعند تغيير الجهاز اضغط «تصدير التسجيلات» في «الإعدادات» لحفظ ملف، ثم اضغط «استيراد التسجيلات» على الجهاز الجديد.",
+        "في «الإعدادات» تحدد «هدف الشرب اليومي» (1200 مل في البداية) والطول. عند إدخال الطول يظهر مؤشر كتلة الجسم مع تسجيلات الوزن.\nويمكنك أيضًا تغيير «حجم الخط» (عادي، كبير، كبير جدًا) و«لون الشاشة» (أخضر، أزرق) و«الموسيقى (خلفية)» و«صوت اللمس».\nاختر اللغة من «🌐 اللغة / Language» في أعلى «الإعدادات».\nيمكنك مشاهدة هذا الدليل مرة أخرى في أي وقت بزر «عرض مرة أخرى» تحت «طريقة الاستخدام» في «الإعدادات»."
+      ]
     }
   };
 
