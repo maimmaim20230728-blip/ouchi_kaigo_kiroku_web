@@ -465,12 +465,14 @@ function openStepModal(opt){
     block.appendChild(row); ctx.box.appendChild(block);
     inputs[r.key] = inp;
     const bump = dir => {
+      const before = inp.value;
       let cur = parseFloat(inp.value);
       if(isNaN(cur)) cur = r.value;
       cur += dir * r.step;
       if(cur < r.min) cur = r.min;
       if(cur > r.max) cur = r.max;
       inp.value = fmtNum(cur, r.dec);
+      if(inp.value !== before) ctx.ov._dirty = true;   // ＋−だけで変えても書きかけ(字を入れたときと同じく、Play版の戻るボタンは閉じる前に確かめる・2026-09-30)
       updateLive();
     };
     Tap.bind(minus, () => bump(-1));
@@ -738,8 +740,8 @@ function openSleepSummary(){
     const plus = el('button', 'step-btn', T('sleep.plus30'));
     row.appendChild(minus); row.appendChild(disp); row.appendChild(plus);
     ctx.box.appendChild(row);
-    Tap.bind(minus, () => { set(addMin(get(), -30)); disp.textContent = get(); updateHrs(); });
-    Tap.bind(plus,  () => { set(addMin(get(),  30)); disp.textContent = get(); updateHrs(); });
+    Tap.bind(minus, () => { set(addMin(get(), -30)); disp.textContent = get(); updateHrs(); ctx.ov._dirty = true; });   // ＋−で変えた = 書きかけ(2026-09-30)
+    Tap.bind(plus,  () => { set(addMin(get(),  30)); disp.textContent = get(); updateHrs(); ctx.ov._dirty = true; });
   }
   timeRow(T('sleep.sleptTime'), () => sl, v => sl = v);
   timeRow(T('sleep.wokeTime'),  () => wk, v => wk = v);
@@ -1713,7 +1715,7 @@ function askBox(msg, done, dflt){
                     (確かめの窓=いいえ / えらぶシート・入力の窓・記録の窓=やめる / 写真の拡大=とじる)
                   ②きょう以外の画面(りれき・みせる・せってい)→ きょう(下のタブ「きょう」と同じ)
                   ③きょう → アプリを後ろに下げる(minimizeApp。中身はそのまま)
-   書きかけ: 窓の中の欄に文字や数字を入れて(皮膚の窓は写真を入れて)、まだ「きろくする」を押していないときだけ、閉じる前に確かめる(いいえ=そのまま)。
+   書きかけ: 窓の中の欄に文字や数字を入れて(皮膚の窓は写真を入れて・体温などは ＋−のボタンだけで変えても)、まだ「きろくする」を押していないときだけ、閉じる前に確かめる(いいえ=そのまま)。
      みせるの「つたえたいこと」は入れたらすぐ保存・せっていの数字の欄は画面を離れる前に確定させる(blur で change=保存)ので確かめない。
    🗑 の「けす?」は窓ではない(2.5秒で元に戻る)ので、戻るで記録が消えることは無い。
    Web版(ブラウザ)は何も変えない(戻るはブラウザのまま) */

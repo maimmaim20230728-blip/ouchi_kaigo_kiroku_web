@@ -407,9 +407,9 @@ body.theme-blue .mk{background:#eaeff7;}
 .guide-step{ margin:0; color:var(--muted); font-weight:700; white-space:nowrap; unicode-bidi:isolate; }   /* 向きは app.js が dir で決める(ar で「7 / 1」にしない) */
 .guide-lang{ margin:14px 0 0; }
 .guide-lang-lbl{ margin:0 0 8px; font-weight:700; font-size:.9em; color:var(--brand-dark); }
-/* 案内の ことば のボタン: 幅360px・とくだい でも「Português」「Nederlands」が「Portug…」と切れないよう、案内の中だけ 左右の余白を詰めて字を画面の幅に合わせる
-   (せっていの 🌐 のボタンは今までどおり) */
-.guide-lang-box .lang-btn{ padding:12px 2px; font-size:min(.85em, 4.6vw); }
+/* 案内の ことば のボタン: 幅360px・とくだい でも「Português」「Nederlands」が「Portug…」と切れないよう、左右の余白を詰めて字を画面の幅に合わせる
+   せっていの 🌐 のボタン(#lang-box)も同じ(2026-09-30: 幅360・大きい/とくだい、幅320・ふつう でも「Nederl…」と切れていた) */
+.guide-lang-box .lang-btn, #lang-box .lang-btn{ padding:12px 2px; font-size:min(.85em, 4.6vw); }
 .guide-h{ font-size:1.3em; line-height:1.45; margin:16px 0 12px; overflow-wrap:anywhere; }
 .guide-p{ font-size:1.05em; line-height:1.85; margin:0; white-space:pre-line; overflow-wrap:anywhere; }
 html[lang="ko"] .guide-h, html[lang="ko"] .guide-p{ word-break:keep-all; }   /* 韓国語は語の間(空白)で折る */

@@ -72,7 +72,7 @@
       backupHead:'バックアップ', export:'記録を書き出す', import:'記録を読み込む',
       backupHint:'記録はこの端末の中だけに保存されます。どこにも送信されません。機種変更のときは「書き出す」で保存したファイルを新しい端末で「読み込む」してください。',
       credit:'アプリ開発：介護と支援の相談どころ　そよぎ',
-      ver:'バージョン 1.4',
+      ver:'バージョン 1.5',
       on:'ON', off:'OFF'
     },
 
@@ -260,7 +260,7 @@
       backupHead:'Backup', export:'Export records', import:'Import records',
       backupHint:'Records are stored only on this device. Nothing is sent anywhere. When you change devices, use "Export" to save a file, then "Import" it on the new device.',
       credit:'App development: SOYOGI - Care & Support Consultation',
-      ver:'Version 1.4',
+      ver:'Version 1.5',
       on:'ON', off:'OFF'
     },
 
@@ -435,7 +435,7 @@
       backupHead:'Sicherung', export:'Einträge exportieren', import:'Einträge importieren',
       backupHint:'Die Einträge werden nur auf diesem Gerät gespeichert. Nichts wird gesendet. Beim Gerätewechsel mit „Exportieren“ eine Datei sichern und auf dem neuen Gerät „Importieren“.',
       credit:'App-Entwicklung: SOYOGI - Beratungsstelle für Pflege und Unterstützung',
-      ver:'Version 1.4',
+      ver:'Version 1.5',
       on:'AN', off:'AUS'
     },
     items: {
@@ -591,7 +591,7 @@
       backupHead:'Sauvegarde', export:'Exporter les données', import:'Importer les données',
       backupHint:'Les enregistrements restent uniquement sur cet appareil. Rien n’est envoyé. En cas de changement d’appareil, « Exporter » un fichier puis « Importer » sur le nouvel appareil.',
       credit:'Développement de l’application : SOYOGI - Lieu de conseil en soins et soutien',
-      ver:'Version 1.4',
+      ver:'Version 1.5',
       on:'ON', off:'OFF'
     },
     items: {
@@ -747,7 +747,7 @@
       backupHead:'Copia de seguridad', export:'Exportar registros', import:'Importar registros',
       backupHint:'Los registros se guardan solo en este dispositivo. No se envía nada. Al cambiar de dispositivo, use «Exportar» para guardar un archivo e «Importar» en el nuevo.',
       credit:'Desarrollo de la aplicación: SOYOGI - Centro de consultas de cuidados y apoyo',
-      ver:'Versión 1.4',
+      ver:'Versión 1.5',
       on:'ON', off:'OFF'
     },
     items: {
@@ -903,7 +903,7 @@
       backupHead:'Backup', export:'Esporta registrazioni', import:'Importa registrazioni',
       backupHint:'Le registrazioni restano solo su questo dispositivo. Non viene inviato nulla. Cambiando dispositivo, usa «Esporta» per salvare un file e «Importa» sul nuovo.',
       credit:'Sviluppo dell’app: SOYOGI - Sportello di consulenza per cura e sostegno',
-      ver:'Versione 1.4',
+      ver:'Versione 1.5',
       on:'ON', off:'OFF'
     },
     items: {
@@ -1059,7 +1059,7 @@
       backupHead:'Backup', export:'Exportar registros', import:'Importar registros',
       backupHint:'Os registros ficam apenas neste aparelho. Nada é enviado. Ao trocar de aparelho, use «Exportar» para salvar um arquivo e «Importar» no novo.',
       credit:'Desenvolvimento do app: SOYOGI - Centro de consultas de cuidado e apoio',
-      ver:'Versão 1.4',
+      ver:'Versão 1.5',
       on:'ON', off:'OFF'
     },
     items: {
@@ -1215,7 +1215,7 @@
       backupHead:'Back-up', export:'Registraties exporteren', import:'Registraties importeren',
       backupHint:'Registraties staan alleen op dit apparaat. Er wordt niets verzonden. Bij een nieuw apparaat: "Exporteren" naar een bestand en op het nieuwe apparaat "Importeren".',
       credit:'App-ontwikkeling: SOYOGI - Adviespunt voor zorg en ondersteuning',
-      ver:'Versie 1.4',
+      ver:'Versie 1.5',
       on:'AAN', off:'UIT'
     },
     items: {
@@ -1371,7 +1371,7 @@
       backupHead:'Säkerhetskopia', export:'Exportera anteckningar', import:'Importera anteckningar',
       backupHint:'Anteckningarna sparas bara på den här enheten. Inget skickas någonstans. Vid byte av enhet: "Exportera" till en fil och "Importera" på den nya enheten.',
       credit:'Apputveckling: SOYOGI - Rådgivning för omsorg och stöd',
-      ver:'Version 1.4',
+      ver:'Version 1.5',
       on:'PÅ', off:'AV'
     },
     items: {
@@ -1527,7 +1527,7 @@
       backupHead:'백업', export:'기록 내보내기', import:'기록 불러오기',
       backupHint:'기록은 이 기기 안에만 저장됩니다. 어디에도 전송되지 않습니다. 기기를 바꿀 때는 「내보내기」로 파일을 저장한 뒤 새 기기에서 「불러오기」 해 주세요.',
       credit:'앱 개발: SOYOGI - 돌봄과 지원 상담소',
-      ver:'버전 1.4',
+      ver:'버전 1.5',
       on:'ON', off:'OFF'
     },
     items: {
@@ -1683,7 +1683,7 @@
       backupHead:'备份', export:'导出记录', import:'导入记录',
       backupHint:'记录只保存在这台设备里,不会发送到任何地方。换设备时,请用「导出」保存文件,再在新设备上「导入」。',
       credit:'应用开发: SOYOGI - 照护与支援咨询处',
-      ver:'版本 1.4',
+      ver:'版本 1.5',
       on:'开', off:'关'
     },
     items: {
@@ -1839,7 +1839,7 @@
       backupHead:'نسخة احتياطية', export:'تصدير التسجيلات', import:'استيراد التسجيلات',
       backupHint:'تُحفظ التسجيلات على هذا الجهاز فقط ولا يُرسل أي شيء إلى أي مكان. عند تغيير الجهاز استخدم «تصدير» لحفظ ملف ثم «استيراد» على الجهاز الجديد.',
       credit:'تطوير التطبيق: SOYOGI - مركز استشارات الرعاية والدعم',
-      ver:'الإصدار 1.4',
+      ver:'الإصدار 1.5',
       on:'تشغيل', off:'إيقاف'
     },
     items: {
