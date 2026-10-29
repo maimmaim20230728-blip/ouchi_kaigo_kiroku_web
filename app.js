@@ -22,6 +22,18 @@ function el(tag, cls, text){
   if(text != null) e.textContent = text;
   return e;
 }
+/* button でない押す場所(時刻の span・ON/OFF の当たり判定 など)を、Tab で届き Enter/Space で押せるようにする。
+   押すと click を出す = Tap が拾う(tap.js は click も購読)・2026-10-30 */
+function keyButton(e, label){
+  e.setAttribute('role', 'button');
+  e.setAttribute('tabindex', '0');
+  if(label) e.setAttribute('aria-label', label);
+  e.addEventListener('keydown', ev => {
+    if(ev.key !== 'Enter' && ev.key !== ' ' && ev.key !== 'Spacebar') return;
+    ev.preventDefault();
+    e.click();
+  });
+}
 function fmtNum(v, dec){
   const n = Number(v);
   if(isNaN(n)) return '';
@@ -357,6 +369,7 @@ function bmiChip(bmi){
 const SCREENS = ['today','hist','show','set'];
 let curScreen = 'today';
 function showScreen(name){
+  flushShowNote();   // 「つたえたいこと」の書きかけ(待ち中)は、画面を移る前に保存する
   curScreen = name;
   SCREENS.forEach(s => document.getElementById('scr-' + s).classList.toggle('hidden', s !== name));
   document.querySelectorAll('#tabbar .tab').forEach(b => b.classList.toggle('active', b.dataset.scr === name));
@@ -374,6 +387,9 @@ function toast(msg){
   el2.textContent = msg; el2.classList.remove('hidden');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el2.classList.add('hidden'), 1500);
+  /* 読み上げソフトにも伝える(#toast-sr・aria-live="polite"・いつも在る見えない欄。同じ文が続いても読まれるよう いったん空に・2026-10-30) */
+  const sr = document.getElementById('toast-sr');
+  if(sr){ sr.textContent = ''; setTimeout(() => { sr.textContent = msg; }, 50); }
 }
 
 /* ---- 記録追加 ---- */
@@ -468,7 +484,7 @@ Tap.bind(document.getElementById('modal-cancel'), () => modal.classList.add('hid
 function openMemoModal(title, hint, done){ openModal({ title, kind:'memo', hint, done }); }
 
 /* ---- 数値ステッパーモーダル(体温・体重・血圧で共用) ----
-   rows: [{ key,label,unit,value,step,min,max,dec }]  ※+-はmin/max内でクランプ・自由記入は無制限 */
+   rows: [{ key,label,unit,value,step,min,max,dec }]  ※+-はmin/max内でクランプ・自由記入も「ほぞん」で同じ min/max を確かめる(外なら保存しない・2026-10-30) */
 function openStepModal(opt){
   const ctx = buildOverlay();
   ctx.box.appendChild(el('div', 'sheet-title', opt.title));
@@ -513,12 +529,37 @@ function openStepModal(opt){
     noteInp.placeholder = opt.notePlaceholder || '';
     ctx.box.appendChild(noteInp);
   }
+  const rangeMsg = el('div', 'step-range hidden');   // 範囲の外のときの知らせ(下の「ほぞん」)
+  rangeMsg.setAttribute('role', 'alert');
+  ctx.box.appendChild(rangeMsg);
   const btnRow = el('div', 'fs-row');
   const ok = el('button', 'ok-btn', T('common.save'));
   const cancel = el('button', 'cancel-btn', T('common.cancel'));
   btnRow.appendChild(ok); btnRow.appendChild(cancel);
   ctx.box.appendChild(btnRow);
-  Tap.bind(ok, () => { const vals = getVals(); ctx.close(); opt.onDone(vals, noteInp ? noteInp.value.trim() : ''); });
+  /* 直接入力の範囲の確かめ(2026-10-30): ＋−と同じ min/max の外なら保存せず、その場で知らせる(36.5 を 365 と打った等)。
+     空の欄はここでは見ない(脈は任意・体温などは onDone が空なら何もしない) */
+  function outOfRange(vals){
+    for(const r of opt.rows){
+      const s = vals[r.key];
+      if(s === '') continue;
+      const v = parseFloat(s);
+      if(isNaN(v) || v < r.min || v > r.max) return r;
+    }
+    return null;
+  }
+  Tap.bind(ok, () => {
+    const vals = getVals();
+    const bad = outOfRange(vals);
+    opt.rows.forEach(r => inputs[r.key].classList.toggle('bad', !!bad && r === bad));
+    if(bad){
+      rangeMsg.textContent = (bad.label ? bad.label + ': ' : '') + T('toast.range', { min:fmtNum(bad.min, bad.dec), max:fmtNum(bad.max, bad.dec) });
+      rangeMsg.classList.remove('hidden');
+      try{ inputs[bad.key].focus(); }catch(e){}
+      return;
+    }
+    ctx.close(); opt.onDone(vals, noteInp ? noteInp.value.trim() : '');
+  });
   Tap.bind(cancel, () => ctx.close(), { silent:true });
 }
 
@@ -945,7 +986,8 @@ function renderGrid(){
   grid.textContent = '';
   activeItems().forEach(item => {
     if(item.k === 'water'){ grid.appendChild(waterCard()); return; }   // 全幅ウィジェット
-    const c = el('div', 'item-card');
+    const c = el('button', 'item-card');   // 本物のボタン(キーボード・スイッチでも記録できる・2026-10-30。前は div)
+    c.type = 'button';
     c.appendChild(el('span', 'ic', item.icon));
     c.appendChild(el('span', 'lb', labelFor(item.k)));
     let subText = '';
@@ -976,6 +1018,7 @@ function entryRow(e, allowDelete){
   const row = el('div', 'log-row');
   const tm = el('span', 'log-time editable', fmtTime(e.t));
   Tap.bind(tm, () => openTimeEdit(e), { silent:true });
+  keyButton(tm, fmtTime(e.t) + ' ' + T('timeEdit.title'));
   const body = el('span', 'log-body');
   const it = ITEM[e.k] || { icon:'❓' };
   const val = entryValueText(e);
@@ -1312,6 +1355,7 @@ function buildWeekTable(){
   return table;
 }
 function renderShow(){
+  flushShowNote();   // 待ち中の書きかけを先に保存(下で欄を保存されている文で描き直すため)
   document.getElementById('show-note').value = prefs.shownote || '';
   const TITLES = { 7:'show.span7title', 30:'show.span30title', 90:'show.span90title' };
   document.getElementById('show-span-title').textContent = T(TITLES[prefs.showSpan] || 'show.span7title');
@@ -1320,11 +1364,25 @@ function renderShow(){
   wrap.textContent = '';
   wrap.appendChild(prefs.showSpan === 90 ? buildWeekTable() : buildDayTable(prefs.showSpan));
 }
-document.getElementById('show-note').addEventListener('input', e => {
-  /* 書けなかったら欄を保存されている文に戻して知らせる(画面に見えている文=保存されている文・2026-10-30) */
-  const box = e.target;
+/* 「つたえたいこと」(2026-10-30 v1.8): 1文字ごとに全部(写真の記録も入った保存)を書き直さない。
+   打つのが止まって少し(SHOW_NOTE_WAIT)たったとき・欄を離れたとき・画面を移るとき・アプリが裏に回ったときに保存する。
+   書けなかったら欄を保存されている文に戻して知らせる(changePrefs が toast.full) */
+var SHOW_NOTE_WAIT = 800;   // var = この行より前に showScreen が呼ばれても読める
+var showNoteTimer = null;
+function flushShowNote(){
+  if(showNoteTimer == null) return;
+  clearTimeout(showNoteTimer); showNoteTimer = null;
+  const box = document.getElementById('show-note');
+  if(!box || box.value === (prefs.shownote || '')) return;
   changePrefs(() => { prefs.shownote = box.value; }, ok => { if(!ok) box.value = prefs.shownote || ''; });
+}
+document.getElementById('show-note').addEventListener('input', () => {
+  if(showNoteTimer !== null) clearTimeout(showNoteTimer);
+  showNoteTimer = setTimeout(() => { showNoteTimer = -1; flushShowNote(); }, SHOW_NOTE_WAIT);
 });
+document.getElementById('show-note').addEventListener('blur', () => { if(showNoteTimer !== null) flushShowNote(); });
+document.addEventListener('visibilitychange', () => { if(document.hidden) flushShowNote(); });
+window.addEventListener('pagehide', () => flushShowNote());
 
 /* ---- 時刻編集(共通) ---- */
 function openTimeEdit(e){
@@ -1391,9 +1449,21 @@ function renderHeightBox(){
   Tap.bind(plus,  () => { let n = (prefs.height != null ? prefs.height : 150) + 1; if(n > 250) n = 250; setHeight(n); });
   inp.addEventListener('change', () => {
     const t = inp.value.trim();
-    if(t === ''){ setHeight(null); }
-    else { let n = parseInt(t, 10); setHeight(isNaN(n) ? null : n); }
+    if(t === ''){ setHeight(null); return; }
+    const n = parseInt(t, 10);
+    /* ＋−と同じ 50〜250cm の外(数でない・1600 と打った等)は保存せず、欄を保存されている値に戻して、欄の下に知らせる(2026-10-30) */
+    if(isNaN(n) || n < 50 || n > 250){
+      inp.value = (prefs.height != null) ? prefs.height : '';
+      rangeMsg.textContent = T('toast.range', { min:50, max:250 });
+      rangeMsg.classList.remove('hidden');
+      return;
+    }
+    rangeMsg.classList.add('hidden');
+    setHeight(n);
   });
+  const rangeMsg = el('div', 'step-range hidden');
+  rangeMsg.setAttribute('role', 'alert');
+  box.appendChild(rangeMsg);
 }
 /* 言語ボタン(各言語の自称表記・現在の言語をハイライト) */
 function renderLangBox(){
@@ -1444,6 +1514,8 @@ function renderItemToggles(){
         else prefs.off.push(item.k);
       }, () => { renderItemToggles(); renderGrid(); });   // 書けなければ元に戻して描き直す(2026-10-30)
     });
+    keyButton(hit);                                       // 名前は中の文字(「💊 おくすり ON」など)
+    hit.setAttribute('aria-pressed', on ? 'true' : 'false');
     row.appendChild(hit);
 
     /* △上へ / ▽下へ(端では押しても動かないので薄く見せる) */

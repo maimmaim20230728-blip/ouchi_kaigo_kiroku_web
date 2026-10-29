@@ -536,6 +536,9 @@ console.log('[v1.7] 保存失敗(容量いっぱい)・バックアップ読み�
   const noteBox = byId('show-note'); noteBox.value = '書いた文';
   const noteBefore = memPrefs().shownote;
   noThrow(() => (noteBox._ev.input || []).forEach(h => h({ target:noteBox })));
+  /* [v1.8] 打つたびには保存しない(少し待つか、欄を離れたときに保存)。ここでは欄を離れたこと(blur)で保存を走らせる */
+  check('[v1.8]「つたえたいこと」は打っただけでは保存しない(待ち)', memPrefs().shownote === noteBefore && toastText() !== FULL());
+  noThrow(() => (noteBox._ev.blur || []).forEach(h => h({ target:noteBox })));
   check('容量いっぱいで「つたえたいこと」を書いても保存されている文に戻り・知らせる', memPrefs().shownote === noteBefore && noteBox.value === (noteBefore || '') && toastText() === FULL());
   quotaFull = false;
   clearToast(); tap(byId('themeBtnB'));

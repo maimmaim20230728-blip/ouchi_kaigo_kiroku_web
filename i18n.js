@@ -27,6 +27,7 @@
       saved:'きろくしました ✓',
       savedNoPhoto:'写真は容量のため保存できませんでした',
       full:'容量がいっぱいで保存できませんでした',
+      range:'{min}〜{max} の数を入れてください(保存していません)',   // 体温・血圧・体重・身長の直接入力が ± の範囲の外(2026-10-30)
       exported:'書き出しました ✓',
       imported:'読み込みました ✓',
       importFail:'読み込めませんでした',
@@ -73,7 +74,7 @@
       backupHead:'バックアップ', export:'記録を書き出す', import:'記録を読み込む',
       backupHint:'記録はこの端末の中だけに保存されます。どこにも送信されません。機種変更のときは「書き出す」で保存したファイルを新しい端末で「読み込む」してください。',
       credit:'アプリ開発：介護と支援の相談どころ　そよぎ',
-      ver:'バージョン 1.7',
+      ver:'バージョン 1.8',
       on:'ON', off:'OFF'
     },
 
@@ -216,6 +217,7 @@
       saved:'Saved ✓',
       savedNoPhoto:'The photo could not be saved due to the storage limit',
       full:'Could not save: storage is full',
+      range:'Please enter a number from {min} to {max} (not saved)',   // 体温・血圧・体重・身長の直接入力が ± の範囲の外(2026-10-30)
       exported:'Exported ✓',
       imported:'Imported ✓',
       importFail:'Could not read the file',
@@ -262,7 +264,7 @@
       backupHead:'Backup', export:'Export records', import:'Import records',
       backupHint:'Records are stored only on this device. Nothing is sent anywhere. When you change devices, use "Export" to save a file, then "Import" it on the new device.',
       credit:'App development: SOYOGI - Care & Support Consultation',
-      ver:'Version 1.7',
+      ver:'Version 1.8',
       on:'ON', off:'OFF'
     },
 
@@ -396,6 +398,7 @@
       saved:'Gespeichert ✓',
       savedNoPhoto:'Das Foto konnte wegen des Speicherlimits nicht gespeichert werden',
       full:'Speichern nicht möglich: der Speicher ist voll',
+      range:'Bitte eine Zahl von {min} bis {max} eingeben (nicht gespeichert)',   // 体温・血圧・体重・身長の直接入力が ± の範囲の外(2026-10-30)
       exported:'Exportiert ✓',
       imported:'Importiert ✓',
       importFail:'Die Datei konnte nicht gelesen werden',
@@ -438,7 +441,7 @@
       backupHead:'Sicherung', export:'Einträge exportieren', import:'Einträge importieren',
       backupHint:'Die Einträge werden nur auf diesem Gerät gespeichert. Nichts wird gesendet. Beim Gerätewechsel mit „Exportieren“ eine Datei sichern und auf dem neuen Gerät „Importieren“.',
       credit:'App-Entwicklung: SOYOGI - Beratungsstelle für Pflege und Unterstützung',
-      ver:'Version 1.7',
+      ver:'Version 1.8',
       on:'AN', off:'AUS'
     },
     items: {
@@ -553,6 +556,7 @@
       saved:'Enregistré ✓',
       savedNoPhoto:'La photo n’a pas pu être gardée (limite de stockage)',
       full:'Enregistrement impossible : stockage plein',
+      range:'Saisissez un nombre entre {min} et {max} (non enregistré)',   // 体温・血圧・体重・身長の直接入力が ± の範囲の外(2026-10-30)
       exported:'Exporté ✓',
       imported:'Importé ✓',
       importFail:'Impossible de lire le fichier',
@@ -595,7 +599,7 @@
       backupHead:'Sauvegarde', export:'Exporter les données', import:'Importer les données',
       backupHint:'Les enregistrements restent uniquement sur cet appareil. Rien n’est envoyé. En cas de changement d’appareil, « Exporter » un fichier puis « Importer » sur le nouvel appareil.',
       credit:'Développement de l’application : SOYOGI - Lieu de conseil en soins et soutien',
-      ver:'Version 1.7',
+      ver:'Version 1.8',
       on:'ON', off:'OFF'
     },
     items: {
@@ -710,6 +714,7 @@
       saved:'Guardado ✓',
       savedNoPhoto:'La foto no se pudo guardar por el límite de almacenamiento',
       full:'No se pudo guardar: almacenamiento lleno',
+      range:'Introduce un número entre {min} y {max} (no se ha guardado)',   // 体温・血圧・体重・身長の直接入力が ± の範囲の外(2026-10-30)
       exported:'Exportado ✓',
       imported:'Importado ✓',
       importFail:'No se pudo leer el archivo',
@@ -752,7 +757,7 @@
       backupHead:'Copia de seguridad', export:'Exportar registros', import:'Importar registros',
       backupHint:'Los registros se guardan solo en este dispositivo. No se envía nada. Al cambiar de dispositivo, use «Exportar» para guardar un archivo e «Importar» en el nuevo.',
       credit:'Desarrollo de la aplicación: SOYOGI - Centro de consultas de cuidados y apoyo',
-      ver:'Versión 1.7',
+      ver:'Versión 1.8',
       on:'ON', off:'OFF'
     },
     items: {
@@ -867,6 +872,7 @@
       saved:'Salvato ✓',
       savedNoPhoto:'La foto non è stata salvata per il limite di spazio',
       full:'Impossibile salvare: spazio pieno',
+      range:'Inserisci un numero tra {min} e {max} (non salvato)',   // 体温・血圧・体重・身長の直接入力が ± の範囲の外(2026-10-30)
       exported:'Esportato ✓',
       imported:'Importato ✓',
       importFail:'Impossibile leggere il file',
@@ -909,7 +915,7 @@
       backupHead:'Backup', export:'Esporta registrazioni', import:'Importa registrazioni',
       backupHint:'Le registrazioni restano solo su questo dispositivo. Non viene inviato nulla. Cambiando dispositivo, usa «Esporta» per salvare un file e «Importa» sul nuovo.',
       credit:'Sviluppo dell’app: SOYOGI - Sportello di consulenza per cura e sostegno',
-      ver:'Versione 1.7',
+      ver:'Versione 1.8',
       on:'ON', off:'OFF'
     },
     items: {
@@ -1024,6 +1030,7 @@
       saved:'Salvo ✓',
       savedNoPhoto:'A foto não pôde ser salva pelo limite de armazenamento',
       full:'Não foi possível salvar: armazenamento cheio',
+      range:'Digite um número entre {min} e {max} (não foi salvo)',   // 体温・血圧・体重・身長の直接入力が ± の範囲の外(2026-10-30)
       exported:'Exportado ✓',
       imported:'Importado ✓',
       importFail:'Não foi possível ler o arquivo',
@@ -1066,7 +1073,7 @@
       backupHead:'Backup', export:'Exportar registros', import:'Importar registros',
       backupHint:'Os registros ficam apenas neste aparelho. Nada é enviado. Ao trocar de aparelho, use «Exportar» para salvar um arquivo e «Importar» no novo.',
       credit:'Desenvolvimento do app: SOYOGI - Centro de consultas de cuidado e apoio',
-      ver:'Versão 1.7',
+      ver:'Versão 1.8',
       on:'ON', off:'OFF'
     },
     items: {
@@ -1181,6 +1188,7 @@
       saved:'Opgeslagen ✓',
       savedNoPhoto:'De foto kon niet worden bewaard (opslaglimiet)',
       full:'Opslaan niet mogelijk: opslag is vol',
+      range:'Vul een getal in van {min} tot {max} (niet opgeslagen)',   // 体温・血圧・体重・身長の直接入力が ± の範囲の外(2026-10-30)
       exported:'Geëxporteerd ✓',
       imported:'Geïmporteerd ✓',
       importFail:'Het bestand kon niet worden gelezen',
@@ -1223,7 +1231,7 @@
       backupHead:'Back-up', export:'Registraties exporteren', import:'Registraties importeren',
       backupHint:'Registraties staan alleen op dit apparaat. Er wordt niets verzonden. Bij een nieuw apparaat: "Exporteren" naar een bestand en op het nieuwe apparaat "Importeren".',
       credit:'App-ontwikkeling: SOYOGI - Adviespunt voor zorg en ondersteuning',
-      ver:'Versie 1.7',
+      ver:'Versie 1.8',
       on:'AAN', off:'UIT'
     },
     items: {
@@ -1338,6 +1346,7 @@
       saved:'Sparat ✓',
       savedNoPhoto:'Fotot kunde inte sparas på grund av lagringsgränsen',
       full:'Kunde inte spara: lagringen är full',
+      range:'Ange ett tal mellan {min} och {max} (inte sparat)',   // 体温・血圧・体重・身長の直接入力が ± の範囲の外(2026-10-30)
       exported:'Exporterat ✓',
       imported:'Importerat ✓',
       importFail:'Filen kunde inte läsas',
@@ -1380,7 +1389,7 @@
       backupHead:'Säkerhetskopia', export:'Exportera anteckningar', import:'Importera anteckningar',
       backupHint:'Anteckningarna sparas bara på den här enheten. Inget skickas någonstans. Vid byte av enhet: "Exportera" till en fil och "Importera" på den nya enheten.',
       credit:'Apputveckling: SOYOGI - Rådgivning för omsorg och stöd',
-      ver:'Version 1.7',
+      ver:'Version 1.8',
       on:'PÅ', off:'AV'
     },
     items: {
@@ -1495,6 +1504,7 @@
       saved:'기록했습니다 ✓',
       savedNoPhoto:'저장 공간이 부족해 사진은 저장하지 못했습니다',
       full:'저장 공간이 가득 차서 저장하지 못했습니다',
+      range:'{min}~{max} 사이의 숫자를 입력해 주세요(저장하지 않았습니다)',   // 体温・血圧・体重・身長の直接入力が ± の範囲の外(2026-10-30)
       exported:'내보냈습니다 ✓',
       imported:'불러왔습니다 ✓',
       importFail:'파일을 읽을 수 없습니다',
@@ -1537,7 +1547,7 @@
       backupHead:'백업', export:'기록 내보내기', import:'기록 불러오기',
       backupHint:'기록은 이 기기 안에만 저장됩니다. 어디에도 전송되지 않습니다. 기기를 바꿀 때는 「내보내기」로 파일을 저장한 뒤 새 기기에서 「불러오기」 해 주세요.',
       credit:'앱 개발: SOYOGI - 돌봄과 지원 상담소',
-      ver:'버전 1.7',
+      ver:'버전 1.8',
       on:'ON', off:'OFF'
     },
     items: {
@@ -1652,6 +1662,7 @@
       saved:'已记录 ✓',
       savedNoPhoto:'因存储空间不足,照片未能保存',
       full:'存储空间已满,无法保存',
+      range:'请输入 {min}～{max} 之间的数字(未保存)',   // 体温・血圧・体重・身長の直接入力が ± の範囲の外(2026-10-30)
       exported:'已导出 ✓',
       imported:'已导入 ✓',
       importFail:'无法读取文件',
@@ -1694,7 +1705,7 @@
       backupHead:'备份', export:'导出记录', import:'导入记录',
       backupHint:'记录只保存在这台设备里,不会发送到任何地方。换设备时,请用「导出」保存文件,再在新设备上「导入」。',
       credit:'应用开发: SOYOGI - 照护与支援咨询处',
-      ver:'版本 1.7',
+      ver:'版本 1.8',
       on:'开', off:'关'
     },
     items: {
@@ -1809,6 +1820,7 @@
       saved:'تم التسجيل ✓',
       savedNoPhoto:'تعذّر حفظ الصورة بسبب حد التخزين',
       full:'تعذّر الحفظ: مساحة التخزين ممتلئة',
+      range:'يرجى إدخال رقم من {min} إلى {max} (لم يُحفظ)',   // 体温・血圧・体重・身長の直接入力が ± の範囲の外(2026-10-30)
       exported:'تم التصدير ✓',
       imported:'تم الاستيراد ✓',
       importFail:'تعذّر قراءة الملف',
@@ -1851,7 +1863,7 @@
       backupHead:'نسخة احتياطية', export:'تصدير التسجيلات', import:'استيراد التسجيلات',
       backupHint:'تُحفظ التسجيلات على هذا الجهاز فقط ولا يُرسل أي شيء إلى أي مكان. عند تغيير الجهاز استخدم «تصدير» لحفظ ملف ثم «استيراد» على الجهاز الجديد.',
       credit:'تطوير التطبيق: SOYOGI - مركز استشارات الرعاية والدعم',
-      ver:'الإصدار 1.7',
+      ver:'الإصدار 1.8',
       on:'تشغيل', off:'إيقاف'
     },
     items: {

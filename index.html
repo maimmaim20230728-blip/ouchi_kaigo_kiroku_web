@@ -114,7 +114,7 @@
     <input type="file" id="bk-file" accept="application/json" hidden>
     <p class="hint" data-i18n="set.backupHint">記録はこの端末の中だけに保存されます。どこにも送信されません。機種変更のときは「書き出す」で保存したファイルを新しい端末で「読み込む」してください。</p>
     <p class="credit"><a class="credit-link" href="https://soudansoyogi.com/" target="_blank" rel="noopener" data-i18n="set.credit">アプリ開発：介護と支援の相談どころ　そよぎ</a></p>
-    <p class="credit-ver" data-i18n="set.ver">バージョン 1.7</p>
+    <p class="credit-ver" data-i18n="set.ver">バージョン 1.8</p>
   </section>
 </main>
 
@@ -150,7 +150,9 @@
   </div>
 </div>
 
-<div id="toast" class="toast hidden"></div>
+<div id="toast" class="toast hidden" aria-hidden="true"></div>
+<!-- 知らせ(toast)を読み上げソフトに伝える見えない欄(app.js toast・2026-10-30) -->
+<div id="toast-sr" class="sr-only" role="status" aria-live="polite"></div>
 
 <script src="audio.js"></script>
 <script src="tap.js"></script>
@@ -158,10 +160,13 @@
 <script src="app.js"></script>
 <!-- Farcaster Mini App SDK: ホスト内なら起動準備完了を通知。通常のWeb/PWA・オフラインでは無害（失敗は握りつぶす）。 -->
 <script type="module">
-  try {
-    const { sdk } = await import("https://esm.sh/@farcaster/miniapp-sdk");
-    await sdk.actions.ready();
-  } catch (e) { /* Farcaster外／オフラインでは何もしない */ }
+  /* Farcaster の中(iframe / アプリの WebView)で開いたときだけ SDK を読む。ふつうのブラウザ・PWA では外へつながない */
+  if ((window.self !== window.top) || window.ReactNativeWebView) {
+    try {
+      const { sdk } = await import("https://esm.sh/@farcaster/miniapp-sdk");
+      await sdk.actions.ready();
+    } catch (e) { /* Farcaster外／オフラインでは何もしない */ }
+  }
 </script>
 </body>
 </html>
