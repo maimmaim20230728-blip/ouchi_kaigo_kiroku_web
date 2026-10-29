@@ -65,9 +65,10 @@ function allText(node){
 
 /* ---- localStorage ---- */
 const store = {};
+let quotaFull = false;   // true の間は setItem が容量いっぱいの例外を投げる(保存失敗の試し用・[v1.7])
 const localStorageStub = {
   getItem:k => (k in store ? store[k] : null),
-  setItem:(k, v) => { store[k] = String(v); },
+  setItem:(k, v) => { if(quotaFull){ const e = new Error('QuotaExceededError'); e.name = 'QuotaExceededError'; throw e; } store[k] = String(v); },
   removeItem:k => { delete store[k]; }
 };
 
@@ -428,6 +429,162 @@ console.log('[v1.1] 壊れた/古い ならび順 保存値からの自動復旧
     check('きょうのグリッドも復旧後の順で出る',
       sb2.activeItems().map(i => i.k).join(',') === fixed.filter(k => !JSON.parse(store2['okiroku.prefs']).off.includes(k)).join(','));
   }
+}
+
+/* ---- [v1.7] 保存の失敗(容量いっぱい)と、バックアップ読み込みの確かめ ----
+   quotaFull=true で setItem が例外を投げる状態にして、記録・取り消し・削除・時刻・せっていが
+   「例外で止まらない・画面(メモリ)と保存がずれない・容量いっぱいを知らせる」ことと、
+   バックアップ読み込みが 確かめ(はい/いいえ)→形の検査→保存失敗で元に戻す になっていることを確かめる */
+console.log('[v1.7] 保存失敗(容量いっぱい)・バックアップ読み込みの確かめ');
+{
+  const inCtx = code => vm.runInContext(code, sandbox);
+  const memEntries = () => inCtx('entries');
+  const memPrefs = () => inCtx('prefs');
+  const toastText = () => byId('toast').textContent;
+  const FULL = () => sandbox.T('toast.full');
+  const stored = () => store['okiroku.entries'];
+  const noThrow = (fn) => { try{ fn(); return true; }catch(e){ console.log('    例外: ' + e.message); return false; } };
+  const snap = () => ({ mem: JSON.stringify(memEntries()), st: stored(), pm: JSON.stringify(memPrefs()), ps: store['okiroku.prefs'] });
+  const same = (a, b) => a.mem === b.mem && a.st === b.st && a.pm === b.pm && a.ps === b.ps;
+  const clearToast = () => { byId('toast').textContent = ''; };
+
+  /* saveJSON / saveAll の戻り値 */
+  check('saveJSON は書けたら true・容量いっぱいなら例外を出さず false', (() => {
+    const ok1 = inCtx("saveJSON('okiroku.smoke', {a:1})") === true;
+    quotaFull = true;
+    let r; const ok2 = noThrow(() => { r = inCtx("saveJSON('okiroku.smoke', {a:2})"); });
+    quotaFull = false;
+    delete store['okiroku.smoke'];
+    return ok1 && ok2 && r === false;
+  })());
+  check('saveAll は両方書けたとき true・容量いっぱいなら false', (() => {
+    const t = inCtx('saveAll()') === true;
+    quotaFull = true; const f = inCtx('saveAll()') === false; quotaFull = false;
+    return t && f;
+  })());
+
+  /* きょうの記録(addEntry) */
+  const A0 = snap(); const n0 = memEntries().length;
+  quotaFull = true; clearToast();
+  check('容量いっぱいで addEntry しても例外で止まらない', noThrow(() => sandbox.addEntry({ k:'note', m:'容量いっぱいの試し' })));
+  quotaFull = false;
+  check('addEntry が書けなかったら押した記録を取り消す(メモリ・保存とも元のまま)', memEntries().length === n0 && same(A0, snap()));
+  check('addEntry が書けなかったら「容量がいっぱい」を出し、「保存しました」は出さない', toastText() === FULL() && toastText() !== sandbox.T('toast.saved'));
+  clearToast(); sandbox.addEntry({ k:'note', m:'書ける' });
+  check('容量が空けば addEntry は保存されて「保存しました」', memEntries().length === n0 + 1 && ents().length === n0 + 1 && toastText() === sandbox.T('toast.saved'));
+
+  /* 写真つき(saveEntrySafe)は今までどおり: 容量いっぱいなら取り消して知らせる */
+  const B0 = snap();
+  quotaFull = true; clearToast();
+  check('容量いっぱいで saveEntrySafe(写真つき)しても例外で止まらず、取り消して知らせる', noThrow(() => sandbox.saveEntrySafe({ k:'skin', c:'concern', m:'試し', p:'data:image/jpeg;base64,AAAA' })) && same(B0, snap()) && toastText() === FULL());
+  quotaFull = false;
+
+  /* 水分を1つもどす(undoWater) */
+  clearToast(); sandbox.addEntry({ k:'water', c:'cup', ml:200 });
+  const W0 = snap(); const nw = memEntries().length;
+  quotaFull = true; clearToast();
+  check('容量いっぱいで undoWater しても例外で止まらず、水分は消えず(メモリ・保存とも)、知らせる', noThrow(() => sandbox.undoWater()) && memEntries().length === nw && same(W0, snap()) && toastText() === FULL());
+  quotaFull = false; clearToast();
+  sandbox.undoWater();
+  check('容量が空けば undoWater は1つもどして保存する', memEntries().length === nw - 1 && ents().length === nw - 1 && toastText() === sandbox.T('toast.waterUndone'));
+
+  /* 削除(🗑 2回タップ) */
+  sandbox.addEntry({ k:'note', m:'けす試し' });
+  const target = memEntries()[memEntries().length - 1];
+  const row = sandbox.entryRow(target, true);
+  const delBtn = row.children[row.children.length - 1];
+  const D0 = snap(); const nd = memEntries().length;
+  quotaFull = true; clearToast();
+  check('容量いっぱいで削除しても例外で止まらず、記録は消えず(メモリ・保存とも)、知らせる', noThrow(() => { tap(delBtn); tap(delBtn); }) && memEntries().length === nd && memEntries().indexOf(target) >= 0 && same(D0, snap()) && toastText() === FULL());
+  quotaFull = false;
+  const row2 = sandbox.entryRow(target, true); const del2 = row2.children[row2.children.length - 1];
+  tap(del2); tap(del2);
+  check('容量が空けば削除は消えて保存される', memEntries().length === nd - 1 && memEntries().indexOf(target) < 0 && ents().length === nd - 1);
+
+  /* 時刻の直し */
+  sandbox.addEntry({ k:'note', m:'時刻試し' });
+  const te = memEntries()[memEntries().length - 1]; const t0 = te.t;
+  const bodyKids0 = documentStub.body.children.length;
+  sandbox.openTimeEdit(te);
+  const ov = documentStub.body.children[documentStub.body.children.length - 1];
+  const tbox = ov.children[0]; const tinp = tbox.children[1]; const tok = tbox.children[2].children[0];
+  const wantH = (new Date(t0).getHours() + 1) % 24;
+  tinp.value = String(wantH).padStart(2, '0') + ':07';
+  const E0 = snap();
+  quotaFull = true; clearToast();
+  check('容量いっぱいで時刻を直しても例外で止まらず、時刻は元のまま(メモリ・保存とも)、知らせる', noThrow(() => tap(tok)) && te.t === t0 && same(E0, snap()) && toastText() === FULL());
+  quotaFull = false;
+  sandbox.openTimeEdit(te);
+  const ov2 = documentStub.body.children[documentStub.body.children.length - 1];
+  const tb2 = ov2.children[0]; tb2.children[1].value = String(wantH).padStart(2, '0') + ':07';
+  tap(tb2.children[2].children[0]);
+  check('容量が空けば時刻は直って保存される', te.t !== t0 && new Date(te.t).getMinutes() === 7 && ents().some(x => x.t === te.t));
+
+  /* せってい: 保存できなければ元の値に戻る */
+  const P0 = snap(); const themeBefore = memPrefs().theme;
+  quotaFull = true; clearToast();
+  check('容量いっぱいで「がめんの色=あお」を押しても例外で止まらず、色は元のまま・知らせる', noThrow(() => tap(byId('themeBtnB'))) && memPrefs().theme === themeBefore && !documentStub.body.classList.contains('theme-blue') && same(P0, snap()) && toastText() === FULL());
+  clearToast();
+  const ordBefore = JSON.stringify(memPrefs().order);
+  let mv; noThrow(() => { mv = sandbox.moveItem(memPrefs().order[1], -1); });
+  check('容量いっぱいでならび順を変えても元の並びのまま・false・知らせる', mv === false && JSON.stringify(memPrefs().order) === ordBefore && same(P0, snap()) && toastText() === FULL());
+  clearToast();
+  const offBefore = JSON.stringify(memPrefs().off); const langBefore = inCtx('lang');
+  noThrow(() => sandbox.setLang(langBefore === 'ja' ? 'en' : 'ja'));
+  check('容量いっぱいでことばを変えても元のことばのまま・設定も保存も変わらない・知らせる', inCtx('lang') === langBefore && JSON.stringify(memPrefs().off) === offBefore && same(P0, snap()) && toastText() === FULL());
+  clearToast();
+  const noteBox = byId('show-note'); noteBox.value = '書いた文';
+  const noteBefore = memPrefs().shownote;
+  noThrow(() => (noteBox._ev.input || []).forEach(h => h({ target:noteBox })));
+  check('容量いっぱいで「つたえたいこと」を書いても保存されている文に戻り・知らせる', memPrefs().shownote === noteBefore && noteBox.value === (noteBefore || '') && toastText() === FULL());
+  quotaFull = false;
+  clearToast(); tap(byId('themeBtnB'));
+  check('容量が空けば「がめんの色=あお」は反映されて保存される', memPrefs().theme === 'blue' && JSON.parse(store['okiroku.prefs']).theme === 'blue');
+  tap(byId('themeBtnG'));
+
+  /* バックアップ読み込み */
+  const goodEntries = [ { k:'med', c:'taken', t:Date.now() - 5000 }, { k:'meal', c:'full', t:Date.now() - 4000 }, { k:'note', m:'ファイルの記録', t:Date.now() - 3000 } ];
+  const good = JSON.stringify({ app:'ouchi_kaigo_kiroku', ver:2, entries:goodEntries, prefs:{ waterGoal:1700, theme:'green', schema:2 } });
+  let asked = [], answer = false;
+  sandbox.confirm = m => { asked.push(m); return answer; };
+  sandbox.FileReader = function(){ const o = { onload:null, result:'', readAsText(f){ o.result = f._text; if(o.onload) o.onload(); } }; return o; };
+  const importFile = text => { const fl = byId('bk-file'); (fl._ev.change || []).forEach(h => h({ target:{ files:[{ _text:text }], value:'' } })); };
+
+  const I0 = snap(); const nBefore = memEntries().length;
+  /* 形の合わないファイルは、聞かずに「読み込めませんでした」・何も変えない */
+  const bads = {
+    'JSONでない': 'これはJSONではない',
+    '別のアプリ': JSON.stringify({ app:'other', entries:goodEntries }),
+    'entries が無い': JSON.stringify({ app:'ouchi_kaigo_kiroku', ver:2, prefs:{} }),
+    'entries が配列でない': JSON.stringify({ app:'ouchi_kaigo_kiroku', ver:2, entries:{ a:1 } }),
+    '要素が文字': JSON.stringify({ app:'ouchi_kaigo_kiroku', ver:2, entries:[ 'x' ] }),
+    '要素が null': JSON.stringify({ app:'ouchi_kaigo_kiroku', ver:2, entries:[ null ] }),
+    '要素に k が無い': JSON.stringify({ app:'ouchi_kaigo_kiroku', ver:2, entries:[ { t:1 } ] }),
+    '要素に t が無い': JSON.stringify({ app:'ouchi_kaigo_kiroku', ver:2, entries:[ { k:'note' } ] }),
+    '要素の配列': JSON.stringify({ app:'ouchi_kaigo_kiroku', ver:2, entries:[ [ 1, 2 ] ] }),
+    'prefs が配列': JSON.stringify({ app:'ouchi_kaigo_kiroku', ver:2, entries:goodEntries, prefs:[ 1 ] }),
+    'null': 'null'
+  };
+  Object.keys(bads).forEach(name => {
+    asked = []; clearToast(); answer = true;
+    const okNoThrow = noThrow(() => importFile(bads[name]));
+    check('読み込み: ' + name + ' は聞かずに「読み込めませんでした」・今の記録も設定も変わらない', okNoThrow && asked.length === 0 && same(I0, snap()) && toastText() === sandbox.T('toast.importFail'));
+  });
+  /* 確かめ: 「いいえ」なら何も変えない・聞く文に今の件数が入る */
+  asked = []; answer = false; clearToast();
+  importFile(good);
+  check('読み込み: 確かめを1回出し、文に いまの記録の件数(' + nBefore + ')が入る', asked.length === 1 && asked[0].indexOf(String(nBefore)) >= 0 && asked[0] === sandbox.T('toast.importConfirm', { n:nBefore }));
+  check('読み込み: 「いいえ」なら今の記録も設定も何も変わらない', same(I0, snap()) && toastText() === '');
+  /* 「はい」でも保存に失敗したら、元に戻して失敗と出す */
+  asked = []; answer = true; clearToast(); quotaFull = true;
+  check('読み込み: 「はい」でも容量いっぱいなら例外で止まらない', noThrow(() => importFile(good)));
+  quotaFull = false;
+  check('読み込み: 保存に失敗したら元の記録・設定に戻り(メモリ・保存とも)、失敗と出す', same(I0, snap()) && toastText() === FULL());
+  /* 「はい」→ 置き換わる */
+  asked = []; answer = true; clearToast();
+  importFile(good);
+  check('読み込み: 「はい」なら ファイルの内容に置きかわり(記録3件・目標1700)、保存され、「読み込みました」', asked.length === 1 && memEntries().length === 3 && ents().length === 3 && memPrefs().waterGoal === 1700 && JSON.parse(store['okiroku.prefs']).waterGoal === 1700 && toastText() === sandbox.T('toast.imported'));
+  check('読み込み: 12言語すべてに importConfirm({n}入り)がある', ['ja','en','de','fr','es','it','pt','nl','sv','ko','zh','ar'].every(l => { const v = I18Nsm[l].toast.importConfirm; return typeof v === 'string' && v.indexOf('{n}') >= 0 && !/[—―]/.test(v); }));
 }
 
 console.log('');

@@ -54,7 +54,9 @@ ITEM.wake = { k:'wake', icon:'🌙', label:'中途覚醒' };   // 内部項目(�
 /* ---- 保存 ---- */
 const LS_EN = 'okiroku.entries', LS_PF = 'okiroku.prefs';
 function loadJSON(key, fb){ try{ const v = JSON.parse(localStorage.getItem(key)); return v == null ? fb : v; }catch(e){ return fb; } }
-function saveJSON(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+/* 保存。容量いっぱい(QuotaExceededError)などで書けなくても例外は出さず false を返す(true=保存できた)。
+   呼ぶ側は false のとき、メモリの変更を元に戻して知らせる(画面と保存をずらさない・2026-10-30) */
+function saveJSON(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); return true; }catch(e){ return false; } }
 let entries = loadJSON(LS_EN, []);
 let prefs = Object.assign({ fs:0, off:null, shownote:'', waterGoal:1200, height:null, showSpan:7, music:'a', sound:true, theme:'green', order:null }, loadJSON(LS_PF, {}));
 if(!Array.isArray(prefs.off)) prefs.off = ITEMS.filter(i => !i.on).map(i => i.k);
@@ -79,7 +81,22 @@ function normalizeOrder(){
 normalizeOrder();
 function orderedItems(){ return prefs.order.map(k => ITEM[k]); }
 
-function saveAll(){ saveJSON(LS_EN, entries); saveJSON(LS_PF, prefs); }
+function savePrefs(){ return saveJSON(LS_PF, prefs); }
+/* 記録と設定を保存する。両方書けたときだけ true(片方でも書けなければ false) */
+function saveAll(){ const a = saveJSON(LS_EN, entries), b = saveJSON(LS_PF, prefs); return a && b; }
+/* 設定(prefs)を変える操作。fn() で prefs を書き換えて保存し、書けなければ変える前の prefs に戻して「容量がいっぱい」を知らせる。
+   after(ok) は成功でも失敗でも呼ぶ(画面を実際の状態=成功なら新しい値・失敗なら元の値に描き直す用)。true=保存できた */
+function changePrefs(fn, after){
+  const before = JSON.stringify(prefs);
+  fn();
+  let ok = savePrefs();
+  if(!ok){
+    try{ prefs = JSON.parse(before); }catch(e){}
+    toast(T('toast.full'));
+  }
+  if(after) after(ok);
+  return ok;
+}
 
 /* ---- i18n(多言語) ----
    ・記録はコードで保存し、表示のたびに現在の言語へ変換する(T())
@@ -362,7 +379,14 @@ function toast(msg){
 /* ---- 記録追加 ---- */
 function addEntry(obj){
   entries.push(Object.assign({ t: Date.now() }, obj));
-  saveAll();
+  if(!saveAll()){
+    /* 書けなかった(容量いっぱいなど): 押した記録は取り消し、「保存しました」とは出さない。
+       記録だけ書けて設定が書けなかった場合に備え、取り消したあとの記録を保存し直して、画面と保存を合わせる */
+    entries.pop();
+    saveJSON(LS_EN, entries);
+    toast(T('toast.full'));
+    return;
+  }
   toast(T('toast.saved'));
   renderToday();
 }
@@ -370,19 +394,17 @@ function addEntry(obj){
 function saveEntrySafe(e){
   entries.push(Object.assign({ t: Date.now() }, e));
   let msg = T('toast.saved');
-  try{
-    saveJSON(LS_EN, entries);
-  }catch(err){
+  if(!saveJSON(LS_EN, entries)){   // saveJSON は例外を出さず false を返す(2026-10-30)
     if(e.p){
       const rec = entries[entries.length - 1];
       delete rec.p;
-      try{ saveJSON(LS_EN, entries); msg = T('toast.savedNoPhoto'); }
-      catch(e2){ entries.pop(); toast(T('toast.full')); renderToday(); return; }
+      if(saveJSON(LS_EN, entries)) msg = T('toast.savedNoPhoto');
+      else { entries.pop(); toast(T('toast.full')); renderToday(); return; }
     } else {
       entries.pop(); toast(T('toast.full')); return;
     }
   }
-  try{ saveJSON(LS_PF, prefs); }catch(e3){}
+  saveJSON(LS_PF, prefs);
   toast(msg);
   renderToday();
 }
@@ -570,8 +592,12 @@ function undoWater(){
   let idx = -1, best = -Infinity;
   entries.forEach((e, i) => { if(e.k === 'water' && sameDay(e.t, today) && e.t >= best){ best = e.t; idx = i; } });
   if(idx < 0){ toast(T('toast.waterNoUndo')); return; }
-  entries.splice(idx, 1);
-  saveAll();
+  const removed = entries.splice(idx, 1)[0];
+  if(!saveJSON(LS_EN, entries)){   // 書けなかったら、消した水分を元の位置に戻して知らせる(画面と保存をずらさない・2026-10-30)
+    entries.splice(idx, 0, removed);
+    toast(T('toast.full'));
+    return;
+  }
   toast(T('toast.waterUndone'));
   renderToday();
 }
@@ -972,7 +998,10 @@ function entryRow(e, allowDelete){
         armed = true; del.textContent = T('common.delConfirm'); del.classList.add('arm');
         setTimeout(() => { armed = false; del.textContent = '🗑'; del.classList.remove('arm'); }, 2500);
       } else {
-        entries = entries.filter(x => x !== e); saveAll(); renderToday(); renderHist();
+        const prev = entries;
+        entries = entries.filter(x => x !== e);
+        if(!saveJSON(LS_EN, entries)){ entries = prev; toast(T('toast.full')); }   // 書けなければ消さずに知らせる(2026-10-30)
+        renderToday(); renderHist();
       }
     }, { silent:true });
     row.appendChild(del);
@@ -1291,7 +1320,11 @@ function renderShow(){
   wrap.textContent = '';
   wrap.appendChild(prefs.showSpan === 90 ? buildWeekTable() : buildDayTable(prefs.showSpan));
 }
-document.getElementById('show-note').addEventListener('input', e => { prefs.shownote = e.target.value; saveAll(); });
+document.getElementById('show-note').addEventListener('input', e => {
+  /* 書けなかったら欄を保存されている文に戻して知らせる(画面に見えている文=保存されている文・2026-10-30) */
+  const box = e.target;
+  changePrefs(() => { prefs.shownote = box.value; }, ok => { if(!ok) box.value = prefs.shownote || ''; });
+});
 
 /* ---- 時刻編集(共通) ---- */
 function openTimeEdit(e){
@@ -1313,8 +1346,9 @@ function openTimeEdit(e){
       const p = val.split(':');
       const nd = new Date(e.t);
       nd.setHours(Number(p[0]), Number(p[1]), 0, 0);   // 日付は不変・時分のみ変更
+      const oldT = e.t;
       e.t = nd.getTime();
-      saveAll();
+      if(!saveJSON(LS_EN, entries)){ e.t = oldT; toast(T('toast.full')); }   // 書けなければ時刻を元に戻して知らせる(2026-10-30)
     }
     ctx.close();
     renderToday(); renderHist();
@@ -1334,9 +1368,11 @@ function renderWaterGoalBox(){
   const plus = el('button', 'step-btn', '＋100');
   row.appendChild(minus); row.appendChild(inp); row.appendChild(plus); row.appendChild(el('span', 'step-unit', 'ml'));
   box.appendChild(row);
-  Tap.bind(minus, () => { let n = (parseInt(inp.value, 10) || 0) - 100; if(n < 100) n = 100; prefs.waterGoal = n; inp.value = n; saveAll(); });
-  Tap.bind(plus,  () => { let n = (parseInt(inp.value, 10) || 0) + 100; prefs.waterGoal = n; inp.value = n; saveAll(); });
-  inp.addEventListener('change', () => { let n = parseInt(inp.value, 10); if(isNaN(n) || n < 0) n = 0; prefs.waterGoal = n; inp.value = n; saveAll(); });
+  /* 書けなかったら目標を元の値に戻して欄にも戻す(changePrefs・2026-10-30) */
+  const setGoal = n => changePrefs(() => { prefs.waterGoal = n; }, () => { inp.value = prefs.waterGoal; });
+  Tap.bind(minus, () => { let n = (parseInt(inp.value, 10) || 0) - 100; if(n < 100) n = 100; setGoal(n); });
+  Tap.bind(plus,  () => { let n = (parseInt(inp.value, 10) || 0) + 100; setGoal(n); });
+  inp.addEventListener('change', () => { let n = parseInt(inp.value, 10); if(isNaN(n) || n < 0) n = 0; setGoal(n); });
 }
 function renderHeightBox(){
   const box = document.getElementById('height-box');
@@ -1349,13 +1385,14 @@ function renderHeightBox(){
   const plus = el('button', 'step-btn', '＋1');
   row.appendChild(minus); row.appendChild(inp); row.appendChild(plus); row.appendChild(el('span', 'step-unit', 'cm'));
   box.appendChild(row);
-  Tap.bind(minus, () => { let n = (prefs.height != null ? prefs.height : 150) - 1; if(n < 50) n = 50; prefs.height = n; inp.value = n; saveAll(); });
-  Tap.bind(plus,  () => { let n = (prefs.height != null ? prefs.height : 150) + 1; if(n > 250) n = 250; prefs.height = n; inp.value = n; saveAll(); });
+  /* 書けなかったら身長を元の値に戻して欄にも戻す(changePrefs・2026-10-30) */
+  const setHeight = n => changePrefs(() => { prefs.height = n; }, ok => { inp.value = (prefs.height != null) ? prefs.height : ''; });
+  Tap.bind(minus, () => { let n = (prefs.height != null ? prefs.height : 150) - 1; if(n < 50) n = 50; setHeight(n); });
+  Tap.bind(plus,  () => { let n = (prefs.height != null ? prefs.height : 150) + 1; if(n > 250) n = 250; setHeight(n); });
   inp.addEventListener('change', () => {
     const t = inp.value.trim();
-    if(t === ''){ prefs.height = null; }
-    else { let n = parseInt(t, 10); prefs.height = isNaN(n) ? null : n; }
-    saveAll();
+    if(t === ''){ setHeight(null); }
+    else { let n = parseInt(t, 10); setHeight(isNaN(n) ? null : n); }
   });
 }
 /* 言語ボタン(各言語の自称表記・現在の言語をハイライト) */
@@ -1402,9 +1439,10 @@ function renderItemToggles(){
     hit.appendChild(el('span', 'lb', item.icon + ' ' + labelFor(item.k)));
     hit.appendChild(el('span', 'tgl-pill', on ? T('set.on') : T('set.off')));
     Tap.bind(hit, () => {
-      if(prefs.off.includes(item.k)) prefs.off = prefs.off.filter(x => x !== item.k);
-      else prefs.off.push(item.k);
-      saveAll(); renderItemToggles(); renderGrid();
+      changePrefs(() => {
+        if(prefs.off.includes(item.k)) prefs.off = prefs.off.filter(x => x !== item.k);
+        else prefs.off.push(item.k);
+      }, () => { renderItemToggles(); renderGrid(); });   // 書けなければ元に戻して描き直す(2026-10-30)
     });
     row.appendChild(hit);
 
@@ -1431,25 +1469,25 @@ function moveItem(k, dir){
   const i = arr.indexOf(k), j = i + dir;
   if(i < 0 || j < 0 || j >= arr.length) return false;
   arr[i] = arr[j]; arr[j] = k;
-  prefs.order = arr;
-  saveAll(); renderItemToggles(); renderGrid();
-  return true;
+  /* 書けなければ元の並びに戻して描き直す(2026-10-30) */
+  return changePrefs(() => { prefs.order = arr; }, () => { renderItemToggles(); renderGrid(); });
 }
 
 /* 並び順をつくった時の順(ITEMSの定義順)に戻す */
 function resetOrder(){
-  prefs.order = null; normalizeOrder();
-  saveAll(); renderItemToggles(); renderGrid();
-  toast(T('toast.orderReset'));
+  const ok = changePrefs(() => { prefs.order = null; normalizeOrder(); }, () => { renderItemToggles(); renderGrid(); });
+  if(ok) toast(T('toast.orderReset'));
 }
 
 /* ---- ≡ のドラッグ並びかえ ----
    setPointerCapture は使わない(iOS Safariで pointerup が届かなくなる既知問題・tap.js参照)。
    代わりに document 側で move/up を拾う。 */
 let dragKey = null;
+let dragOrderBefore = null;   // ドラッグを始める前の並び(保存できなかったとき戻す・2026-10-30)
 function onDragStart(e, k){
   if(!e.isPrimary) return;
   dragKey = k;
+  dragOrderBefore = Array.isArray(prefs.order) ? prefs.order.slice() : null;
   if(e.preventDefault) e.preventDefault();   // 取っ手から始まる選択/スクロールを止める
   renderItemToggles();
 }
@@ -1481,7 +1519,12 @@ function onDragMove(e){
 function onDragEnd(){
   if(dragKey == null) return;
   dragKey = null;
-  saveAll(); renderItemToggles(); renderGrid();
+  if(!savePrefs()){   // 書けなければドラッグ前の並びに戻して知らせる
+    if(dragOrderBefore) prefs.order = dragOrderBefore;
+    toast(T('toast.full'));
+  }
+  dragOrderBefore = null;
+  renderItemToggles(); renderGrid();
 }
 if(typeof document !== 'undefined' && document.addEventListener){
   document.addEventListener('pointermove', onDragMove, { passive:false });
@@ -1489,7 +1532,7 @@ if(typeof document !== 'undefined' && document.addEventListener){
   document.addEventListener('pointercancel', onDragEnd);
 }
 document.querySelectorAll('.fs-btn[data-fs]').forEach(b => Tap.bind(b, () => {
-  prefs.fs = Number(b.dataset.fs); saveAll(); applyFs(); renderSet();
+  changePrefs(() => { prefs.fs = Number(b.dataset.fs); }, () => { applyFs(); renderSet(); });   // 書けなければ元の大きさに戻す(2026-10-30)
 }));
 /* fs のclassNameを丸ごと書くため、画面の色(theme-blue)も必ず一緒に付け直す */
 function applyFs(){
@@ -1546,14 +1589,15 @@ function applyTheme(){
   if(g) g.classList.toggle('active', !blue);
   if(b) b.classList.toggle('active', blue);
 }
-Tap.bind(document.getElementById('musicBtnA'),   () => { prefs.music = 'a';   saveAll(); applyMusic(); });
-Tap.bind(document.getElementById('musicBtnB'),   () => { prefs.music = 'b';   saveAll(); applyMusic(); });
-Tap.bind(document.getElementById('musicBtnOff'), () => { prefs.music = 'off'; saveAll(); applyMusic(); });
-Tap.bind(document.getElementById('soundBtnOn'),  () => { prefs.sound = true;  saveAll(); applySound(); });
-Tap.bind(document.getElementById('soundBtnOff'), () => { prefs.sound = false; saveAll(); applySound(); });
+/* 設定の保存(changePrefs): 書けなければ元の値に戻して「容量がいっぱい」を知らせ、画面(ボタンの選択)も元の状態に描き直す(2026-10-30) */
+Tap.bind(document.getElementById('musicBtnA'),   () => { changePrefs(() => { prefs.music = 'a'; },   applyMusic); });
+Tap.bind(document.getElementById('musicBtnB'),   () => { changePrefs(() => { prefs.music = 'b'; },   applyMusic); });
+Tap.bind(document.getElementById('musicBtnOff'), () => { changePrefs(() => { prefs.music = 'off'; }, applyMusic); });
+Tap.bind(document.getElementById('soundBtnOn'),  () => { changePrefs(() => { prefs.sound = true; },  applySound); });
+Tap.bind(document.getElementById('soundBtnOff'), () => { changePrefs(() => { prefs.sound = false; }, applySound); });
 Tap.bind(document.getElementById('order-reset'), () => resetOrder());
-Tap.bind(document.getElementById('themeBtnG'),   () => { prefs.theme = 'green'; saveAll(); applyTheme(); });
-Tap.bind(document.getElementById('themeBtnB'),   () => { prefs.theme = 'blue';  saveAll(); applyTheme(); });
+Tap.bind(document.getElementById('themeBtnG'),   () => { changePrefs(() => { prefs.theme = 'green'; }, applyTheme); });
+Tap.bind(document.getElementById('themeBtnB'),   () => { changePrefs(() => { prefs.theme = 'blue'; },  applyTheme); });
 
 /* ---- バックアップ(ver2でエクスポート・ver1/2両対応でインポート) ---- */
 Tap.bind(document.getElementById('bk-export'), () => {
@@ -1582,25 +1626,45 @@ document.getElementById('bk-file').addEventListener('change', e => {
   const f = e.target.files[0]; if(!f) return;
   const r = new FileReader();
   r.onload = () => {
+    /* 1) 形を確かめる(2026-10-30): このアプリのファイルで、記録(entries)が配列・各要素が「オブジェクトで k(文字)と t(数)がある」もの、
+       せってい(prefs)があればオブジェクト。合わないファイルは今の記録に触れず「読み込めませんでした」 */
+    let d;
     try{
-      const d = JSON.parse(r.result);
-      if(d.app !== 'ouchi_kaigo_kiroku') throw new Error('different app');
-      entries = Array.isArray(d.entries) ? d.entries : [];
-      prefs = Object.assign({ fs:0, off:[], shownote:'', waterGoal:1200, height:null, showSpan:7, music:'a', sound:true, theme:'green', order:null }, d.prefs || {});
-      if(!Array.isArray(prefs.off)) prefs.off = ITEMS.filter(i => !i.on).map(i => i.k);
-      if(typeof prefs.waterGoal !== 'number') prefs.waterGoal = 1200;
-      if(prefs.height === undefined) prefs.height = null;
-      if([7,30,90].indexOf(prefs.showSpan) < 0) prefs.showSpan = 7;
-      if(['a','b','off'].indexOf(prefs.music) < 0) prefs.music = 'a';
-      if(typeof prefs.sound !== 'boolean') prefs.sound = true;
-      if(['green','blue'].indexOf(prefs.theme) < 0) prefs.theme = 'green';
-      normalizeOrder();          // 古いバックアップ(ならび順なし)や壊れた並びも必ず整える
-      migrateEntries(entries);   // ver1バックアップ(v文字列)ならコード化。v2は無変換で安全
-      prefs.schema = 2;
-      if(prefs.lang && SUPPORTED.indexOf(prefs.lang) >= 0) lang = prefs.lang;   // バックアップの言語設定を反映
-      saveAll(); applyFs(); applyTheme(); applySound(); applyMusic(); applyLang();
+      d = JSON.parse(r.result);
+      if(!d || typeof d !== 'object' || d.app !== 'ouchi_kaigo_kiroku') throw new Error('different app');
+      if(!Array.isArray(d.entries)) throw new Error('no entries');
+      if(!d.entries.every(x => x && typeof x === 'object' && !Array.isArray(x) && typeof x.k === 'string' && x.k && typeof x.t === 'number' && isFinite(x.t))) throw new Error('bad entry');
+      if(d.prefs != null && (typeof d.prefs !== 'object' || Array.isArray(d.prefs))) throw new Error('bad prefs');
+    }catch(err){ toast(T('toast.importFail')); return; }
+    /* 2) 置き換えてよいか聞く(いまの記録は丸ごと入れ替わる)。「いいえ」なら何も変えない */
+    askBox(T('toast.importConfirm', { n: entries.length }), ok => {
+      if(!ok) return;
+      const keep = { entries, prefs, lang };   // 保存に失敗したとき戻す
+      try{
+        entries = d.entries;
+        prefs = Object.assign({ fs:0, off:[], shownote:'', waterGoal:1200, height:null, showSpan:7, music:'a', sound:true, theme:'green', order:null }, d.prefs || {});
+        if(!Array.isArray(prefs.off)) prefs.off = ITEMS.filter(i => !i.on).map(i => i.k);
+        if(typeof prefs.waterGoal !== 'number') prefs.waterGoal = 1200;
+        if(prefs.height === undefined) prefs.height = null;
+        if([7,30,90].indexOf(prefs.showSpan) < 0) prefs.showSpan = 7;
+        if(['a','b','off'].indexOf(prefs.music) < 0) prefs.music = 'a';
+        if(typeof prefs.sound !== 'boolean') prefs.sound = true;
+        if(['green','blue'].indexOf(prefs.theme) < 0) prefs.theme = 'green';
+        normalizeOrder();          // 古いバックアップ(ならび順なし)や壊れた並びも必ず整える
+        migrateEntries(entries);   // ver1バックアップ(v文字列)ならコード化。v2は無変換で安全
+        prefs.schema = 2;
+        if(prefs.lang && SUPPORTED.indexOf(prefs.lang) >= 0) lang = prefs.lang;   // バックアップの言語設定を反映
+        if(!saveAll()) throw new Error('save failed');
+      }catch(err){
+        /* 保存できなかった(容量いっぱいなど)・途中で例外: 元の記録とせっていに戻して(保存も元に)、失敗と出す */
+        entries = keep.entries; prefs = keep.prefs; lang = keep.lang;
+        saveAll();
+        toast(T('toast.full'));
+        return;
+      }
+      applyFs(); applyTheme(); applySound(); applyMusic(); applyLang();
       toast(T('toast.imported'));
-    }catch(err){ toast(T('toast.importFail')); }
+    }, false);
   };
   r.readAsText(f);
   e.target.value = '';
@@ -1612,7 +1676,7 @@ Tap.bind(document.getElementById('goto-set'), () => showScreen('set'));
 
 /* ---- みせる 期間切替(1週間/1か月/3か月) ---- */
 document.querySelectorAll('.span-btn').forEach(b => Tap.bind(b, () => {
-  prefs.showSpan = Number(b.dataset.span); saveAll(); renderShow();
+  changePrefs(() => { prefs.showSpan = Number(b.dataset.span); }, () => renderShow());   // 書けなければ元の期間に戻す(2026-10-30)
 }));
 
 /* ---- 言語適用(静的文言・html lang/dir・タイトル・再描画) ---- */
@@ -1632,8 +1696,9 @@ function applyLang(){
 }
 function setLang(code){
   if(SUPPORTED.indexOf(code) < 0) return;
-  lang = code; prefs.lang = code; saveAll();
-  applyLang();
+  const prevLang = lang;
+  /* 書けなければ元のことばに戻す(2026-10-30) */
+  changePrefs(() => { prefs.lang = code; }, ok => { lang = ok ? code : prevLang; applyLang(); });
 }
 
 /* ---- Play版(Capacitor)だけで使う部品(2026-09-30・キットの templates/app.js と同じ考え方) ----

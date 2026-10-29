@@ -30,6 +30,7 @@
       exported:'書き出しました ✓',
       imported:'読み込みました ✓',
       importFail:'読み込めませんでした',
+      importConfirm:'いまの記録({n}件)は、ファイルの内容に置きかわります。読み込みますか?',
       orderReset:'ならび順をもとにもどしました ✓',
       waterNoUndo:'もどす水分がありません',
       waterUndone:'1つもどしました ✓',
@@ -72,7 +73,7 @@
       backupHead:'バックアップ', export:'記録を書き出す', import:'記録を読み込む',
       backupHint:'記録はこの端末の中だけに保存されます。どこにも送信されません。機種変更のときは「書き出す」で保存したファイルを新しい端末で「読み込む」してください。',
       credit:'アプリ開発：介護と支援の相談どころ　そよぎ',
-      ver:'バージョン 1.6',
+      ver:'バージョン 1.7',
       on:'ON', off:'OFF'
     },
 
@@ -218,6 +219,7 @@
       exported:'Exported ✓',
       imported:'Imported ✓',
       importFail:'Could not read the file',
+      importConfirm:'Your current records ({n}) will be replaced by the contents of the file. Import it?',
       orderReset:'Order reset ✓',
       waterNoUndo:'No water intake to undo',
       waterUndone:'Removed one ✓',
@@ -260,7 +262,7 @@
       backupHead:'Backup', export:'Export records', import:'Import records',
       backupHint:'Records are stored only on this device. Nothing is sent anywhere. When you change devices, use "Export" to save a file, then "Import" it on the new device.',
       credit:'App development: SOYOGI - Care & Support Consultation',
-      ver:'Version 1.6',
+      ver:'Version 1.7',
       on:'ON', off:'OFF'
     },
 
@@ -397,6 +399,7 @@
       exported:'Exportiert ✓',
       imported:'Importiert ✓',
       importFail:'Die Datei konnte nicht gelesen werden',
+      importConfirm:'Ihre aktuellen Einträge ({n}) werden durch den Inhalt der Datei ersetzt. Importieren?',
       orderReset:'Reihenfolge zurückgesetzt ✓',
       waterNoUndo:'Kein Eintrag zum Zurücknehmen',
       waterUndone:'Einen Eintrag zurückgenommen ✓',
@@ -435,7 +438,7 @@
       backupHead:'Sicherung', export:'Einträge exportieren', import:'Einträge importieren',
       backupHint:'Die Einträge werden nur auf diesem Gerät gespeichert. Nichts wird gesendet. Beim Gerätewechsel mit „Exportieren“ eine Datei sichern und auf dem neuen Gerät „Importieren“.',
       credit:'App-Entwicklung: SOYOGI - Beratungsstelle für Pflege und Unterstützung',
-      ver:'Version 1.6',
+      ver:'Version 1.7',
       on:'AN', off:'AUS'
     },
     items: {
@@ -553,6 +556,7 @@
       exported:'Exporté ✓',
       imported:'Importé ✓',
       importFail:'Impossible de lire le fichier',
+      importConfirm:'Vos enregistrements actuels ({n}) seront remplacés par le contenu du fichier. Importer ?',
       orderReset:'Ordre rétabli ✓',
       waterNoUndo:'Aucune prise d’eau à annuler',
       waterUndone:'Une prise annulée ✓',
@@ -591,7 +595,7 @@
       backupHead:'Sauvegarde', export:'Exporter les données', import:'Importer les données',
       backupHint:'Les enregistrements restent uniquement sur cet appareil. Rien n’est envoyé. En cas de changement d’appareil, « Exporter » un fichier puis « Importer » sur le nouvel appareil.',
       credit:'Développement de l’application : SOYOGI - Lieu de conseil en soins et soutien',
-      ver:'Version 1.6',
+      ver:'Version 1.7',
       on:'ON', off:'OFF'
     },
     items: {
@@ -709,6 +713,7 @@
       exported:'Exportado ✓',
       imported:'Importado ✓',
       importFail:'No se pudo leer el archivo',
+      importConfirm:'Sus registros actuales ({n}) se sustituirán por el contenido del archivo. ¿Importar?',
       orderReset:'Orden restablecido ✓',
       waterNoUndo:'No hay tomas de agua que deshacer',
       waterUndone:'Una toma deshecha ✓',
@@ -747,7 +752,7 @@
       backupHead:'Copia de seguridad', export:'Exportar registros', import:'Importar registros',
       backupHint:'Los registros se guardan solo en este dispositivo. No se envía nada. Al cambiar de dispositivo, use «Exportar» para guardar un archivo e «Importar» en el nuevo.',
       credit:'Desarrollo de la aplicación: SOYOGI - Centro de consultas de cuidados y apoyo',
-      ver:'Versión 1.6',
+      ver:'Versión 1.7',
       on:'ON', off:'OFF'
     },
     items: {
@@ -865,6 +870,7 @@
       exported:'Esportato ✓',
       imported:'Importato ✓',
       importFail:'Impossibile leggere il file',
+      importConfirm:'Le registrazioni attuali ({n}) verranno sostituite dal contenuto del file. Importare?',
       orderReset:'Ordine ripristinato ✓',
       waterNoUndo:'Nessuna assunzione da annullare',
       waterUndone:'Una annullata ✓',
@@ -903,7 +909,7 @@
       backupHead:'Backup', export:'Esporta registrazioni', import:'Importa registrazioni',
       backupHint:'Le registrazioni restano solo su questo dispositivo. Non viene inviato nulla. Cambiando dispositivo, usa «Esporta» per salvare un file e «Importa» sul nuovo.',
       credit:'Sviluppo dell’app: SOYOGI - Sportello di consulenza per cura e sostegno',
-      ver:'Versione 1.6',
+      ver:'Versione 1.7',
       on:'ON', off:'OFF'
     },
     items: {
@@ -1021,6 +1027,7 @@
       exported:'Exportado ✓',
       imported:'Importado ✓',
       importFail:'Não foi possível ler o arquivo',
+      importConfirm:'Os registros atuais ({n}) serão substituídos pelo conteúdo do arquivo. Importar?',
       orderReset:'Ordem restaurada ✓',
       waterNoUndo:'Nenhuma ingestão para desfazer',
       waterUndone:'Uma desfeita ✓',
@@ -1059,7 +1066,7 @@
       backupHead:'Backup', export:'Exportar registros', import:'Importar registros',
       backupHint:'Os registros ficam apenas neste aparelho. Nada é enviado. Ao trocar de aparelho, use «Exportar» para salvar um arquivo e «Importar» no novo.',
       credit:'Desenvolvimento do app: SOYOGI - Centro de consultas de cuidado e apoio',
-      ver:'Versão 1.6',
+      ver:'Versão 1.7',
       on:'ON', off:'OFF'
     },
     items: {
@@ -1177,6 +1184,7 @@
       exported:'Geëxporteerd ✓',
       imported:'Geïmporteerd ✓',
       importFail:'Het bestand kon niet worden gelezen',
+      importConfirm:'Uw huidige registraties ({n}) worden vervangen door de inhoud van het bestand. Importeren?',
       orderReset:'Volgorde hersteld ✓',
       waterNoUndo:'Geen inname om ongedaan te maken',
       waterUndone:'Eén ongedaan gemaakt ✓',
@@ -1215,7 +1223,7 @@
       backupHead:'Back-up', export:'Registraties exporteren', import:'Registraties importeren',
       backupHint:'Registraties staan alleen op dit apparaat. Er wordt niets verzonden. Bij een nieuw apparaat: "Exporteren" naar een bestand en op het nieuwe apparaat "Importeren".',
       credit:'App-ontwikkeling: SOYOGI - Adviespunt voor zorg en ondersteuning',
-      ver:'Versie 1.6',
+      ver:'Versie 1.7',
       on:'AAN', off:'UIT'
     },
     items: {
@@ -1333,6 +1341,7 @@
       exported:'Exporterat ✓',
       imported:'Importerat ✓',
       importFail:'Filen kunde inte läsas',
+      importConfirm:'Dina nuvarande registreringar ({n}) ersätts av filens innehåll. Vill du importera?',
       orderReset:'Ordningen återställd ✓',
       waterNoUndo:'Inget vattenintag att ångra',
       waterUndone:'Ett ångrat ✓',
@@ -1371,7 +1380,7 @@
       backupHead:'Säkerhetskopia', export:'Exportera anteckningar', import:'Importera anteckningar',
       backupHint:'Anteckningarna sparas bara på den här enheten. Inget skickas någonstans. Vid byte av enhet: "Exportera" till en fil och "Importera" på den nya enheten.',
       credit:'Apputveckling: SOYOGI - Rådgivning för omsorg och stöd',
-      ver:'Version 1.6',
+      ver:'Version 1.7',
       on:'PÅ', off:'AV'
     },
     items: {
@@ -1489,6 +1498,7 @@
       exported:'내보냈습니다 ✓',
       imported:'불러왔습니다 ✓',
       importFail:'파일을 읽을 수 없습니다',
+      importConfirm:'현재 기록({n}건)은 파일의 내용으로 바뀝니다. 불러올까요?',
       orderReset:'순서를 되돌렸습니다 ✓',
       waterNoUndo:'되돌릴 수분 기록이 없습니다',
       waterUndone:'하나 되돌렸습니다 ✓',
@@ -1527,7 +1537,7 @@
       backupHead:'백업', export:'기록 내보내기', import:'기록 불러오기',
       backupHint:'기록은 이 기기 안에만 저장됩니다. 어디에도 전송되지 않습니다. 기기를 바꿀 때는 「내보내기」로 파일을 저장한 뒤 새 기기에서 「불러오기」 해 주세요.',
       credit:'앱 개발: SOYOGI - 돌봄과 지원 상담소',
-      ver:'버전 1.6',
+      ver:'버전 1.7',
       on:'ON', off:'OFF'
     },
     items: {
@@ -1645,6 +1655,7 @@
       exported:'已导出 ✓',
       imported:'已导入 ✓',
       importFail:'无法读取文件',
+      importConfirm:'当前的记录({n}条)将被文件内容替换。要导入吗?',
       orderReset:'顺序已恢复 ✓',
       waterNoUndo:'没有可撤销的饮水记录',
       waterUndone:'已撤销一条 ✓',
@@ -1683,7 +1694,7 @@
       backupHead:'备份', export:'导出记录', import:'导入记录',
       backupHint:'记录只保存在这台设备里,不会发送到任何地方。换设备时,请用「导出」保存文件,再在新设备上「导入」。',
       credit:'应用开发: SOYOGI - 照护与支援咨询处',
-      ver:'版本 1.6',
+      ver:'版本 1.7',
       on:'开', off:'关'
     },
     items: {
@@ -1801,6 +1812,7 @@
       exported:'تم التصدير ✓',
       imported:'تم الاستيراد ✓',
       importFail:'تعذّر قراءة الملف',
+      importConfirm:'ستُستبدل السجلات الحالية ({n}) بمحتوى الملف. هل تريد الاستيراد؟',
       orderReset:'تمت إعادة الترتيب ✓',
       waterNoUndo:'لا يوجد تسجيل شرب للتراجع عنه',
       waterUndone:'تم التراجع عن واحد ✓',
@@ -1839,7 +1851,7 @@
       backupHead:'نسخة احتياطية', export:'تصدير التسجيلات', import:'استيراد التسجيلات',
       backupHint:'تُحفظ التسجيلات على هذا الجهاز فقط ولا يُرسل أي شيء إلى أي مكان. عند تغيير الجهاز استخدم «تصدير» لحفظ ملف ثم «استيراد» على الجهاز الجديد.',
       credit:'تطوير التطبيق: SOYOGI - مركز استشارات الرعاية والدعم',
-      ver:'الإصدار 1.6',
+      ver:'الإصدار 1.7',
       on:'تشغيل', off:'إيقاف'
     },
     items: {
