@@ -776,7 +776,7 @@ function toiletTodaySub(){
 function openTemp(){
   openStepModal({
     title:T('temp.title'),
-    rows:[{ key:'tv', unit:T('temp.unit'), value:lastVal('temp','tv',36.5), step:0.1, min:35.0, max:41.0, dec:1 }],
+    rows:[{ key:'tv', unit:T('temp.unit'), value:lastVal('temp','tv',36.5), step:0.1, min:32.0, max:42.0, dec:1 }],   // v1.9(2026-10-30 ヒロさん決定): 35.0〜41.0 → 32.0〜42.0。低い体温も記録に残す・365 などの打ち間違いは今までどおり保存しない
     note:true, notePlaceholder:T('temp.notePlaceholder'),
     onDone:(vals, note) => {
       const tv = parseFloat(vals.tv);
