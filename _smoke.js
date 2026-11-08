@@ -360,7 +360,7 @@ check('body の下余白が max(CSS下限, 実測+10px)になっている',
 check('--tabbar-h のフォールバックに env(safe-area-inset-bottom) が入る',
   /--tabbar-h:calc\(84px\+env\(safe-area-inset-bottom\)\)/.test(cssFlat.replace(/ /g, '')));
 check('#hd の上余白に env(safe-area-inset-top) が入る(時計と重ならない)',
-  /#hd\{[^}]*padding:calc\(12px\+env\(safe-area-inset-top\)\)/.test(cssFlat.replace(/ /g, '')));
+  /#hd\{[^}]*padding:calc\(20px\+env\(safe-area-inset-top\)\)/.test(cssFlat.replace(/ /g, '')));
 check('#tabbar 自身の下余白に env(safe-area-inset-bottom) が残っている',
   /#tabbar\{[^}]*env\(safe-area-inset-bottom\)/.test(cssFlat.replace(/ /g, '')));
 check('トーストの位置も max(CSS下限, 実測+12px)(タブに重ならない)',
