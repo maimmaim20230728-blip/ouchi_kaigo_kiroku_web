@@ -34,6 +34,11 @@
     <div id="today-date" class="date-line"></div>
     <div id="item-grid" class="grid"></div>
     <div id="goto-set" class="goto-set"></div>
+    <!-- バックアップの声かけ(30日以上書き出していないとき・app.js updateBackupNag・v1.12) -->
+    <div id="bk-nag" class="bk-nag hidden">
+      <button id="bk-nag-go" class="bk-nag-msg" type="button"></button>
+      <button id="bk-nag-later" class="bk-nag-later" type="button"></button>
+    </div>
     <h2 class="sec-h" data-i18n="today.records">きょうの記録</h2>
     <div id="today-list" class="loglist"></div>
   </section>
@@ -61,6 +66,7 @@
     </div>
     <div id="show-table-wrap"></div>
     <p class="hint" data-i18n="show.hint">この画面をそのまま、お医者さん・看護師さん・ケアマネさんに見せてください。上の表は記録から自動で作られます。 記録じたいはずっと残ります。むかしの日は「りれき」でさかのぼれます。</p>
+    <p class="hint" data-i18n="check.tempNote">体温の🟡は37.5℃以上、🔴は38.0℃以上のめやすです。一般的な目安で、診断ではありません。</p>
   </section>
 
   <!-- せってい -->
@@ -114,7 +120,7 @@
     <input type="file" id="bk-file" accept="application/json" hidden>
     <p class="hint" data-i18n="set.backupHint">記録はこの端末の中だけに保存されます。どこにも送信されません。機種変更のときは「書き出す」で保存したファイルを新しい端末で「読み込む」してください。</p>
     <p class="credit"><a class="credit-link" href="https://soudansoyogi.com/" target="_blank" rel="noopener" data-i18n="set.credit">アプリ開発：介護と支援の相談どころ　そよぎ</a></p>
-    <p class="credit-ver" data-i18n="set.ver">バージョン 1.11</p>
+    <p class="credit-ver" data-i18n="set.ver">バージョン 1.12</p>
   </section>
 </main>
 
@@ -129,6 +135,7 @@
 <div id="sheet" class="overlay hidden">
   <div class="sheet-box">
     <div id="sheet-title" class="sheet-title"></div>
+    <div id="sheet-extra"></div>
     <div id="sheet-choices"></div>
     <button id="sheet-cancel" class="cancel-btn" data-i18n="common.cancel">やめる</button>
   </div>

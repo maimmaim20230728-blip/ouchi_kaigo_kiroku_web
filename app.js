@@ -13,6 +13,7 @@ const THRESHOLDS = {
     p: { rHi:120, yHi:101, yLoHi:59, yLoLo:50 },  // 脈拍
   },
   bmi: { r1:18.5, y1:20, y2:25, r2:30 },          // やせすぎ/やせぎみ/ひょうじゅん/おおめ/かなりおおめ
+  temp: { y:37.5, r:38.0 },                        // 体温(℃): y以上=黄(やや高め)・r以上=赤(たかい)。一般的な目安で診断ではない(v1.12・ヒロさん監修で差し替え可・DESIGN.md §5)
 };
 
 /* ---- 小さなDOMヘルパー ---- */
@@ -269,7 +270,13 @@ function bathText(e){
 }
 function entryValueText(e){
   const k = e.k, c = e.c;
-  if(k === 'med'){ const M = { taken:'med.taken', prn:'med.prn', missed:'med.missed' }; if(M[c]) return T(M[c]); }
+  if(k === 'med'){
+    const M = { taken:'med.taken', prn:'med.prn', missed:'med.missed' };
+    if(M[c]){
+      const sl = MED_SLOTS.filter(s => s[0] === e.slot)[0];   // 決まった時刻の記録は「のんだ・朝」のように出す(v1.12)
+      return T(M[c]) + (sl ? '・' + T(sl[1]) : '');
+    }
+  }
   else if(k === 'water'){ const M = { cup:'water.rowCup', half:'water.rowHalf', sip:'water.rowSip' }; if(M[c]) return T(M[c]); }
   else if(k === 'meal'){ const M = { full:'meal.full', half:'meal.half', little:'meal.little', none:'meal.none' }; if(M[c]) return T(M[c]); }
   else if(k === 'toilet') return toiletText(e);
@@ -365,6 +372,16 @@ function bmiChip(bmi){
   return { lv:'r', label:T('bmi.overMuch') + '🔴' };
 }
 
+/* 体温の目印(v1.12): 一般的な目安で、診断ではない。数でなければ null(目印なし) */
+function classifyTemp(v){
+  if(v == null || isNaN(v)) return null;
+  const Th = THRESHOLDS.temp;
+  if(v >= Th.r) return { lv:'r', label:T('chip.high') + '🔴' };
+  if(v >= Th.y) return { lv:'y', label:T('chip.highMild') + '🟡' };
+  return null;
+}
+function tempOf(e){ return e.tv != null ? Number(e.tv) : parseFloat(e.v); }
+
 /* ---- 画面切替 ---- */
 const SCREENS = ['today','hist','show','set'];
 let curScreen = 'today';
@@ -382,19 +399,40 @@ function showScreen(name){
 
 /* ---- トースト ---- */
 let toastTimer = null;
-function toast(msg){
+/* act={ label, fn } を渡すと、知らせの横にボタンが付く(約5秒・「とりけす」「もとにもどす」用・v1.12)。
+   ボタンのある間は読み上げソフトからも届くよう aria-hidden を外す */
+function toast(msg, act){
   const el2 = document.getElementById('toast');
   el2.textContent = msg; el2.classList.remove('hidden');
+  el2.classList.toggle('has-act', !!act);
+  el2.setAttribute('aria-hidden', act ? 'false' : 'true');
+  if(act){
+    const b = el('button', 'toast-act', act.label);
+    b.type = 'button';
+    Tap.bind(b, () => { clearTimeout(toastTimer); el2.classList.add('hidden'); act.fn(); }, { silent:true });
+    el2.appendChild(b);
+  }
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el2.classList.add('hidden'), 1500);
+  toastTimer = setTimeout(() => el2.classList.add('hidden'), act ? 5000 : 1500);
   /* 読み上げソフトにも伝える(#toast-sr・aria-live="polite"・いつも在る見えない欄。同じ文が続いても読まれるよう いったん空に・2026-10-30) */
   const sr = document.getElementById('toast-sr');
   if(sr){ sr.textContent = ''; setTimeout(() => { sr.textContent = msg; }, 50); }
 }
 
 /* ---- 記録追加 ---- */
+/* 直前に入れた1件を約5秒だけ「とりけす」できる(v1.12)。水分は専用の「⤺ 1つもどす」があるので付けない。
+   消すのは、その記録そのもの(参照で探す)だけ。書けなければ消さずに知らせる */
+function undoAdd(rec){
+  const idx = entries.lastIndexOf(rec);
+  if(idx < 0) return;
+  entries.splice(idx, 1);
+  if(!saveJSON(LS_EN, entries)){ entries.splice(idx, 0, rec); toast(T('toast.full')); return; }
+  toast(T('undo.cancelled'));
+  renderToday(); renderHist();
+}
 function addEntry(obj){
-  entries.push(Object.assign({ t: Date.now() }, obj));
+  const rec = Object.assign({ t: Date.now() }, obj);
+  entries.push(rec);
   if(!saveAll()){
     /* 書けなかった(容量いっぱいなど): 押した記録は取り消し、「保存しました」とは出さない。
        記録だけ書けて設定が書けなかった場合に備え、取り消したあとの記録を保存し直して、画面と保存を合わせる */
@@ -403,7 +441,8 @@ function addEntry(obj){
     toast(T('toast.full'));
     return;
   }
-  toast(T('toast.saved'));
+  if(obj.k === 'water' || obj.slot) toast(T('toast.saved'));
+  else toast(T('toast.saved'), { label:T('undo.cancelAdd'), fn:() => undoAdd(rec) });
   renderToday();
 }
 /* 写真つき記録は容量超過に配慮して個別保存 */
@@ -441,6 +480,8 @@ function openChoiceSheet(title, choices){
   document.getElementById('sheet-title').textContent = title;
   const box = document.getElementById('sheet-choices');
   box.textContent = '';
+  const extra = document.getElementById('sheet-extra');   // 選択肢の上に足す欄(おくすりの決まった時刻・v1.12)。毎回空にする
+  if(extra) extra.textContent = '';
   choices.forEach(c => {
     const b = el('button', 'choice-btn', c.label);
     Tap.bind(b, () => c.on());
@@ -558,7 +599,10 @@ function openStepModal(opt){
       try{ inputs[bad.key].focus(); }catch(e){}
       return;
     }
-    ctx.close(); opt.onDone(vals, noteInp ? noteInp.value.trim() : '');
+    const done = () => { ctx.close(); opt.onDone(vals, noteInp ? noteInp.value.trim() : ''); };
+    const ask = opt.confirmMsg ? opt.confirmMsg(vals) : null;
+    if(ask){ askBox(ask, yes => { if(yes) done(); }, false); return; }   // 保存は止めない確かめ(「いいえ」なら窓に戻って直せる・v1.12)
+    done();
   });
   Tap.bind(cancel, () => ctx.close(), { silent:true });
 }
@@ -681,6 +725,38 @@ function openMed(){
     { label:T('med.prn'),    on:() => { closeSheet(); openTonpuku(); } },   // 頓服は専用モーダル(過去の理由+自由記入)
     { label:T('med.missed'), on:() => { closeSheet(); addEntry({ k:'med', c:'missed' }); } },
   ]);
+  drawMedSlots();
+}
+/* 決まった時刻(朝・昼・夕・ねる前)のおくすり(v1.12): きょうの記録に slot つきで入る。
+   その時刻がきょう記録済みなら、ボタンの代わりに「のんだ/のめなかった」を出す(二重に数えない・直すときは記録の 🗑)。シートは開いたまま、続けて押せる */
+const MED_SLOTS = [['morning','slot.morning'], ['noon','slot.noon'], ['evening','slot.evening'], ['bed','slot.bed']];
+function medSlotToday(key){
+  const today = new Date();
+  let hit = null;
+  entries.forEach(e => { if(e.k === 'med' && e.slot === key && sameDay(e.t, today) && (!hit || e.t >= hit.t)) hit = e; });
+  return hit;
+}
+function drawMedSlots(){
+  const box = document.getElementById('sheet-extra');
+  if(!box) return;
+  box.textContent = '';
+  box.appendChild(el('div', 'step-label', T('slot.head')));
+  MED_SLOTS.forEach(s => {
+    const row = el('div', 'slot-row');
+    row.appendChild(el('span', 'slot-name', T(s[1])));
+    const done = medSlotToday(s[0]);
+    if(done){
+      row.appendChild(el('span', 'slot-done slot-' + done.c, (done.c === 'taken' ? '✓ ' : '✕ ') + (done.c === 'taken' ? T('med.taken') : T('med.missed'))));
+    } else {
+      [['taken','med.taken'], ['missed','med.missed']].forEach(b => {
+        const btn = el('button', 'slot-btn slot-btn-' + b[0], T(b[1]));
+        btn.type = 'button';
+        Tap.bind(btn, () => { addEntry({ k:'med', c:b[0], slot:s[0] }); drawMedSlots(); });
+        row.appendChild(btn);
+      });
+    }
+    box.appendChild(row);
+  });
 }
 /* 頓服(とんぷく)の過去の理由: c==='prn' の記録のm を 重複除去・新しい順・最大6件(理由mは自由記述=言語混在OK) */
 function tonpukuReasons(){
@@ -778,6 +854,8 @@ function openTemp(){
     title:T('temp.title'),
     rows:[{ key:'tv', required:true, unit:T('temp.unit'), value:lastVal('temp','tv',36.5), step:0.1, min:32.0, max:42.0, dec:1 }],   // v1.9(2026-10-30 ヒロさん決定): 35.0〜41.0 → 32.0〜42.0。低い体温も記録に残す・365 などの打ち間違いは今までどおり保存しない
     note:true, notePlaceholder:T('temp.notePlaceholder'),
+    live:true,   // 37.5℃以上は目印と「一般的な目安」の一言を出す(v1.12)
+    onLive:(vals) => { const tc = classifyTemp(parseFloat(vals.tv)); return tc ? tc.label + '　' + T('check.tempLive') : ''; },
     onDone:(vals, note) => {
       const tv = parseFloat(vals.tv);
       if(isNaN(tv)) return;
@@ -874,6 +952,10 @@ function openBp(){
       { key:'d', label:T('bp.diaLabel'),   value:lastVal('bp','d',70),  step:5, min:30, max:150, dec:0 },
       { key:'p', label:T('bp.pulseLabel'), value:lastVal('bp','pl',70), step:5, min:30, max:200, dec:0 },
     ],
+    confirmMsg:(vals) => {   // 上 < 下 は取り違えかもしれない(保存は止めず、聞くだけ・v1.12)
+      const s = parseInt(vals.s, 10), d = parseInt(vals.d, 10);
+      return (!isNaN(s) && !isNaN(d) && s < d) ? T('check.bpReversed') : null;
+    },
     onDone:(vals) => {
       const s = parseInt(vals.s, 10), d = parseInt(vals.d, 10), p = parseInt(vals.p, 10);
       if(isNaN(s) || isNaN(d)) return;
@@ -1014,6 +1096,16 @@ function weightChip(e){
   const c = bmiChip(b);
   return el('span', 'mk' + (c.lv ? ' mk-' + c.lv : ''), 'BMI ' + b.toFixed(1) + ' ' + c.label);
 }
+/* いま消した記録を、消す前の位置に戻す(v1.12)。書けなければ戻さずに知らせる */
+function restoreEntry(e, at){
+  if(entries.indexOf(e) >= 0) return;
+  const prev = entries;
+  entries = prev.slice();
+  entries.splice(Math.min(at, entries.length), 0, e);
+  if(!saveJSON(LS_EN, entries)){ entries = prev; toast(T('toast.full')); return; }
+  toast(T('undo.restored'));
+  renderToday(); renderHist();
+}
 function entryRow(e, allowDelete){
   const row = el('div', 'log-row');
   const tm = el('span', 'log-time editable', fmtTime(e.t));
@@ -1024,6 +1116,7 @@ function entryRow(e, allowDelete){
   const val = entryValueText(e);
   body.appendChild(el('span', 'log-main', it.icon + ' ' + labelFor(e.k) + (val ? ': ' + val : '')));
   if(e.k === 'bp') appendBpChips(body, e);
+  if(e.k === 'temp'){ const tc = classifyTemp(tempOf(e)); if(tc){ const w = el('span', 'mk-wrap'); w.appendChild(el('span', 'mk mk-' + tc.lv, tc.label)); body.appendChild(w); } }   // 体温の目印(v1.12)
   if(e.k === 'weight'){ const chip = weightChip(e); if(chip){ const w = el('span', 'mk-wrap'); w.appendChild(chip); body.appendChild(w); } }
   if(e.m){ body.appendChild(el('span', 'log-memo', e.m)); }
   if(e.k === 'toilet'){ const obs = toiletObsText(e); if(obs) body.appendChild(el('span', 'log-obs', obs)); }
@@ -1042,8 +1135,10 @@ function entryRow(e, allowDelete){
         setTimeout(() => { armed = false; del.textContent = '🗑'; del.classList.remove('arm'); }, 2500);
       } else {
         const prev = entries;
+        const at = prev.indexOf(e);
         entries = entries.filter(x => x !== e);
         if(!saveJSON(LS_EN, entries)){ entries = prev; toast(T('toast.full')); }   // 書けなければ消さずに知らせる(2026-10-30)
+        else if(at >= 0) toast(T('undo.deleted'), { label:T('undo.restore'), fn:() => restoreEntry(e, at) });   // 約5秒「もとにもどす」(v1.12)
         renderToday(); renderHist();
       }
     }, { silent:true });
@@ -1065,6 +1160,7 @@ function renderToday(){
   document.getElementById('today-date').textContent = T('today.datePrefix') + ' ' + fmtDate(new Date());
   renderGrid();
   updateGotoSet();
+  updateBackupNag();
   renderList(document.getElementById('today-list'), entries.filter(e => sameDay(e.t, new Date())), true);
 }
 /* せってい誘導ヒント: OFF中の項目名を動的表示して「増やせるもの」を見せる */
@@ -1075,6 +1171,34 @@ function updateGotoSet(){
     ? T('today.gotoSetOff', { list:hidden.join('・') })
     : T('today.gotoSet');
 }
+
+/* バックアップの声かけ(v1.12): 最後に書き出してから30日以上(書き出したことが無ければ、いちばん古い記録から30日以上)たつと、
+   「きょう」の下に小さく出す。通知ではなく画面の中だけ。「あとで」で7日見えなくなる。押すと「せってい」へ */
+const BK_DAYS = 30, BK_SNOOZE_DAYS = 7, DAY_MS = 86400000;
+function backupNagDue(now){
+  if(!entries.length) return false;
+  if(typeof prefs.backupSnooze === 'number' && now - prefs.backupSnooze < BK_SNOOZE_DAYS * DAY_MS) return false;
+  let ref = prefs.lastBackup;
+  if(typeof ref !== 'number' || !isFinite(ref)){
+    ref = null;
+    entries.forEach(e => { if(typeof e.t === 'number' && isFinite(e.t) && (ref === null || e.t < ref)) ref = e.t; });
+    if(ref === null) return false;
+  }
+  return now - ref >= BK_DAYS * DAY_MS;
+}
+function updateBackupNag(){
+  const box = document.getElementById('bk-nag');
+  if(!box) return;
+  const due = backupNagDue(Date.now());
+  box.classList.toggle('hidden', !due);
+  if(!due) return;
+  document.getElementById('bk-nag-go').textContent = T('bk.nag');
+  document.getElementById('bk-nag-later').textContent = T('bk.later');
+}
+Tap.bind(document.getElementById('bk-nag-go'), () => showScreen('set'));
+Tap.bind(document.getElementById('bk-nag-later'), () => {
+  changePrefs(() => { prefs.backupSnooze = Date.now(); }, () => updateBackupNag());   // 書けなければ元に戻して知らせる
+}, { silent:true });
 
 /* ---- 1日の集計(りれきで使用) ---- */
 const MEAL_MARK = { full:'○', half:'△', little:'▽', none:'×' };   // 食事の粒度記号(言語非依存)
@@ -1104,7 +1228,7 @@ function daySummary(dayEntries){
   }
   if(c.temp){
     const vals = c.temp.map(e => e.tv != null ? e.tv : parseFloat(e.v)).filter(v => !isNaN(v));
-    if(vals.length) parts.push('🌡️ ' + T('sum.tempMax', { v:Math.max.apply(null, vals) }));
+    if(vals.length){ const mx = Math.max.apply(null, vals), tc = classifyTemp(mx); parts.push('🌡️ ' + T('sum.tempMax', { v:mx }) + (tc ? (tc.lv === 'r' ? ' 🔴' : ' 🟡') : '')); }
   }
   if(c.bp){
     const last = c.bp[c.bp.length - 1];
@@ -1184,7 +1308,9 @@ function showCell(k, arr, c){
   if(k === 'temp'){
     if(!arr) return dash;
     const vals = arr.map(e => e.tv != null ? e.tv : parseFloat(e.v)).filter(v => !isNaN(v));
-    return vals.length ? T('sum.tempMaxCell', { v:Math.max.apply(null, vals) }) : dash;
+    if(!vals.length) return dash;
+    const mx = Math.max.apply(null, vals), tc = classifyTemp(mx);
+    return T('sum.tempMaxCell', { v:mx }) + (tc ? (tc.lv === 'r' ? ' 🔴' : ' 🟡') : '');   // 体温の目印(v1.12)
   }
   if(k === 'bp'){
     if(!arr) return dash;
@@ -1689,7 +1815,7 @@ Tap.bind(document.getElementById('bk-export'), () => {
      選べたら「書き出しました」・閉じたら何も出さない・書けなければ「書き出せませんでした」 */
   if(isNativeApp()){
     nativeSaveFile(fname, JSON.stringify(data), T('set.export'), r => {
-      if(r === 'ok') toast(T('toast.exported'));
+      if(r === 'ok'){ toast(T('toast.exported')); noteBackupDone(); }
       else if(r === 'fail') toast(T('toast.exportFail'));
     });
     return;
@@ -1701,7 +1827,10 @@ Tap.bind(document.getElementById('bk-export'), () => {
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 3000);
   toast(T('toast.exported'));
+  noteBackupDone();
 });
+/* 書き出せた日を覚える(声かけ用・端末の中だけ・v1.12) */
+function noteBackupDone(){ changePrefs(() => { prefs.lastBackup = Date.now(); prefs.backupSnooze = null; }, () => updateBackupNag()); }
 Tap.bind(document.getElementById('bk-import'), () => document.getElementById('bk-file').click());
 document.getElementById('bk-file').addEventListener('change', e => {
   const f = e.target.files[0]; if(!f) return;
@@ -1734,6 +1863,7 @@ document.getElementById('bk-file').addEventListener('change', e => {
         normalizeOrder();          // 古いバックアップ(ならび順なし)や壊れた並びも必ず整える
         migrateEntries(entries);   // ver1バックアップ(v文字列)ならコード化。v2は無変換で安全
         prefs.schema = 2;
+        prefs.lastBackup = Date.now(); prefs.backupSnooze = null;   // 読み込んだファイル=バックアップがある(声かけの起点・v1.12)
         if(prefs.lang && SUPPORTED.indexOf(prefs.lang) >= 0) lang = prefs.lang;   // バックアップの言語設定を反映
         if(!saveAll()) throw new Error('save failed');
       }catch(err){

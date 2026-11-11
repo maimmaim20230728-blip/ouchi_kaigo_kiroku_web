@@ -642,6 +642,186 @@ console.log('[v1.11] 空の保存は窓を閉じず知らせる・日付また�
   check('🗑のけすボタン・時刻・≡の取っ手は 44px 以上', /\.del-btn\{[^}]*min-height:44px;min-width:44px/.test(css) && /\.log-time\{[^}]*min-height:44px/.test(css) && /\.ord-grip\{[^}]*min-width:44px;min-height:44px/.test(css));
 }
 
+/* v1.12: とりけす/もとにもどす・決まった時間のおくすり・体温の目印・血圧の上下の確かめ・バックアップの声かけ・BGMの裏止め・版の一元化 */
+console.log('[v1.12] とりけす・決まった時間のおくすり・体温の目印・血圧の確かめ・バックアップの声かけ・BGM裏止め・版の一元化');
+{
+  const inCtx = code => vm.runInContext(code, sandbox);
+  const toastEl = byId('toast');
+  const toastActBtn = () => toastEl.children.find(c => c.className === 'toast-act');
+  sandbox.setLang('en');
+
+  /* 1) 直前の記録を「とりけす」(水分は付けない) */
+  sandbox.addEntry({ k:'water', c:'sip', ml:50 });
+  check('水分の記録には「とりけす」を付けない(専用の ⤺ がある)', !toastActBtn() && !toastEl.classList.contains('has-act'));
+  const nA = inCtx('entries').length;
+  sandbox.addEntry({ k:'meal', c:'full' });
+  const ub = toastActBtn();
+  check('食事を記録すると、知らせに「とりけす」のボタンが付く', !!ub && ub.textContent === sandbox.T('undo.cancelAdd') && toastEl.classList.contains('has-act') && toastEl.getAttribute('aria-hidden') === 'false' && inCtx('entries').length === nA + 1);
+  tap(ub);
+  check('「とりけす」を押すと、その1件だけ消えて「とりけしました」・保存も合う', inCtx('entries').length === nA && ents().length === nA && toastEl.textContent === sandbox.T('undo.cancelled') && !toastEl.classList.contains('has-act'));
+  sandbox.addEntry({ k:'med', c:'taken' });
+  const ub2 = toastActBtn();
+  quotaFull = true; tap(ub2); quotaFull = false;
+  check('「とりけす」で書けなければ消さずに、容量の知らせ', inCtx('entries').length === nA + 1 && toastEl.textContent === sandbox.T('toast.full'));
+  inCtx('entries.pop()'); inCtx("saveJSON(LS_EN, entries)");
+
+  /* 2) いま消した記録を「もとにもどす」 */
+  sandbox.addEntry({ k:'note', m:'もどす試し' });
+  const rec = inCtx('entries[entries.length - 1]');
+  inCtx('entries.push({ k:"note", m:"あと", t:Date.now() })');   // 戻す先が末尾でないことを確かめる
+  const at0 = inCtx('entries').indexOf(rec);
+  const row = sandbox.entryRow(rec, true);
+  const delBtn = row.children[row.children.length - 1];
+  const nB = inCtx('entries').length;
+  tap(delBtn); tap(delBtn);
+  const rb = toastActBtn();
+  check('🗑を2回押して消すと、「もとにもどす」のボタンが付く', inCtx('entries').length === nB - 1 && !!rb && rb.textContent === sandbox.T('undo.restore') && toastEl.textContent === sandbox.T('undo.deleted'));
+  tap(rb);
+  const after = inCtx('entries');
+  check('「もとにもどす」で、消す前の位置に戻り・保存も合う・「もとにもどしました」', after.length === nB && after.indexOf(rec) === at0 && ents().length === nB && toastEl.textContent === sandbox.T('undo.restored'));
+  inCtx('entries = entries.filter(x => x.m !== "もどす試し" && x.m !== "あと")'); inCtx('saveJSON(LS_EN, entries)');
+
+  /* 3) 決まった時間のおくすり */
+  const extra = byId('sheet-extra');
+  sandbox.openMed();
+  check('おくすりのシートの上に、朝・昼・夕・ねる前の4行が出る', extra.children.length === 5 && extra.children.slice(1).every(r => r.className === 'slot-row' && r.children.length === 3));
+  const nC = inCtx('entries').length;
+  const morningBtn = extra.children[1].children[1];
+  tap(morningBtn);
+  const slotRec = inCtx('entries').filter(e => e.k === 'med' && e.slot === 'morning')[0];
+  check('朝の「のんだ」を押すと slot:morning つきで1件入り、取り消しの知らせは付かない', inCtx('entries').length === nC + 1 && slotRec && slotRec.c === 'taken' && !toastActBtn());
+  check('記録した朝の行は、ボタンの代わりに「のんだ」の表示になる(二重に数えない)', extra.children[1].children.length === 2 && extra.children[1].children[1].className.indexOf('slot-done') === 0 && extra.children[2].children.length === 3);
+  check('記録の行は「のんだ・朝」と出る', sandbox.entryValueText(slotRec) === sandbox.T('med.taken') + '・' + sandbox.T('slot.morning'));
+  tap(extra.children[4].children[2]);
+  check('ねる前の「のめなかった」は slot:bed・c:missed で入る', inCtx('entries').some(e => e.k === 'med' && e.slot === 'bed' && e.c === 'missed'));
+  sandbox.openToilet();
+  check('ほかのシートを開いたら、決まった時間の欄は空になる', extra.children.length === 0);
+  inCtx('entries = entries.filter(e => !e.slot)'); inCtx('saveJSON(LS_EN, entries)');
+  sandbox.closeSheet();
+
+  /* 4) 体温の目印(一般的な目安) */
+  const cls = v => inCtx('classifyTemp(' + v + ')');
+  check('体温 37.4=目印なし / 37.5=黄 / 37.9=黄 / 38.0=赤 / 41=赤 / 数でない=なし', cls(37.4) === null && cls(37.5).lv === 'y' && cls(37.9).lv === 'y' && cls(38.0).lv === 'r' && cls(41).lv === 'r' && cls(NaN) === null);
+  check('しきい値は THRESHOLDS.temp に集約(黄37.5・赤38.0)', inCtx('THRESHOLDS.temp.y') === 37.5 && inCtx('THRESHOLDS.temp.r') === 38.0);
+  const trow = sandbox.entryRow({ k:'temp', tv:38.2, t:Date.now() }, false);
+  check('体温38.2の記録の行に 🔴 の目印が出る', allText(trow).indexOf('🔴') >= 0);
+  const trow2 = sandbox.entryRow({ k:'temp', tv:36.5, t:Date.now() }, false);
+  check('体温36.5の記録の行には目印が出ない', allText(trow2).indexOf('🔴') < 0 && allText(trow2).indexOf('🟡') < 0);
+  check('みせる表の体温の欄も 37.6 は 🟡 が付く', sandbox.showCell('temp', [{ k:'temp', tv:37.6, t:Date.now() }], {}).indexOf('🟡') >= 0 && sandbox.showCell('temp', [{ k:'temp', tv:36.6, t:Date.now() }], {}).indexOf('🟡') < 0);
+  check('日ごとのまとめ(りれき)にも体温の目印が出る', sandbox.daySummary([{ k:'temp', tv:38.4, t:Date.now() }]).join('').indexOf('🔴') >= 0);
+  {
+    const made = []; const oc = documentStub.createElement;
+    documentStub.createElement = t => { const n = oc(t); made.push(n); return n; };
+    sandbox.openTemp();
+    documentStub.createElement = oc;
+    const inp = made.find(n => n.tagName === 'INPUT' && n.className === 'step-in');
+    const live = made.find(n => n.className === 'step-live');
+    inp.value = '38.1'; (inp._ev.input || []).forEach(h => h({}));
+    check('体温の窓で 38.1 を入れると、目印と「一般的な目安」の一言が出る', live.textContent.indexOf('🔴') >= 0 && live.textContent.indexOf(sandbox.T('check.tempLive')) >= 0);
+    inp.value = '36.5'; (inp._ev.input || []).forEach(h => h({}));
+    check('36.5 では何も出ない', live.textContent === '');
+    made.find(n => n.className === 'overlay').remove = () => {};
+  }
+  const htmlSrc = fs.readFileSync('./index.html', 'utf8');
+  check('みせるの下に、体温の目印は一般的な目安で診断ではない、の一文がある(受診の指示は書かない)', htmlSrc.indexOf('data-i18n="check.tempNote"') > 0 && !/受診/.test(I18Nsm.ja.check.tempNote));
+
+  /* 5) 血圧: 上 < 下 のとき確かめる(保存は止めない) */
+  {
+    const made = []; const oc = documentStub.createElement;
+    const runBp = (s, d, answer) => {
+      made.length = 0;
+      documentStub.createElement = t => { const n = oc(t); made.push(n); return n; };
+      sandbox.openBp();
+      documentStub.createElement = oc;
+      const ov = made.find(n => n.className === 'overlay'); let closed = false; ov.remove = () => { closed = true; };
+      const ins = made.filter(n => n.tagName === 'INPUT' && n.className === 'step-in');
+      ins[0].value = String(s); ins[1].value = String(d);
+      let asked = 0;
+      sandbox.confirm = msg => { asked++; sandbox._askMsg = msg; return answer; };
+      const n0 = inCtx('entries').length;
+      tap(made.find(n => n.className === 'ok-btn'));
+      return { asked, closed, added:inCtx('entries').length - n0 };
+    };
+    const a1 = runBp(120, 70, true);
+    check('血圧 120/70 は確かめなしでそのまま保存', a1.asked === 0 && a1.closed && a1.added === 1);
+    const a2 = runBp(80, 120, false);
+    check('血圧 上80・下120 で確かめが出て、「いいえ」なら窓に戻る(記録は増えない)', a2.asked === 1 && sandbox._askMsg === sandbox.T('check.bpReversed') && !a2.closed && a2.added === 0);
+    const a3 = runBp(80, 120, true);
+    check('「はい」ならそのまま保存される(保存は止めない)', a3.asked === 1 && a3.closed && a3.added === 1);
+    const a4 = runBp(100, 100, true);
+    check('上=下 は取り違えとは見ない(確かめなし)', a4.asked === 0 && a4.added === 1);
+    delete sandbox.confirm;
+    inCtx('entries = entries.filter(e => e.k !== "bp" || e.s === 150)'); inCtx('saveJSON(LS_EN, entries)');
+  }
+
+  /* 6) バックアップの声かけ(30日以上・あとで7日・通知ではなく画面の中だけ) */
+  {
+    const D = 86400000, now0 = Date.now();
+    const keepE = inCtx('entries'), keepP = JSON.parse(JSON.stringify(inCtx('prefs')));
+    const due = (ents2, pf) => { inCtx('entries = ' + JSON.stringify(ents2)); inCtx('prefs.lastBackup = ' + JSON.stringify(pf.lastBackup === undefined ? null : pf.lastBackup) + '; prefs.backupSnooze = ' + JSON.stringify(pf.backupSnooze === undefined ? null : pf.backupSnooze)); return inCtx('backupNagDue(' + now0 + ')'); };
+    check('記録が1件もなければ出さない', due([], {}) === false);
+    check('書き出したことが無く、いちばん古い記録が29日前なら出さない', due([{ k:'note', t:now0 - 29 * D }], {}) === false);
+    check('書き出したことが無く、いちばん古い記録が31日前なら出す', due([{ k:'note', t:now0 - 31 * D }], {}) === true);
+    check('最後の書き出しが10日前なら出さない(記録が古くても)', due([{ k:'note', t:now0 - 90 * D }], { lastBackup:now0 - 10 * D }) === false);
+    check('最後の書き出しが31日前なら出す', due([{ k:'note', t:now0 - 90 * D }], { lastBackup:now0 - 31 * D }) === true);
+    check('「あとで」から3日なら出さない・8日なら出す', due([{ k:'note', t:now0 - 90 * D }], { backupSnooze:now0 - 3 * D }) === false && due([{ k:'note', t:now0 - 90 * D }], { backupSnooze:now0 - 8 * D }) === true);
+    due([{ k:'note', t:now0 - 90 * D }], {});
+    inCtx('updateBackupNag()');
+    const nag = byId('bk-nag');
+    check('声かけの欄が表に出て、文言が入る', !nag.classList.contains('hidden') && byId('bk-nag-go').textContent === sandbox.T('bk.nag') && byId('bk-nag-later').textContent === sandbox.T('bk.later'));
+    tap(byId('bk-nag-later'));
+    check('「あとで」を押すと隠れ、保存される(7日)', nag.classList.contains('hidden') && typeof JSON.parse(store['okiroku.prefs']).backupSnooze === 'number');
+    inCtx("prefs.backupSnooze = null; showScreen('today')");
+    tap(byId('bk-nag-go'));
+    check('声かけを押すと「せってい」へ移る', inCtx('curScreen') === 'set');
+    inCtx("showScreen('today')");
+    inCtx('prefs.lastBackup = null'); inCtx('noteBackupDone()');
+    check('書き出せたら、その日を覚えて声かけを消す', typeof JSON.parse(store['okiroku.prefs']).lastBackup === 'number' && byId('bk-nag').classList.contains('hidden'));
+    inCtx('entries = ' + JSON.stringify(keepE)); inCtx('prefs = ' + JSON.stringify(keepP)); inCtx('saveAll()');
+  }
+
+  /* 7) BGM: 裏に回ったら止め、戻ったら続ける */
+  {
+    const handlers = {};
+    const states = [];
+    class FakeCtx { constructor(){ this.state = 'running'; this.currentTime = 0; this.destination = {}; FakeCtx.last = this; } suspend(){ this.state = 'suspended'; states.push('suspend'); } resume(){ this.state = 'running'; states.push('resume'); } }
+    const doc = { hidden:false, addEventListener:(t, h) => { handlers[t] = h; } };
+    const sb = { console, document:doc, window:{ AudioContext:FakeCtx }, setInterval:() => 0, clearInterval(){}, setTimeout:() => 0 };
+    sb.window.window = sb.window; vm.createContext(sb);
+    vm.runInContext(fs.readFileSync('./audio.js', 'utf8') + '\nglobalThis.Sound = Sound;', sb);
+    check('audio.js が visibilitychange を見ている', typeof handlers.visibilitychange === 'function');
+    sb.Sound.setBgmEnabled(false);
+    handlers.visibilitychange();
+    check('まだ音を使っていないとき(AudioContext なし)に裏に回っても何も起きない', states.length === 0);
+    sb.Sound.tap();
+    doc.hidden = true; handlers.visibilitychange();
+    check('裏に回ったら suspend する', states.join() === 'suspend' && FakeCtx.last.state === 'suspended');
+    doc.hidden = true; handlers.visibilitychange();
+    check('裏のままもう一度イベントが来ても二重に止めない', states.join() === 'suspend');
+    doc.hidden = false; handlers.visibilitychange();
+    check('戻ったら resume する', states.join() === 'suspend,resume' && FakeCtx.last.state === 'running');
+    doc.hidden = false; handlers.visibilitychange();
+    check('止めていないのに戻る合図が来ても resume しない', states.join() === 'suspend,resume');
+  }
+
+  /* 8) 新しい訳文・版の一元化 */
+  const NEW = [['undo','cancelAdd'],['undo','cancelled'],['undo','deleted'],['undo','restore'],['undo','restored'],['slot','head'],['slot','morning'],['slot','noon'],['slot','evening'],['slot','bed'],['bk','nag'],['bk','later'],['check','bpReversed'],['check','tempNote'],['check','tempLive']];
+  check('新しい15キーが12言語すべてにあり・空でなく・ダッシュ(— –)が無い', ['ja','en','de','fr','es','it','pt','nl','sv','ko','zh','ar'].every(l => NEW.every(k => { const v = I18Nsm[l][k[0]] && I18Nsm[l][k[0]][k[1]]; return typeof v === 'string' && v.length > 0 && !/[—–]/.test(v); })));
+  check('ja の tempNote は index.html の初期文と同じ', htmlSrc.indexOf('data-i18n="check.tempNote">' + I18Nsm.ja.check.tempNote + '</p>') > 0);
+  check('使われていない古い app.ver(1.1)は12言語から消えている', ['ja','en','de','fr','es','it','pt','nl','sv','ko','zh','ar'].every(l => I18Nsm[l].app.ver === undefined));
+  const css2 = fs.readFileSync('./style.css', 'utf8').replace(/ /g, '');
+  check('「とりけす」ボタン・声かけの2つのボタン・時刻の行のボタンは 44px 以上', /\.toast-act\{[^}]*min-height:44px;min-width:44px/.test(css2) && /\.bk-nag-msg\{[^}]*min-height:44px/.test(css2) && /\.bk-nag-later\{[^}]*min-height:44px;min-width:44px/.test(css2) && /\.slot-btn\{[^}]*min-height:48px/.test(css2));
+  if(fs.existsSync('./bump-version.js')){   // 本体(Play 私有 repo)だけ。Web repo には android/ も bump-version.js も無い
+    let verOut = '';
+    try{ verOut = require('child_process').execFileSync(process.execPath, ['bump-version.js', '--check'], { encoding:'utf8' }); }catch(e){ verOut = 'NG ' + (e.stdout || e.message); }
+    check('bump-version.js --check: 画面・i18n12言語・build.gradle・package.json・SW の版がそろっている', /OK: 版はそろっています/.test(verOut));
+    const gr = fs.readFileSync('./android/app/build.gradle', 'utf8');
+    check('v1.12: versionCode 12・versionName 1.12', /versionCode 12\b/.test(gr) && /versionName "1\.12"/.test(gr));
+  }
+  const swVer = fs.readFileSync('./sw.js', 'utf8').match(/okiroku-v(\d+)/);
+  check('v1.12: 画面の版 1.12・SW okiroku-v14', /1\.12/.test(I18Nsm.ja.set.ver) && swVer && swVer[1] === '14');
+}
+
 console.log('');
 if(fails.length){ console.log('SMOKE NG: ' + fails.length + '件失敗'); process.exit(1); }
 console.log('SMOKE OK: 全チェック通過');

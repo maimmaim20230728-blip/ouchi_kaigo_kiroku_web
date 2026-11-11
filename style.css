@@ -220,6 +220,15 @@ body.fs0{font-size:19px;} body.fs1{font-size:22px;} body.fs2{font-size:25px;}
   background:var(--brand-dark); color:#fff; border-radius:999px;
   padding:10px 22px; font-weight:700; z-index:30; white-space:nowrap;
 }
+/* 知らせの横にボタンが付くとき(「とりけす」「もとにもどす」・約5秒・v1.12) */
+.toast.has-act{
+  display:flex; align-items:center; gap:10px; white-space:normal;
+  max-width:calc(100vw - 32px); border-radius:18px; padding:6px 8px 6px 18px;
+}
+.toast-act{
+  min-height:44px; min-width:44px; padding:0 14px; border:0; border-radius:14px;
+  background:#fff; color:var(--brand-dark); font:inherit; font-weight:700; cursor:pointer; flex:none;
+}
 .toast.hidden{display:none;}
 
 /* tap.js 押下フィードバック */
@@ -233,6 +242,33 @@ body.fs0{font-size:19px;} body.fs1{font-size:22px;} body.fs2{font-size:25px;}
 }
 
 /* ============ v1 追加 ============ */
+
+/* バックアップの声かけ(きょうタブ・v1.12) */
+.bk-nag{
+  margin-top:10px; background:#fff; border:1px dashed var(--brand); border-radius:12px;
+  padding:6px 8px 6px 12px; display:flex; align-items:center; gap:8px;
+}
+.bk-nag.hidden{display:none;}
+.bk-nag-msg{
+  flex:1; min-height:44px; background:none; border:0; font:inherit; font-size:.82em; text-align:left;
+  color:var(--brand-dark); line-height:1.6; cursor:pointer;
+}
+.bk-nag-later{
+  flex:none; min-height:44px; min-width:44px; padding:0 12px; background:var(--card);
+  border:2px solid var(--line); border-radius:12px; font:inherit; font-size:.82em; color:var(--muted); cursor:pointer;
+}
+
+/* おくすりの決まった時刻(朝・昼・夕・ねる前・v1.12) */
+#sheet-extra{margin-bottom:12px;}
+.slot-row{display:flex; align-items:center; gap:8px; margin-bottom:8px;}
+.slot-name{flex:0 0 4.5em; font-weight:700;}
+.slot-btn{
+  flex:1; min-height:48px; background:#ecf5ef; border:2px solid var(--line); border-radius:12px;
+  font:inherit; font-size:.9em; font-weight:700; color:var(--ink); cursor:pointer;
+}
+.slot-btn-missed{background:var(--card); color:var(--muted);}
+.slot-done{flex:1; min-height:48px; display:flex; align-items:center; font-weight:700; color:var(--ok);}
+.slot-done.slot-missed{color:var(--muted);}
 
 /* 水分ウィジェット(全幅) */
 .water-card{

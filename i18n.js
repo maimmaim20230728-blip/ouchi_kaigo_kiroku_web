@@ -16,9 +16,15 @@
 
   /* ============ ja(正) ============ */
   var ja = {
-    app: { title:'おうち介護記録・そよぎ', name:'おうち介護記録・そよぎ', ver:'1.1' },
+    app: { title:'おうち介護記録・そよぎ', name:'おうち介護記録・そよぎ' },
 
     tab: { today:'きょう', hist:'りれき', show:'みせる', set:'せってい' },
+
+    /* v1.12: とりけす・もとにもどす / 決まった時間のおくすり / バックアップの声かけ / 確かめ(血圧の上下・体温の目印) */
+    undo: { cancelAdd:'とりけす', cancelled:'とりけしました ✓', deleted:'けしました', restore:'もとにもどす', restored:'もとにもどしました ✓' },
+    slot: { head:'決まった時間のおくすり', morning:'朝', noon:'昼', evening:'夕', bed:'ねる前' },
+    bk: { nag:'バックアップを書き出しませんか?(「せってい」でできます)', later:'あとで' },
+    check: { bpReversed:'下の数が上の数より大きくなっています。上と下が逆かもしれません。このままきろくしますか?', tempNote:'体温の🟡は37.5℃以上、🔴は38.0℃以上のめやすです。一般的な目安で、診断ではありません。', tempLive:'一般的な目安です(診断ではありません)' },
 
     common: { save:'きろくする', cancel:'やめる', empty:'まだ記録はありません', delConfirm:'けす?',
       yes:'はい', no:'いいえ', backConfirm:'入れた内容は、まだきろくしていません。やめてもどりますか?' },
@@ -74,7 +80,7 @@
       backupHead:'バックアップ', export:'記録を書き出す', import:'記録を読み込む',
       backupHint:'記録はこの端末の中だけに保存されます。どこにも送信されません。機種変更のときは「書き出す」で保存したファイルを新しい端末で「読み込む」してください。',
       credit:'アプリ開発：介護と支援の相談どころ　そよぎ',
-      ver:'バージョン 1.11',
+      ver:'バージョン 1.12',
       on:'ON', off:'OFF'
     },
 
@@ -206,9 +212,15 @@
 
   /* ============ en(下書き・Fableが後で磨く前提) ============ */
   var en = {
-    app: { title:'Home Care Log - SOYOGI', name:'Home Care Log - SOYOGI', ver:'1.1' },
+    app: { title:'Home Care Log - SOYOGI', name:'Home Care Log - SOYOGI' },
 
     tab: { today:'Today', hist:'History', show:'Show', set:'Settings' },
+
+    /* v1.12: とりけす・もとにもどす / 決まった時間のおくすり / バックアップの声かけ / 確かめ(血圧の上下・体温の目印) */
+    undo: { cancelAdd:'Undo', cancelled:'Undone ✓', deleted:'Deleted', restore:'Restore', restored:'Restored ✓' },
+    slot: { head:'Medicine at set times', morning:'Morning', noon:'Noon', evening:'Evening', bed:'Bedtime' },
+    bk: { nag:'Want to export a backup? You can do it in Settings.', later:'Later' },
+    check: { bpReversed:'The lower number is bigger than the upper one. They may be swapped. Save anyway?', tempNote:'Marks on body temperature: yellow is 37.5 °C or higher, red is 38.0 °C or higher. These are general guides, not a diagnosis.', tempLive:'A general guide, not a diagnosis' },
 
     common: { save:'Save', cancel:'Cancel', empty:'No records yet', delConfirm:'Delete?',
       yes:'Yes', no:'No', backConfirm:'What you entered is not saved yet. Cancel and go back?' },
@@ -264,7 +276,7 @@
       backupHead:'Backup', export:'Export records', import:'Import records',
       backupHint:'Records are stored only on this device. Nothing is sent anywhere. When you change devices, use "Export" to save a file, then "Import" it on the new device.',
       credit:'App development: SOYOGI - Care & Support Consultation',
-      ver:'Version 1.11',
+      ver:'Version 1.12',
       on:'ON', off:'OFF'
     },
 
@@ -390,8 +402,14 @@
 
   /* ============ de ============ */
   var de = {
-    app: { title:'Pflegetagebuch Zuhause - SOYOGI', name:'Pflegetagebuch Zuhause - SOYOGI', ver:'1.1' },
+    app: { title:'Pflegetagebuch Zuhause - SOYOGI', name:'Pflegetagebuch Zuhause - SOYOGI' },
     tab: { today:'Heute', hist:'Verlauf', show:'Bericht', set:'Einstellungen' },
+
+    /* v1.12: とりけす・もとにもどす / 決まった時間のおくすり / バックアップの声かけ / 確かめ(血圧の上下・体温の目印) */
+    undo: { cancelAdd:'Rückgängig', cancelled:'Rückgängig gemacht ✓', deleted:'Gelöscht', restore:'Wiederherstellen', restored:'Wiederhergestellt ✓' },
+    slot: { head:'Medikamente zu festen Zeiten', morning:'Morgens', noon:'Mittags', evening:'Abends', bed:'Zur Nacht' },
+    bk: { nag:'Möchten Sie eine Sicherung exportieren? Das geht in den Einstellungen.', later:'Später' },
+    check: { bpReversed:'Der untere Wert ist größer als der obere. Vielleicht sind sie vertauscht. Trotzdem speichern?', tempNote:'Markierung bei der Körpertemperatur: Gelb ab 37,5 °C, Rot ab 38,0 °C. Das sind allgemeine Richtwerte, keine Diagnose.', tempLive:'Allgemeiner Richtwert, keine Diagnose' },
     common: { save:'Speichern', cancel:'Abbrechen', empty:'Noch keine Einträge', delConfirm:'Löschen?',
       yes:'Ja', no:'Nein', backConfirm:'Ihre Eingaben sind noch nicht gespeichert. Abbrechen und zurückgehen?' },
     toast: {
@@ -441,7 +459,7 @@
       backupHead:'Sicherung', export:'Einträge exportieren', import:'Einträge importieren',
       backupHint:'Die Einträge werden nur auf diesem Gerät gespeichert. Nichts wird gesendet. Beim Gerätewechsel mit „Exportieren“ eine Datei sichern und auf dem neuen Gerät „Importieren“.',
       credit:'App-Entwicklung: SOYOGI - Beratungsstelle für Pflege und Unterstützung',
-      ver:'Version 1.11',
+      ver:'Version 1.12',
       on:'AN', off:'AUS'
     },
     items: {
@@ -548,8 +566,14 @@
 
   /* ============ fr ============ */
   var fr = {
-    app: { title:'Journal de soins à domicile - SOYOGI', name:'Journal de soins à domicile - SOYOGI', ver:'1.1' },
+    app: { title:'Journal de soins à domicile - SOYOGI', name:'Journal de soins à domicile - SOYOGI' },
     tab: { today:'Aujourd’hui', hist:'Historique', show:'Rapport', set:'Réglages' },
+
+    /* v1.12: とりけす・もとにもどす / 決まった時間のおくすり / バックアップの声かけ / 確かめ(血圧の上下・体温の目印) */
+    undo: { cancelAdd:'Annuler', cancelled:'Annulé ✓', deleted:'Effacé', restore:'Rétablir', restored:'Rétabli ✓' },
+    slot: { head:'Médicaments à heures fixes', morning:'Matin', noon:'Midi', evening:'Soir', bed:'Coucher' },
+    bk: { nag:'Exporter une sauvegarde ? Vous pouvez le faire dans les Réglages.', later:'Plus tard' },
+    check: { bpReversed:'Le chiffre du bas est plus grand que celui du haut. Ils sont peut-être inversés. Enregistrer quand même ?', tempNote:'Repères pour la température : jaune à partir de 37,5 °C, rouge à partir de 38,0 °C. Ce sont des repères généraux, pas un diagnostic.', tempLive:'Repère général, pas un diagnostic' },
     common: { save:'Enregistrer', cancel:'Annuler', empty:'Pas encore d’enregistrement', delConfirm:'Effacer ?',
       yes:'Oui', no:'Non', backConfirm:'Ce que vous avez saisi n’est pas encore enregistré. Annuler et revenir en arrière ?' },
     toast: {
@@ -599,7 +623,7 @@
       backupHead:'Sauvegarde', export:'Exporter les données', import:'Importer les données',
       backupHint:'Les enregistrements restent uniquement sur cet appareil. Rien n’est envoyé. En cas de changement d’appareil, « Exporter » un fichier puis « Importer » sur le nouvel appareil.',
       credit:'Développement de l’application : SOYOGI - Lieu de conseil en soins et soutien',
-      ver:'Version 1.11',
+      ver:'Version 1.12',
       on:'ON', off:'OFF'
     },
     items: {
@@ -706,8 +730,14 @@
 
   /* ============ es ============ */
   var es = {
-    app: { title:'Diario de cuidados en casa - SOYOGI', name:'Diario de cuidados en casa - SOYOGI', ver:'1.1' },
+    app: { title:'Diario de cuidados en casa - SOYOGI', name:'Diario de cuidados en casa - SOYOGI' },
     tab: { today:'Hoy', hist:'Historial', show:'Informe', set:'Ajustes' },
+
+    /* v1.12: とりけす・もとにもどす / 決まった時間のおくすり / バックアップの声かけ / 確かめ(血圧の上下・体温の目印) */
+    undo: { cancelAdd:'Deshacer', cancelled:'Deshecho ✓', deleted:'Borrado', restore:'Recuperar', restored:'Recuperado ✓' },
+    slot: { head:'Medicación a horas fijas', morning:'Mañana', noon:'Mediodía', evening:'Tarde', bed:'Al acostarse' },
+    bk: { nag:'¿Desea exportar una copia de seguridad? Puede hacerlo en Ajustes.', later:'Luego' },
+    check: { bpReversed:'La baja es mayor que la alta. Puede que estén al revés. ¿Guardar de todos modos?', tempNote:'Marcas de la temperatura: amarillo desde 37,5 °C, rojo desde 38,0 °C. Son valores orientativos generales, no un diagnóstico.', tempLive:'Valor orientativo, no un diagnóstico' },
     common: { save:'Guardar', cancel:'Cancelar', empty:'Aún no hay registros', delConfirm:'¿Borrar?',
       yes:'Sí', no:'No', backConfirm:'Lo que ha introducido aún no se ha guardado. ¿Cancelar y volver?' },
     toast: {
@@ -757,7 +787,7 @@
       backupHead:'Copia de seguridad', export:'Exportar registros', import:'Importar registros',
       backupHint:'Los registros se guardan solo en este dispositivo. No se envía nada. Al cambiar de dispositivo, use «Exportar» para guardar un archivo e «Importar» en el nuevo.',
       credit:'Desarrollo de la aplicación: SOYOGI - Centro de consultas de cuidados y apoyo',
-      ver:'Versión 1.11',
+      ver:'Versión 1.12',
       on:'ON', off:'OFF'
     },
     items: {
@@ -864,8 +894,14 @@
 
   /* ============ it ============ */
   var it = {
-    app: { title:'Diario di cura a casa - SOYOGI', name:'Diario di cura a casa - SOYOGI', ver:'1.1' },
+    app: { title:'Diario di cura a casa - SOYOGI', name:'Diario di cura a casa - SOYOGI' },
     tab: { today:'Oggi', hist:'Cronologia', show:'Riepilogo', set:'Impostazioni' },
+
+    /* v1.12: とりけす・もとにもどす / 決まった時間のおくすり / バックアップの声かけ / 確かめ(血圧の上下・体温の目印) */
+    undo: { cancelAdd:'Annulla', cancelled:'Annullato ✓', deleted:'Eliminato', restore:'Ripristina', restored:'Ripristinato ✓' },
+    slot: { head:'Farmaci a orari fissi', morning:'Mattina', noon:'Pranzo', evening:'Sera', bed:'Prima di dormire' },
+    bk: { nag:'Vuoi esportare un backup? Puoi farlo nelle Impostazioni.', later:'Più tardi' },
+    check: { bpReversed:'La minima è maggiore della massima. Forse sono invertite. Salvare comunque?', tempNote:'Segni per la temperatura corporea: giallo da 37,5 °C, rosso da 38,0 °C. Sono valori indicativi generali, non una diagnosi.', tempLive:'Valore indicativo, non una diagnosi' },
     common: { save:'Salva', cancel:'Annulla', empty:'Ancora nessuna registrazione', delConfirm:'Eliminare?',
       yes:'Sì', no:'No', backConfirm:'Quanto inserito non è ancora stato salvato. Annullare e tornare indietro?' },
     toast: {
@@ -915,7 +951,7 @@
       backupHead:'Backup', export:'Esporta registrazioni', import:'Importa registrazioni',
       backupHint:'Le registrazioni restano solo su questo dispositivo. Non viene inviato nulla. Cambiando dispositivo, usa «Esporta» per salvare un file e «Importa» sul nuovo.',
       credit:'Sviluppo dell’app: SOYOGI - Sportello di consulenza per cura e sostegno',
-      ver:'Versione 1.11',
+      ver:'Versione 1.12',
       on:'ON', off:'OFF'
     },
     items: {
@@ -1022,8 +1058,14 @@
 
   /* ============ pt ============ */
   var pt = {
-    app: { title:'Diário de cuidados em casa - SOYOGI', name:'Diário de cuidados em casa - SOYOGI', ver:'1.1' },
+    app: { title:'Diário de cuidados em casa - SOYOGI', name:'Diário de cuidados em casa - SOYOGI' },
     tab: { today:'Hoje', hist:'Histórico', show:'Relatório', set:'Configurações' },
+
+    /* v1.12: とりけす・もとにもどす / 決まった時間のおくすり / バックアップの声かけ / 確かめ(血圧の上下・体温の目印) */
+    undo: { cancelAdd:'Desfazer', cancelled:'Desfeito ✓', deleted:'Apagado', restore:'Recuperar', restored:'Recuperado ✓' },
+    slot: { head:'Remédios em horários fixos', morning:'Manhã', noon:'Meio-dia', evening:'Tarde', bed:'Hora de dormir' },
+    bk: { nag:'Quer exportar um backup? Você pode fazer isso em Configurações.', later:'Depois' },
+    check: { bpReversed:'A mínima é maior que a máxima. Podem estar trocadas. Salvar mesmo assim?', tempNote:'Marcas da temperatura: amarelo a partir de 37,5 °C, vermelho a partir de 38,0 °C. São valores de referência gerais, não um diagnóstico.', tempLive:'Valor de referência, não um diagnóstico' },
     common: { save:'Salvar', cancel:'Cancelar', empty:'Ainda não há registros', delConfirm:'Apagar?',
       yes:'Sim', no:'Não', backConfirm:'O que você inseriu ainda não foi salvo. Cancelar e voltar?' },
     toast: {
@@ -1073,7 +1115,7 @@
       backupHead:'Backup', export:'Exportar registros', import:'Importar registros',
       backupHint:'Os registros ficam apenas neste aparelho. Nada é enviado. Ao trocar de aparelho, use «Exportar» para salvar um arquivo e «Importar» no novo.',
       credit:'Desenvolvimento do app: SOYOGI - Centro de consultas de cuidado e apoio',
-      ver:'Versão 1.11',
+      ver:'Versão 1.12',
       on:'ON', off:'OFF'
     },
     items: {
@@ -1180,8 +1222,14 @@
 
   /* ============ nl ============ */
   var nl = {
-    app: { title:'Zorgdagboek thuis - SOYOGI', name:'Zorgdagboek thuis - SOYOGI', ver:'1.1' },
+    app: { title:'Zorgdagboek thuis - SOYOGI', name:'Zorgdagboek thuis - SOYOGI' },
     tab: { today:'Vandaag', hist:'Overzicht', show:'Rapport', set:'Instellingen' },
+
+    /* v1.12: とりけす・もとにもどす / 決まった時間のおくすり / バックアップの声かけ / 確かめ(血圧の上下・体温の目印) */
+    undo: { cancelAdd:'Ongedaan maken', cancelled:'Ongedaan gemaakt ✓', deleted:'Gewist', restore:'Terugzetten', restored:'Teruggezet ✓' },
+    slot: { head:'Medicijnen op vaste tijden', morning:'Ochtend', noon:'Middag', evening:'Avond', bed:'Voor het slapen' },
+    bk: { nag:'Wilt u een back-up exporteren? Dat kan bij Instellingen.', later:'Later' },
+    check: { bpReversed:'De onderdruk is hoger dan de bovendruk. Misschien zijn ze omgewisseld. Toch opslaan?', tempNote:'Markeringen bij de lichaamstemperatuur: geel vanaf 37,5 °C, rood vanaf 38,0 °C. Dit zijn algemene richtwaarden, geen diagnose.', tempLive:'Algemene richtwaarde, geen diagnose' },
     common: { save:'Opslaan', cancel:'Annuleren', empty:'Nog geen registraties', delConfirm:'Wissen?',
       yes:'Ja', no:'Nee', backConfirm:'Wat u hebt ingevoerd, is nog niet opgeslagen. Annuleren en teruggaan?' },
     toast: {
@@ -1231,7 +1279,7 @@
       backupHead:'Back-up', export:'Registraties exporteren', import:'Registraties importeren',
       backupHint:'Registraties staan alleen op dit apparaat. Er wordt niets verzonden. Bij een nieuw apparaat: "Exporteren" naar een bestand en op het nieuwe apparaat "Importeren".',
       credit:'App-ontwikkeling: SOYOGI - Adviespunt voor zorg en ondersteuning',
-      ver:'Versie 1.11',
+      ver:'Versie 1.12',
       on:'AAN', off:'UIT'
     },
     items: {
@@ -1338,8 +1386,14 @@
 
   /* ============ sv ============ */
   var sv = {
-    app: { title:'Omsorgsdagbok hemma - SOYOGI', name:'Omsorgsdagbok hemma - SOYOGI', ver:'1.1' },
+    app: { title:'Omsorgsdagbok hemma - SOYOGI', name:'Omsorgsdagbok hemma - SOYOGI' },
     tab: { today:'Idag', hist:'Historik', show:'Rapport', set:'Inställningar' },
+
+    /* v1.12: とりけす・もとにもどす / 決まった時間のおくすり / バックアップの声かけ / 確かめ(血圧の上下・体温の目印) */
+    undo: { cancelAdd:'Ångra', cancelled:'Ångrat ✓', deleted:'Raderat', restore:'Återställ', restored:'Återställt ✓' },
+    slot: { head:'Medicin vid fasta tider', morning:'Morgon', noon:'Lunch', evening:'Kväll', bed:'Läggdags' },
+    bk: { nag:'Vill du exportera en säkerhetskopia? Det går i Inställningar.', later:'Senare' },
+    check: { bpReversed:'Undertrycket är högre än övertrycket. Kanske är de omkastade. Spara ändå?', tempNote:'Markeringar för kroppstemperatur: gul från 37,5 °C, röd från 38,0 °C. Det är allmänna riktvärden, inte en diagnos.', tempLive:'Allmänt riktvärde, ingen diagnos' },
     common: { save:'Spara', cancel:'Avbryt', empty:'Inga anteckningar ännu', delConfirm:'Radera?',
       yes:'Ja', no:'Nej', backConfirm:'Det du har fyllt i är inte sparat än. Vill du avbryta och gå tillbaka?' },
     toast: {
@@ -1389,7 +1443,7 @@
       backupHead:'Säkerhetskopia', export:'Exportera anteckningar', import:'Importera anteckningar',
       backupHint:'Anteckningarna sparas bara på den här enheten. Inget skickas någonstans. Vid byte av enhet: "Exportera" till en fil och "Importera" på den nya enheten.',
       credit:'Apputveckling: SOYOGI - Rådgivning för omsorg och stöd',
-      ver:'Version 1.11',
+      ver:'Version 1.12',
       on:'PÅ', off:'AV'
     },
     items: {
@@ -1496,8 +1550,14 @@
 
   /* ============ ko ============ */
   var ko = {
-    app: { title:'우리집 돌봄 기록 - SOYOGI', name:'우리집 돌봄 기록 - SOYOGI', ver:'1.1' },
+    app: { title:'우리집 돌봄 기록 - SOYOGI', name:'우리집 돌봄 기록 - SOYOGI' },
     tab: { today:'오늘', hist:'지난 기록', show:'보여주기', set:'설정' },
+
+    /* v1.12: とりけす・もとにもどす / 決まった時間のおくすり / バックアップの声かけ / 確かめ(血圧の上下・体温の目印) */
+    undo: { cancelAdd:'취소', cancelled:'취소했습니다 ✓', deleted:'지웠습니다', restore:'되돌리기', restored:'되돌렸습니다 ✓' },
+    slot: { head:'정해진 시간의 약', morning:'아침', noon:'점심', evening:'저녁', bed:'자기 전' },
+    bk: { nag:'백업을 내보낼까요? 설정에서 할 수 있어요.', later:'나중에' },
+    check: { bpReversed:'아래 수치가 위 수치보다 큽니다. 위와 아래가 바뀐 것일 수 있어요. 그래도 기록할까요?', tempNote:'체온 표시: 노란색은 37.5℃ 이상, 빨간색은 38.0℃ 이상입니다. 일반적인 기준이며 진단이 아닙니다.', tempLive:'일반적인 기준이며 진단이 아닙니다' },
     common: { save:'기록하기', cancel:'취소', empty:'아직 기록이 없습니다', delConfirm:'지울까요?',
       yes:'예', no:'아니요', backConfirm:'입력한 내용이 아직 기록되지 않았습니다. 취소하고 돌아갈까요?' },
     toast: {
@@ -1547,7 +1607,7 @@
       backupHead:'백업', export:'기록 내보내기', import:'기록 불러오기',
       backupHint:'기록은 이 기기 안에만 저장됩니다. 어디에도 전송되지 않습니다. 기기를 바꿀 때는 「내보내기」로 파일을 저장한 뒤 새 기기에서 「불러오기」 해 주세요.',
       credit:'앱 개발: SOYOGI - 돌봄과 지원 상담소',
-      ver:'버전 1.11',
+      ver:'버전 1.12',
       on:'ON', off:'OFF'
     },
     items: {
@@ -1654,8 +1714,14 @@
 
   /* ============ zh(簡体字) ============ */
   var zh = {
-    app: { title:'居家照护记录 - SOYOGI', name:'居家照护记录 - SOYOGI', ver:'1.1' },
+    app: { title:'居家照护记录 - SOYOGI', name:'居家照护记录 - SOYOGI' },
     tab: { today:'今天', hist:'历史', show:'报告', set:'设置' },
+
+    /* v1.12: とりけす・もとにもどす / 決まった時間のおくすり / バックアップの声かけ / 確かめ(血圧の上下・体温の目印) */
+    undo: { cancelAdd:'撤销', cancelled:'已撤销 ✓', deleted:'已删除', restore:'恢复', restored:'已恢复 ✓' },
+    slot: { head:'固定时间的药', morning:'早', noon:'中', evening:'晚', bed:'睡前' },
+    bk: { nag:'要导出备份吗?可以在“设置”中操作。', later:'稍后' },
+    check: { bpReversed:'低压数值比高压大，可能填反了。仍要记录吗?', tempNote:'体温标记：黄色为37.5℃以上，红色为38.0℃以上。这是一般参考值，不是诊断。', tempLive:'一般参考值，不是诊断' },
     common: { save:'记录', cancel:'取消', empty:'还没有记录', delConfirm:'删除?',
       yes:'是', no:'否', backConfirm:'输入的内容还没有记录。要取消并返回吗?' },
     toast: {
@@ -1705,7 +1771,7 @@
       backupHead:'备份', export:'导出记录', import:'导入记录',
       backupHint:'记录只保存在这台设备里,不会发送到任何地方。换设备时,请用「导出」保存文件,再在新设备上「导入」。',
       credit:'应用开发: SOYOGI - 照护与支援咨询处',
-      ver:'版本 1.11',
+      ver:'版本 1.12',
       on:'开', off:'关'
     },
     items: {
@@ -1812,8 +1878,14 @@
 
   /* ============ ar ============ */
   var ar = {
-    app: { title:'سجل الرعاية المنزلية - SOYOGI', name:'سجل الرعاية المنزلية - SOYOGI', ver:'1.1' },
+    app: { title:'سجل الرعاية المنزلية - SOYOGI', name:'سجل الرعاية المنزلية - SOYOGI' },
     tab: { today:'اليوم', hist:'السجل', show:'تقرير', set:'الإعدادات' },
+
+    /* v1.12: とりけす・もとにもどす / 決まった時間のおくすり / バックアップの声かけ / 確かめ(血圧の上下・体温の目印) */
+    undo: { cancelAdd:'تراجع', cancelled:'تم التراجع ✓', deleted:'تم الحذف', restore:'استعادة', restored:'تمت الاستعادة ✓' },
+    slot: { head:'الدواء في أوقات محددة', morning:'صباحًا', noon:'ظهرًا', evening:'مساءً', bed:'قبل النوم' },
+    bk: { nag:'هل تريد تصدير نسخة احتياطية؟ يمكنك ذلك من الإعدادات.', later:'لاحقًا' },
+    check: { bpReversed:'الانبساطي (السفلي) أكبر من الانقباضي (العلوي). ربما تم عكسهما. هل تريد التسجيل على أي حال؟', tempNote:'علامات درجة حرارة الجسم: الأصفر من 37.5 درجة مئوية فأكثر، والأحمر من 38.0 فأكثر. هذه قيم إرشادية عامة وليست تشخيصًا.', tempLive:'قيمة إرشادية عامة وليست تشخيصًا' },
     common: { save:'تسجيل', cancel:'إلغاء', empty:'لا توجد تسجيلات بعد', delConfirm:'حذف؟',
       yes:'نعم', no:'لا', backConfirm:'ما أدخلته لم يُسجَّل بعد. هل تريد الإلغاء والرجوع؟' },
     toast: {
@@ -1863,7 +1935,7 @@
       backupHead:'نسخة احتياطية', export:'تصدير التسجيلات', import:'استيراد التسجيلات',
       backupHint:'تُحفظ التسجيلات على هذا الجهاز فقط ولا يُرسل أي شيء إلى أي مكان. عند تغيير الجهاز استخدم «تصدير» لحفظ ملف ثم «استيراد» على الجهاز الجديد.',
       credit:'تطوير التطبيق: SOYOGI - مركز استشارات الرعاية والدعم',
-      ver:'الإصدار 1.11',
+      ver:'الإصدار 1.12',
       on:'تشغيل', off:'إيقاف'
     },
     items: {

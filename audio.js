@@ -115,6 +115,22 @@ const Sound = (() => {
 
   function maybeStartBgm(){ if(bgmEnabled && !playing) startBgm(); }
 
+  /* 裏に回ったら止め、戻ったら続ける(v1.12): Web版・PWAでタブを裏に回しても BGM が鳴り続けないように。
+     止めたのが自分のときだけ戻す(最初のタップ前の suspended や、ほかの理由の suspended は触らない) */
+  let hiddenSuspended = false;
+  function onVisibility(){
+    if(!ctx) return;
+    try{
+      if(document.hidden){
+        if(ctx.state === 'running'){ hiddenSuspended = true; ctx.suspend(); }
+      } else if(hiddenSuspended){
+        hiddenSuspended = false;
+        ctx.resume();
+      }
+    }catch(_){}
+  }
+  if(typeof document !== 'undefined' && document.addEventListener) document.addEventListener('visibilitychange', onVisibility);
+
   function tap(){
     ensure();
     if(enabled && ctx) click();
