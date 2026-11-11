@@ -1420,7 +1420,9 @@ function weekCell(k, list){
   }
   if(k === 'temp'){   // 期間内の最高
     const vals = list.filter(e => e.k === 'temp').map(e => e.tv != null ? e.tv : parseFloat(e.v)).filter(v => !isNaN(v));
-    return vals.length ? T('sum.tempMaxCell', { v:Math.max.apply(null, vals) }) : dash;
+    if(!vals.length) return dash;
+    const mx = Math.max.apply(null, vals), tc = classifyTemp(mx);
+    return T('sum.tempMaxCell', { v:mx }) + (tc ? (tc.lv === 'r' ? ' 🔴' : ' 🟡') : '');   // 体温の目印(3か月の週の表も同じ・v1.12)
   }
   if(k === 'bp'){   // 最悪マーカーの記録1件の値+そのチップ(なければ最新値・マーカーなしは値のみ)
     const arr = list.filter(e => e.k === 'bp');

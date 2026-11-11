@@ -708,7 +708,8 @@ console.log('[v1.12] とりけす・決まった時間のおくすり・体温�
   const trow2 = sandbox.entryRow({ k:'temp', tv:36.5, t:Date.now() }, false);
   check('体温36.5の記録の行には目印が出ない', allText(trow2).indexOf('🔴') < 0 && allText(trow2).indexOf('🟡') < 0);
   check('みせる表の体温の欄も 37.6 は 🟡 が付く', sandbox.showCell('temp', [{ k:'temp', tv:37.6, t:Date.now() }], {}).indexOf('🟡') >= 0 && sandbox.showCell('temp', [{ k:'temp', tv:36.6, t:Date.now() }], {}).indexOf('🟡') < 0);
-  check('日ごとのまとめ(りれき)にも体温の目印が出る', sandbox.daySummary([{ k:'temp', tv:38.4, t:Date.now() }]).join('').indexOf('🔴') >= 0);
+  check('3か月の週の表の体温にも目印が出る(38.1=🔴・37.7=🟡・36.8=なし)', sandbox.weekCell('temp', [{ k:'temp', tv:38.1, t:Date.now() }]).indexOf('🔴') >= 0 && sandbox.weekCell('temp', [{ k:'temp', tv:37.7, t:Date.now() }]).indexOf('🟡') >= 0 && !/[🔴🟡]/u.test(sandbox.weekCell('temp', [{ k:'temp', tv:36.8, t:Date.now() }])));
+  check('日ごとのまとめ(りれき)にも体温の目印が出る',sandbox.daySummary([{ k:'temp', tv:38.4, t:Date.now() }]).join('').indexOf('🔴') >= 0);
   {
     const made = []; const oc = documentStub.createElement;
     documentStub.createElement = t => { const n = oc(t); made.push(n); return n; };
