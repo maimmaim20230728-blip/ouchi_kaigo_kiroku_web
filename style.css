@@ -67,12 +67,12 @@ body.fs0{font-size:19px;} body.fs1{font-size:22px;} body.fs2{font-size:25px;}
   background:var(--card); border:1px solid var(--line); border-radius:12px;
   padding:10px 12px; display:flex; align-items:center; gap:10px;
 }
-.log-time{color:var(--muted); font-size:.8em; min-width:3.2em;}
+.log-time{color:var(--muted); font-size:.8em; min-width:3.2em; display:flex; align-items:center; min-height:44px;}
 .log-body{flex:1; min-width:0; overflow-wrap:anywhere;}
 .log-memo{display:block; color:var(--muted); font-size:.8em;}
 .del-btn{
   background:none; border:1px solid var(--line); border-radius:10px;
-  font-size:.9em; padding:6px 10px; color:var(--muted); cursor:pointer;
+  font-size:.9em; padding:6px 10px; min-height:44px; min-width:44px; color:var(--muted); cursor:pointer;
 }
 .del-btn.arm{background:var(--danger-bg); color:var(--danger); border-color:var(--danger);}
 .empty{color:var(--muted); text-align:center; padding:18px 0;}
@@ -129,7 +129,7 @@ body.fs0{font-size:19px;} body.fs1{font-size:22px;} body.fs2{font-size:25px;}
 }
 /* つまんで動かす取っ手。touch-action:none で「ドラッグ中に画面が動く」のを防ぐ */
 .ord-grip{
-  flex-shrink:0; min-width:40px; min-height:44px;
+  flex-shrink:0; min-width:44px; min-height:44px;
   display:flex; align-items:center; justify-content:center;
   color:var(--muted); font-size:1.2em; cursor:grab;
   user-select:none; touch-action:none;

@@ -590,6 +590,58 @@ console.log('[v1.7] 保存失敗(容量いっぱい)・バックアップ読み�
   check('読み込み: 12言語すべてに importConfirm({n}入り)がある', ['ja','en','de','fr','es','it','pt','nl','sv','ko','zh','ar'].every(l => { const v = I18Nsm[l].toast.importConfirm; return typeof v === 'string' && v.indexOf('{n}') >= 0 && !/[—―]/.test(v); }));
 }
 
+/* v1.11: 体温・体重を空にして「ほぞん」→ 窓を閉じず知らせる / 日付をまたいだら「きょう」を描き直す / 押す場所 44px */
+console.log('[v1.11] 空の保存は窓を閉じず知らせる・日付またぎの描き直し・押す場所');
+{
+  const inCtx = code => vm.runInContext(code, sandbox);
+  const made = [];
+  const origCreate = documentStub.createElement;
+  documentStub.createElement = t => { const n = origCreate(t); made.push(n); return n; };
+  const runModal = (open, val) => {
+    made.length = 0;
+    const n0 = inCtx('entries').length;
+    open();
+    const ov = made.find(n => n.className === 'overlay');
+    let closed = false; ov.remove = () => { closed = true; };
+    const inp = made.find(n => n.tagName === 'INPUT' && n.className === 'step-in');
+    const msg = made.find(n => n.className === 'step-range hidden');
+    const ok = made.find(n => n.className === 'ok-btn');
+    inp.value = val;
+    tap(ok);
+    return { closed, msg:msg.textContent, added:inCtx('entries').length - n0 };
+  };
+  const TEMP_MSG = () => sandbox.T('toast.range', { min:'32.0', max:'42.0' });
+  const r1 = runModal(() => sandbox.openTemp(), '');
+  check('体温を空で「ほぞん」: 窓は閉じず・範囲の知らせが出る・記録は増えない', !r1.closed && r1.msg === TEMP_MSG() && r1.added === 0);
+  const r2 = runModal(() => sandbox.openTemp(), '36.8');
+  check('体温 36.8 は今までどおり保存され窓が閉じる', r2.closed && r2.added === 1);
+  const r3 = runModal(() => sandbox.openWeight(), '');
+  check('体重を空で「ほぞん」: 窓は閉じず・知らせが出る・記録は増えない', !r3.closed && r3.msg !== '' && r3.added === 0);
+  const r4 = runModal(() => sandbox.openWeight(), '52.5');
+  check('体重 52.5 は今までどおり保存され窓が閉じる', r4.closed && r4.added === 1);
+  made.length = 0;
+  {
+    const n0 = inCtx('entries').length;
+    sandbox.openBp();
+    const ov = made.find(n => n.className === 'overlay'); let closed = false; ov.remove = () => { closed = true; };
+    const ins = made.filter(n => n.tagName === 'INPUT' && n.className === 'step-in');
+    ins[2].value = '';
+    tap(made.find(n => n.className === 'ok-btn'));
+    check('血圧は脈が空でも保存される(任意の欄は止めない)', closed && inCtx('entries').length === n0 + 1);
+  }
+  documentStub.createElement = origCreate;
+
+  inCtx("lastRenderedDay = '2000-01-01'; histDate = new Date(2000, 0, 1); curScreen = 'today';");
+  inCtx('refreshIfDayChanged()');
+  check('日付をまたいだら、戻ったときに lastRenderedDay と histDate が今日になる', inCtx('lastRenderedDay') === inCtx('dayKey(Date.now())') && inCtx('dayKey(histDate.getTime())') === inCtx('dayKey(Date.now())'));
+  inCtx("lastRenderedDay = '2000-01-01'; histDate = new Date(2001, 5, 5);");
+  inCtx('refreshIfDayChanged()');
+  check('りれきで別の日を見ていたら、その日は動かさない', inCtx('dayKey(histDate.getTime())') === '2001-06-05');
+
+  const css = fs.readFileSync('./style.css', 'utf8').replace(/ /g, '');
+  check('🗑のけすボタン・時刻・≡の取っ手は 44px 以上', /\.del-btn\{[^}]*min-height:44px;min-width:44px/.test(css) && /\.log-time\{[^}]*min-height:44px/.test(css) && /\.ord-grip\{[^}]*min-width:44px;min-height:44px/.test(css));
+}
+
 console.log('');
 if(fails.length){ console.log('SMOKE NG: ' + fails.length + '件失敗'); process.exit(1); }
 console.log('SMOKE OK: 全チェック通過');

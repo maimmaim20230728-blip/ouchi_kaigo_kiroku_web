@@ -538,11 +538,11 @@ function openStepModal(opt){
   btnRow.appendChild(ok); btnRow.appendChild(cancel);
   ctx.box.appendChild(btnRow);
   /* 直接入力の範囲の確かめ(2026-10-30): ＋−と同じ min/max の外なら保存せず、その場で知らせる(36.5 を 365 と打った等)。
-     空の欄はここでは見ない(脈は任意・体温などは onDone が空なら何もしない) */
+     空の欄は見ない(脈は任意)。ただし required:true の欄(体温・体重)が空なら、窓を閉じずに範囲の知らせを出す(2026-11-11) */
   function outOfRange(vals){
     for(const r of opt.rows){
       const s = vals[r.key];
-      if(s === '') continue;
+      if(s === ''){ if(r.required) return r; continue; }
       const v = parseFloat(s);
       if(isNaN(v) || v < r.min || v > r.max) return r;
     }
@@ -776,7 +776,7 @@ function toiletTodaySub(){
 function openTemp(){
   openStepModal({
     title:T('temp.title'),
-    rows:[{ key:'tv', unit:T('temp.unit'), value:lastVal('temp','tv',36.5), step:0.1, min:32.0, max:42.0, dec:1 }],   // v1.9(2026-10-30 ヒロさん決定): 35.0〜41.0 → 32.0〜42.0。低い体温も記録に残す・365 などの打ち間違いは今までどおり保存しない
+    rows:[{ key:'tv', required:true, unit:T('temp.unit'), value:lastVal('temp','tv',36.5), step:0.1, min:32.0, max:42.0, dec:1 }],   // v1.9(2026-10-30 ヒロさん決定): 35.0〜41.0 → 32.0〜42.0。低い体温も記録に残す・365 などの打ち間違いは今までどおり保存しない
     note:true, notePlaceholder:T('temp.notePlaceholder'),
     onDone:(vals, note) => {
       const tv = parseFloat(vals.tv);
@@ -888,7 +888,7 @@ function openBp(){
 function openWeight(){
   openStepModal({
     title:T('weight.title'),
-    rows:[{ key:'wv', unit:T('weight.unit'), value:lastVal('weight','wv',50), step:0.5, min:20, max:150, dec:1 }],
+    rows:[{ key:'wv', required:true, unit:T('weight.unit'), value:lastVal('weight','wv',50), step:0.5, min:20, max:150, dec:1 }],
     live: !!prefs.height,
     onLive:(vals) => {
       const b = bmiOf(parseFloat(vals.wv));
@@ -1059,7 +1059,9 @@ function renderList(elm, list, allowDelete){
   }
   list.slice().sort((a, b) => b.t - a.t).forEach(e => elm.appendChild(entryRow(e, allowDelete)));
 }
+let lastRenderedDay = dayKey(Date.now());
 function renderToday(){
+  lastRenderedDay = dayKey(Date.now());
   document.getElementById('today-date').textContent = T('today.datePrefix') + ' ' + fmtDate(new Date());
   renderGrid();
   updateGotoSet();
@@ -1381,7 +1383,14 @@ document.getElementById('show-note').addEventListener('input', () => {
   showNoteTimer = setTimeout(() => { showNoteTimer = -1; flushShowNote(); }, SHOW_NOTE_WAIT);
 });
 document.getElementById('show-note').addEventListener('blur', () => { if(showNoteTimer !== null) flushShowNote(); });
-document.addEventListener('visibilitychange', () => { if(document.hidden) flushShowNote(); });
+/* 開いたまま日付をまたいだら、戻ってきたときに「きょう」を描き直す(2026-11-11) */
+function refreshIfDayChanged(){
+  if(dayKey(Date.now()) === lastRenderedDay) return;
+  if(dayKey(histDate.getTime()) === lastRenderedDay) histDate = new Date();
+  if(curScreen === 'today') renderToday();
+  else { lastRenderedDay = dayKey(Date.now()); if(curScreen === 'hist') renderHist(); }
+}
+document.addEventListener('visibilitychange', () => { if(document.hidden) flushShowNote(); else refreshIfDayChanged(); });
 window.addEventListener('pagehide', () => flushShowNote());
 
 /* ---- 時刻編集(共通) ---- */
